@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "533352292827",
+    "project_id": "coolclock-f0683",
+    "storage_bucket": "coolclock-f0683.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:533352292827:android:483c9d3d3c9c9ebed2c7fe",
+        "android_client_info": {
+          "package_name": "com.diskin.alon.coolclock"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "533352292827-hgvadsk891m915a0mpr9f06et1nped8s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMikX3ObLK9it3BQmwX-PiLGbGzXp76KU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "533352292827-hgvadsk891m915a0mpr9f06et1nped8s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
