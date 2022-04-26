@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@id/alarms"
+        android:icon="@drawable/ic_baseline_alarm_24"
+        android:title="Alarm" />
+
+    <item
+        android:id="@id/world_clocks"
+        android:icon="@drawable/ic_baseline_public_24"
+        android:title="World" />
+
+    <item
+        android:id="@id/timer"
+        android:icon="@drawable/ic_baseline_timer_24"
+        android:title="Timer" />
+
+</menu>

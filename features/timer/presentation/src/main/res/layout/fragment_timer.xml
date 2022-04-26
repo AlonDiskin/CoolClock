@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:fadeScrollbars="false"
+        android:scrollbarThumbVertical="@color/design_default_color_secondary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eleifend est vel faucibus ultrices. Sed dictum eget nisl pharetra eleifend. Pellentesque commodo enim id hendrerit facilisis. Vivamus hendrerit dolor in est bibendum sagittis. Etiam non nulla condimentum leo vulputate vehicula. In scelerisque, felis a interdum vestibulum, massa quam accumsan leo, varius imperdiet magna sem sit amet est. Ut blandit ornare nisi eget porttitor. Cras blandit tellus eget lobortis mollis. Nullam arcu tortor, pellentesque id semper vitae, volutpat id felis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vitae scelerisque massa. Proin tristique eget arcu quis lobortis. Donec rhoncus eleifend justo, nec tempus magna rhoncus et. Morbi et augue nec leo porta iaculis.
+
+Nullam dignissim enim et pellentesque laoreet. Donec malesuada interdum laoreet. Vivamus pulvinar elit non eros lobortis lobortis. Vestibulum bibendum pulvinar venenatis. Etiam suscipit volutpat nisi, pellentesque pretium diam facilisis ultrices. Ut ut placerat eros, vel viverra nulla. Nullam convallis ipsum a bibendum pellentesque. Etiam scelerisque nunc nibh, quis auctor neque auctor a. Proin molestie mauris a auctor pretium. Curabitur pharetra congue aliquet. Curabitur nec turpis tincidunt, tincidunt mauris tempus, rhoncus diam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+
+Vivamus semper, tortor sit amet iaculis ultrices, nunc magna ullamcorper erat, eu finibus dui nisi in turpis. Duis id laoreet turpis. Nunc et lectus urna. Praesent vestibulum lorem a erat posuere volutpat. Aliquam erat volutpat. Maecenas pulvinar bibendum dui, quis auctor elit pretium non. Maecenas pulvinar dolor ac efficitur pulvinar. Praesent id risus pharetra, tempor mi sed, venenatis erat. Aenean vitae erat magna. Vivamus lobortis, erat eu vestibulum vehicula, ligula enim tempor leo, et suscipit nisl urna vitae ex. Mauris dapibus in tellus non faucibus. In eu placerat risus, a vestibulum lectus. Vivamus vulputate eget ante at venenatis. Fusce vehicula enim interdum, mollis massa vitae, commodo velit. Integer pulvinar magna pellentesque libero bibendum, a dapibus nunc pulvinar. Suspendisse sed mauris vitae metus faucibus pulvinar eget et augue.
+
+Fusce eu quam sed purus ornare viverra. Sed porttitor, elit eget tempor auctor, arcu leo porttitor mi, maximus hendrerit turpis augue non mi. Nunc iaculis sapien."
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+<!--        <LinearLayout-->
+<!--            android:orientation="vertical"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent">-->
+
+
+<!--            -->
+<!--        </LinearLayout>-->
+
+    </androidx.core.widget.NestedScrollView>
+
+<!--    <TextView-->
+<!--        android:id="@+id/textView"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Timer fragment"-->
+<!--        android:textAppearance="@style/TextAppearance.AppCompat.Large"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+</androidx.constraintlayout.widget.ConstraintLayout>

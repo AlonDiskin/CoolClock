@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/alarms"
+    android:id="@+id/test_app_graph">
+
+    <include app:graph="@navigation/test_settings_graph" />
+
+    <include app:graph="@navigation/test_alarms_graph" />
+
+    <include app:graph="@navigation/test_timer_graph" />
+
+    <include app:graph="@navigation/test_clocks_graph" />
+
+</navigation>

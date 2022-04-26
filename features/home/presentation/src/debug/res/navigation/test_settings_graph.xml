@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings"
+    app:startDestination="@id/settingsDest">
+
+    <fragment
+        android:id="@+id/settingsDest"
+        tools:layout="@layout/fragment_blank"
+        android:name="com.diskin.alon.coolclock.home.presentation.BlankFragment">
+
+        <deepLink app:uri="@string/uri_settings" />
+
+    </fragment>
+</navigation>
