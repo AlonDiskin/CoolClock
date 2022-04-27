@@ -3,7 +3,6 @@ package com.diskin.alon.coolclock.home.presentation
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
@@ -75,8 +74,8 @@ class MainActivity : AppCompatActivity() {
         if (controller.currentDestination!!.id == graphProvider.getTimerDest() ||
             controller.currentDestination!!.id == graphProvider.getClocksDest()
         ) {
-            layout.navHostContainer.visibility = View.INVISIBLE
             finish()
+            return
         }
         super.onBackPressed()
     }

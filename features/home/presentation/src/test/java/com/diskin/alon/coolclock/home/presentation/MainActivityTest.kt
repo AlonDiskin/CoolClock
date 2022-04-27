@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.findNavController
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions.click
@@ -50,6 +51,8 @@ class MainActivityTest {
     fun setUp() {
         // Stub collaborators
         every { graphProvider.getAppGraph() } returns R.navigation.test_app_graph
+        every { graphProvider.getTimerDest() } returns R.id.timerDest
+        every { graphProvider.getClocksDest() } returns R.id.clocksDest
 
         // Launch activity under test
         scenario = ActivityScenario.launch(MainActivity::class.java)
@@ -135,6 +138,58 @@ class MainActivityTest {
             val controller = it.findNavController(R.id.nav_host_container)
 
             assertThat(controller.currentDestination!!.id).isEqualTo(R.id.settingsDest)
+        }
+    }
+
+    @Test
+    fun closeActivity_WhenNavigatingBackFromTimerScreen() {
+        // Given
+
+        // When
+        onView(withId(R.id.timer))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // And
+        Espresso.pressBack()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        scenario.onActivity {
+            assertThat(it.isFinishing).isTrue()
+        }
+    }
+
+    @Test
+    fun closeActivity_WhenNavigatingBackFromClocksScreen() {
+        // Given
+
+        // When
+        onView(withId(R.id.world_clocks))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // And
+        Espresso.pressBack()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        scenario.onActivity {
+            assertThat(it.isFinishing).isTrue()
+        }
+    }
+
+    @Test
+    fun closeActivity_WhenNavigatingBackFromAlarmsScreen() {
+        // Given
+
+        // When
+        Espresso.pressBack()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        scenario.onActivity {
+            assertThat(it.isFinishing).isTrue()
         }
     }
 }

@@ -4,17 +4,21 @@ buildscript {
     ext.hilt_version = "2.38.1"
     ext.data_binding_compiler = "7.1.3"
     ext.nav_component_version = "2.4.2"
+    ext.greencoffee_version = "3.5.0"
+    ext.uiautomator_version = "2.2.0"
 
-    dependencies {
-        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
+    repositories {
+        google()
+        mavenCentral()
     }
-}
+    dependencies {
+        classpath "com.android.tools.build:gradle:7.1.1"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.30"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
 
-plugins {
-    id 'com.android.application' version '7.1.1' apply false
-    id 'com.android.library' version '7.1.1' apply false
-    id 'org.jetbrains.kotlin.android' version '1.5.30' apply false
-    id 'org.jetbrains.kotlin.jvm' version '1.5.30' apply false
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
 }
 
 task clean(type: Delete) {
