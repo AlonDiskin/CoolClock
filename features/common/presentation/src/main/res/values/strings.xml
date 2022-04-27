@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="uri_settings">android-app://com.diskin.alon.coolclock/settings</string>
+    <string name="settings_parent_activity">com.diskin.alon.coolclock.home.presentation.MainActivity</string>
+    <string name="uri_alarms">android-app://com.diskin.alon.coolclock/alarms</string>
+    <string name="uri_world_clocks">android-app://com.diskin.alon.coolclock/clocks</string>
+    <string name="uri_timer">android-app://com.diskin.alon.coolclock/timer</string>
+</resources>

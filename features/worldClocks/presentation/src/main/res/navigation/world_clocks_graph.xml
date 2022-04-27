@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/world_clocks"
+    app:startDestination="@id/worldClocksFragment">
+
+    <fragment
+        android:id="@+id/worldClocksFragment"
+        android:name="com.diskin.alon.coolclock.worldclocks.presentation.WorldClocksFragment"
+        android:label=""
+        tools:layout="@layout/fragment_world_clocks">
+
+        <deepLink app:uri="@string/uri_world_clocks" />
+
+    </fragment>
+</navigation>

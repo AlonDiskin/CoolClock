@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.diskin.alon.coolclock.settings.presentation">
+
+    <application>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/Theme.CoolClock"
+            android:launchMode="singleTop"
+            android:exported="false" />
+    </application>
+
+</manifest>

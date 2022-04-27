@@ -1,16 +1,19 @@
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
-        mavenCentral()
-    }
-}
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
+        jcenter() // Warning: this repository is going to shut down soon
     }
 }
+
 rootProject.name = "CoolClock"
 include ':app'
+include ':features:home:presentation'
+include ':features:common:uiTesting'
+include ':features:common:unitTesting'
+include ':features:common:presentation'
+include ':features:alarms:presentation'
+include ':features:settings:presentation'
+include ':features:timer:presentation'
+include ':features:worldClocks:presentation'
