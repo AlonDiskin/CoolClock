@@ -8,6 +8,8 @@
       <module name="CoolClock.features.common.uiTesting" target="11" />
       <module name="CoolClock.features.home.presentation" target="11" />
       <module name="CoolClock.features.settings.presentation" target="11" />
+      <module name="CoolClock.features.timer.di" target="11" />
+      <module name="CoolClock.features.timer.featureTesting" target="11" />
       <module name="CoolClock.features.timer.presentation" target="11" />
       <module name="CoolClock.features.worldClocks.presentation" target="11" />
     </bytecodeTargetLevel>

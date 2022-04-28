@@ -8,7 +8,7 @@
             android:label="@string/title_activity_settings"
             android:theme="@style/Theme.CoolClock"
             android:launchMode="singleTop"
-            android:exported="false" />
+            android:exported="true" />
     </application>
 
 </manifest>

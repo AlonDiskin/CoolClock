@@ -24,12 +24,13 @@
             <option value="$PROJECT_DIR$/features/settings" />
             <option value="$PROJECT_DIR$/features/settings/presentation" />
             <option value="$PROJECT_DIR$/features/timer" />
+            <option value="$PROJECT_DIR$/features/timer/di" />
+            <option value="$PROJECT_DIR$/features/timer/featureTesting" />
             <option value="$PROJECT_DIR$/features/timer/presentation" />
             <option value="$PROJECT_DIR$/features/worldClocks" />
             <option value="$PROJECT_DIR$/features/worldClocks/presentation" />
           </set>
         </option>
-        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

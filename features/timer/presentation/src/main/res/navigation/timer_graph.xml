@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/timerFragment"
-        android:name="com.diskin.alon.coolclock.timer.presentation.TimerFragment"
+        android:name="com.diskin.alon.coolclock.timer.presentation.controller.TimerFragment"
         android:label=""
         tools:layout="@layout/fragment_timer">
 
