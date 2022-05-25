@@ -10,6 +10,7 @@ import com.diskin.alon.coolclock.timer.presentation.model.TimerControl
 import com.diskin.alon.coolclock.timer.presentation.model.UiTimer
 import com.diskin.alon.coolclock.timer.presentation.model.UiTimerState
 import com.diskin.alon.coolclock.timer.presentation.util.KEY_TIMER_DURATION
+import com.diskin.alon.coolclock.timer.presentation.util.TimerNotificationsManager
 import com.diskin.alon.coolclock.timer.presentation.util.TimerService
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
@@ -48,12 +49,17 @@ class TimerServiceTest {
     @JvmField
     val eventBus: EventBus = mockk()
 
+    @BindValue
+    @JvmField
+    val notificationsManager: TimerNotificationsManager = mockk()
+
     @Before
     fun setUp() {
         // Stub collaborators
         every { eventBus.postSticky(any()) } returns Unit
         every { eventBus.register(any()) } returns Unit
         every { eventBus.unregister(any()) } returns Unit
+        every { notificationsManager.showTimerAlertNotification() } returns Unit
 
         // Start service under test
         service = Robolectric.setupService(TimerService::class.java)
@@ -240,5 +246,24 @@ class TimerServiceTest {
 
         // Then
         assertThat(slot.captured.state).isEqualTo(UiTimerState.RESUMED)
+    }
+
+    @Test
+    fun showUrgentStatusBarNotification_WhenTimerFinished() {
+        // Given
+        val appContext = ApplicationProvider.getApplicationContext<Context>()
+        val duration = 2000L
+        val intent = Intent(appContext,TimerService::class.java)
+            .apply {
+                putExtra(KEY_TIMER_DURATION,duration)
+            }
+
+        service.onStartCommand(intent,0,0)
+
+        // When
+        service.countDownTimer.onFinish()
+
+        // Then
+        verify { notificationsManager.showTimerAlertNotification() }
     }
 }

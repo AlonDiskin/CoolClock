@@ -23,6 +23,8 @@ class TimerService : Service() {
 
     @Inject
     lateinit var eventBus: EventBus
+    @Inject
+    lateinit var notificationsManager: TimerNotificationsManager
     @VisibleForTesting
     lateinit var countDownTimer: CountDownTimer
     private var remainTime: Long? = null
@@ -95,6 +97,8 @@ class TimerService : Service() {
 
             override fun onFinish() {
                 isTimerRunning = false
+
+                notificationsManager.showTimerAlertNotification()
                 stopSelf()
                 updateTimer(0,UiTimerState.DONE)
                 eventBus.postSticky(UiTimerProgress(0,0))

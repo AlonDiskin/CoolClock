@@ -19,3 +19,11 @@ Feature: Simple timer
     When user leave timer screen
     And return to timer screen
     Then app should display current timer
+
+  #Rule: Show notification upon time up
+
+  @alert-notification
+  Scenario: Notification shown after timer done
+    Given user started timer
+    When timer is finished
+    Then app should show notification

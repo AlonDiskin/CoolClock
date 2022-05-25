@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="timer_alert_notification_title">Timer</string>
+    <string name="timer_alert_notification_content">time is up!</string>
 </resources>
