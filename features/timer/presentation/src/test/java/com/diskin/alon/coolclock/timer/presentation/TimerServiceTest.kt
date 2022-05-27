@@ -1,17 +1,21 @@
 package com.diskin.alon.coolclock.timer.presentation
 
+import android.app.Notification
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
+import androidx.core.app.NotificationManagerCompat
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.diskin.alon.coolclock.timer.presentation.controller.NOTIFICATION_ID_TIMER_ALERT
+import com.diskin.alon.coolclock.timer.presentation.controller.TimerNotificationFactory
 import com.diskin.alon.coolclock.timer.presentation.model.TimerControl
 import com.diskin.alon.coolclock.timer.presentation.model.UiTimer
 import com.diskin.alon.coolclock.timer.presentation.model.UiTimerState
-import com.diskin.alon.coolclock.timer.presentation.util.KEY_TIMER_DURATION
-import com.diskin.alon.coolclock.timer.presentation.util.TimerNotificationsManager
-import com.diskin.alon.coolclock.timer.presentation.util.TimerService
+import com.diskin.alon.coolclock.timer.presentation.infrastructure.KEY_TIMER_DURATION
+import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerService
+import com.diskin.alon.coolclock.timer.presentation.model.NotificationRequest
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -51,7 +55,11 @@ class TimerServiceTest {
 
     @BindValue
     @JvmField
-    val notificationsManager: TimerNotificationsManager = mockk()
+    val notificationFactory: TimerNotificationFactory = mockk()
+
+    @BindValue
+    @JvmField
+    val notificationManager: NotificationManagerCompat = mockk()
 
     @Before
     fun setUp() {
@@ -59,18 +67,25 @@ class TimerServiceTest {
         every { eventBus.postSticky(any()) } returns Unit
         every { eventBus.register(any()) } returns Unit
         every { eventBus.unregister(any()) } returns Unit
-        every { notificationsManager.showTimerAlertNotification() } returns Unit
+        every { notificationFactory.createTimerAlertNotificationChannel() } returns Unit
+        every { notificationFactory.createTimerNotificationChannel() } returns Unit
 
         // Start service under test
         service = Robolectric.setupService(TimerService::class.java)
     }
 
     @Test
-    fun registerToEventBus_WhenCreated() {
+    fun createTimerNotificationsChannels_WhenCreated() {
         // Given
 
-        // When
-        service.onCreate()
+        // Then
+        verify { notificationFactory.createTimerAlertNotificationChannel() }
+        verify { notificationFactory.createTimerNotificationChannel() }
+    }
+
+    @Test
+    fun registerToEventBus_WhenCreated() {
+        // Given
 
         // Then
         verify { eventBus.register(service) }
@@ -156,6 +171,8 @@ class TimerServiceTest {
                 putExtra(KEY_TIMER_DURATION,duration)
             }
 
+        every { notificationManager.notify(any(),any()) } returns Unit
+        every { notificationFactory.createTimerAlertNotification() } returns mockk()
         service.onStartCommand(intent,0,0)
 
         // When
@@ -257,13 +274,75 @@ class TimerServiceTest {
             .apply {
                 putExtra(KEY_TIMER_DURATION,duration)
             }
+        val notification: Notification = mockk()
 
+        every { notificationFactory.createTimerAlertNotification() } returns notification
+        every { notificationManager.notify(any(),any()) } returns Unit
         service.onStartCommand(intent,0,0)
 
         // When
         service.countDownTimer.onFinish()
 
         // Then
-        verify { notificationsManager.showTimerAlertNotification() }
+        verify { notificationManager.notify(NOTIFICATION_ID_TIMER_ALERT,notification) }
+    }
+
+    @Test
+    fun showNotificationForPausedTimerAndStartForeground_WhenTimerPausedAndNotificationRequested() {
+        // Given
+        val appContext = ApplicationProvider.getApplicationContext<Context>()
+        val duration = 2000L
+        val intent = Intent(appContext,TimerService::class.java)
+            .apply {
+                putExtra(KEY_TIMER_DURATION,duration)
+            }
+        val notification: Notification = mockk()
+
+        every { notificationFactory.createPausedTimerNotification(any(),any(),any()) } returns notification
+        every { notificationManager.notify(any(),any()) } returns Unit
+        service.onStartCommand(intent,0,0)
+
+        // When
+        service.onTimerControlEvent(TimerControl.PAUSE)
+        service.onNotificationRequestEvent(NotificationRequest.SHOW)
+
+        // Then
+        assertThat(Shadows.shadowOf(service).isForegroundStopped).isFalse()
+        verify {
+            notificationFactory.createPausedTimerNotification(
+                service.lastUpdated!!.remainSeconds,
+                service.lastUpdated!!.remainMinutes,
+                service.lastUpdated!!.remainHours
+            )
+        }
+    }
+
+    @Test
+    fun showNotificationForRunningTimer_WhenTimerActiveAndNotificationRequested() {
+        // Given
+        val appContext = ApplicationProvider.getApplicationContext<Context>()
+        val duration = 2000L
+        val intent = Intent(appContext,TimerService::class.java)
+            .apply {
+                putExtra(KEY_TIMER_DURATION,duration)
+            }
+        val notification: Notification = mockk()
+
+        every { notificationFactory.createRunningTimerNotification(any(),any(),any()) } returns notification
+        every { notificationManager.notify(any(),any()) } returns Unit
+        service.onStartCommand(intent,0,0)
+
+        // When
+        service.onNotificationRequestEvent(NotificationRequest.SHOW)
+
+        // Then
+        assertThat(Shadows.shadowOf(service).isForegroundStopped).isFalse()
+        verify {
+            notificationFactory.createRunningTimerNotification(
+                service.lastUpdated!!.remainSeconds,
+                service.lastUpdated!!.remainMinutes,
+                service.lastUpdated!!.remainHours
+            )
+        }
     }
 }

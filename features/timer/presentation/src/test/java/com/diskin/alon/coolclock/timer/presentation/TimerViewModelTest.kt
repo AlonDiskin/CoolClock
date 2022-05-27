@@ -4,12 +4,9 @@ import android.app.Application
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.diskin.alon.coolclock.timer.presentation.model.TimerControl
-import com.diskin.alon.coolclock.timer.presentation.model.UiTimer
-import com.diskin.alon.coolclock.timer.presentation.model.UiTimerProgress
-import com.diskin.alon.coolclock.timer.presentation.model.UiTimerState
-import com.diskin.alon.coolclock.timer.presentation.util.KEY_TIMER_DURATION
-import com.diskin.alon.coolclock.timer.presentation.util.TimerService
+import com.diskin.alon.coolclock.timer.presentation.infrastructure.KEY_TIMER_DURATION
+import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerService
+import com.diskin.alon.coolclock.timer.presentation.model.*
 import com.diskin.alon.coolclock.timer.presentation.viewmodel.TimerViewModel
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
@@ -125,5 +122,29 @@ class TimerViewModelTest {
 
         // Then
         assertThat(viewModel.progress.value).isEqualTo(update)
+    }
+
+    @Test
+    fun showTimerNotification() {
+        // Given
+        every { eventBus.post(any()) } returns Unit
+
+        // When
+        viewModel.showTimerNotification()
+
+        // Then
+        verify { eventBus.post(NotificationRequest.SHOW) }
+    }
+
+    @Test
+    fun hideTimerNotification() {
+        // Given
+        every { eventBus.post(any()) } returns Unit
+
+        // When
+        viewModel.hideTimerNotification()
+
+        // Then
+        verify { eventBus.post(NotificationRequest.HIDE) }
     }
 }

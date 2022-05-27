@@ -89,14 +89,9 @@ class TimerFragment : Fragment() {
         // Set start/cancel and pause buttons click listener
         layout.buttonStartCancel.setOnClickListener {
             when(viewModel.timer.value!!.state) {
-                UiTimerState.NOT_SET, UiTimerState.DONE -> {
-                    println("PIZDDA1!!")
+                UiTimerState.NOT_SET, UiTimerState.DONE ->
                     viewModel.startTimer(getCurrentTimeFromTimerPickers())
-                }
-                else -> {
-                    println("PIZDDA2!!:${viewModel.timer.value}")
-                    viewModel.cancelTimer()
-                }
+                else -> viewModel.cancelTimer()
             }
         }
         layout.buttonPauseResume.setOnClickListener {
@@ -109,6 +104,18 @@ class TimerFragment : Fragment() {
         // Set initial start\cancel button state
         layout.buttonStartCancel.isEnabled = (layout.secondsPicker.value > 0) ||
                 (layout.minutesPicker.value > 0) || (layout.hoursPicker.value > 0)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Hide status bar timer notification.if timer is running
+        viewModel.hideTimerNotification()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Show status bar timer notification.if timer is running
+        viewModel.showTimerNotification()
     }
 
     private fun setPickers() {

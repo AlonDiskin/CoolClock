@@ -3,4 +3,8 @@
 
     <string name="timer_alert_notification_title">Timer</string>
     <string name="timer_alert_notification_content">time is up!</string>
+    <string name="title_timer_notification">Timer</string>
+    <string name="title_notification_action_cancel">cancel</string>
+    <string name="title_notification_action_pause">pause</string>
+    <string name="title_notification_action_resume">resume</string>
 </resources>

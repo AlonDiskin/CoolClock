@@ -3,19 +3,23 @@
     package="com.diskin.alon.coolclock.timer.presentation">
 
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application>
         <service
-            android:name=".util.TimerService"
+            android:name=".infrastructure.TimerService"
             android:enabled="true"
             android:exported="false" />
 
         <receiver
-            android:name=".util.TimerNotificationsReceiver"
+            android:name=".infrastructure.TimerNotificationReceiver"
             android:enabled="true"
             android:exported="true">
 
             <intent-filter>
+                <action android:name="ACTION_TIMER_PAUSE" />
+                <action android:name="ACTION_TIMER_RESUME" />
+                <action android:name="ACTION_TIMER_CANCEL" />
                 <action android:name="ACTION_TIMER_ALERT_CANCEL" />
             </intent-filter>
         </receiver>

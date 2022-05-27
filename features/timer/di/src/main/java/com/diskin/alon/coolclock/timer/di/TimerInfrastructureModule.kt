@@ -1,5 +1,7 @@
 package com.diskin.alon.coolclock.timer.di
 
+import android.app.Application
+import androidx.core.app.NotificationManagerCompat
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,5 +17,11 @@ object TimerInfrastructureModule {
     @Provides
     fun provideEventBus(): EventBus {
         return EventBus.getDefault()
+    }
+
+    @Singleton
+    @Provides
+    fun provideNotificationManagerCompat(app: Application): NotificationManagerCompat {
+        return NotificationManagerCompat.from(app)
     }
 }

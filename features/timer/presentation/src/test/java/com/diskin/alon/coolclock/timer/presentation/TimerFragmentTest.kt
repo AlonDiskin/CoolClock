@@ -5,6 +5,7 @@ import android.widget.Button
 import android.widget.NumberPicker
 import android.widget.ProgressBar
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelLazy
@@ -64,6 +65,8 @@ class TimerFragmentTest {
         every { viewModel.cancelTimer() } returns Unit
         every { viewModel.timer } returns timer
         every { viewModel.progress } returns progress
+        every { viewModel.showTimerNotification() } returns Unit
+        every { viewModel.hideTimerNotification() } returns Unit
 
         // Launch fragment under test
         scenario = launchFragmentInHiltContainer<TimerFragment>()
@@ -251,5 +254,24 @@ class TimerFragmentTest {
             assertThat(state).isEqualTo(endState)
             assertThat(progressBar.progress).isEqualTo(timerProgress.progress)
         }
+    }
+
+    @Test
+    fun showTimerNotification_WhenStopped() {
+        // Given
+
+        // When
+        scenario.moveToState(Lifecycle.State.DESTROYED)
+
+        // Then
+        verify { viewModel.showTimerNotification() }
+    }
+
+    @Test
+    fun hideTimerNotification_WhenStarted() {
+        // Given
+
+        // Then
+        verify { viewModel.hideTimerNotification() }
     }
 }

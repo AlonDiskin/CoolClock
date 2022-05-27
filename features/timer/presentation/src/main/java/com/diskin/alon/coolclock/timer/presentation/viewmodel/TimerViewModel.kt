@@ -5,12 +5,9 @@ import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.diskin.alon.coolclock.timer.presentation.model.TimerControl
-import com.diskin.alon.coolclock.timer.presentation.model.UiTimer
-import com.diskin.alon.coolclock.timer.presentation.model.UiTimerProgress
-import com.diskin.alon.coolclock.timer.presentation.model.UiTimerState
-import com.diskin.alon.coolclock.timer.presentation.util.KEY_TIMER_DURATION
-import com.diskin.alon.coolclock.timer.presentation.util.TimerService
+import com.diskin.alon.coolclock.timer.presentation.infrastructure.KEY_TIMER_DURATION
+import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerService
+import com.diskin.alon.coolclock.timer.presentation.model.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -29,9 +26,6 @@ class TimerViewModel @Inject constructor(
     val progress: LiveData<UiTimerProgress> get() = _progress
 
     init {
-//        if (!checkServiceRunning(TimerService::class.java)) {
-//            _timer.value = UiTimer(0,0,0,0,UiTimerState.NOT_SET)
-//        }
         eventBus.register(this)
     }
 
@@ -63,13 +57,11 @@ class TimerViewModel @Inject constructor(
         _progress.value = event
     }
 
-//    private fun checkServiceRunning(serviceClass: Class<*>): Boolean {
-//        val manager: ActivityManager? = app.getSystemService(ACTIVITY_SERVICE) as ActivityManager?
-//        for (service in manager!!.getRunningServices(Int.MAX_VALUE)) {
-//            if (serviceClass.name == service.service.className) {
-//                return true
-//            }
-//        }
-//        return false
-//    }
+    fun hideTimerNotification() {
+        eventBus.post(NotificationRequest.HIDE)
+    }
+
+    fun showTimerNotification() {
+        eventBus.post(NotificationRequest.SHOW)
+    }
 }

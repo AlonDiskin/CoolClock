@@ -1,14 +1,15 @@
-package com.diskin.alon.coolclock.timer.presentation.util
+package com.diskin.alon.coolclock.timer.presentation.infrastructure
 
 import android.app.Service
 import android.content.Intent
 import android.os.CountDownTimer
 import android.os.IBinder
 import androidx.annotation.VisibleForTesting
-import com.diskin.alon.coolclock.timer.presentation.model.TimerControl
-import com.diskin.alon.coolclock.timer.presentation.model.UiTimer
-import com.diskin.alon.coolclock.timer.presentation.model.UiTimerProgress
-import com.diskin.alon.coolclock.timer.presentation.model.UiTimerState
+import androidx.core.app.NotificationManagerCompat
+import com.diskin.alon.coolclock.timer.presentation.controller.NOTIFICATION_ID_TIMER
+import com.diskin.alon.coolclock.timer.presentation.controller.NOTIFICATION_ID_TIMER_ALERT
+import com.diskin.alon.coolclock.timer.presentation.controller.TimerNotificationFactory
+import com.diskin.alon.coolclock.timer.presentation.model.*
 import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -24,18 +25,24 @@ class TimerService : Service() {
     @Inject
     lateinit var eventBus: EventBus
     @Inject
-    lateinit var notificationsManager: TimerNotificationsManager
+    lateinit var notificationFactory: TimerNotificationFactory
+    @Inject
+    lateinit var notificationManager: NotificationManagerCompat
     @VisibleForTesting
     lateinit var countDownTimer: CountDownTimer
     private var remainTime: Long? = null
-    private var lastUpdated: UiTimer? = null
+    @VisibleForTesting
+    var lastUpdated: UiTimer? = null
     private var initialDuration: Long? = null
     @VisibleForTesting
     var isTimerRunning = false
+    private var notificationEnabled = false
 
     override fun onCreate() {
         super.onCreate()
         eventBus.register(this)
+        notificationFactory.createTimerNotificationChannel()
+        notificationFactory.createTimerAlertNotificationChannel()
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -61,6 +68,53 @@ class TimerService : Service() {
             TimerControl.PAUSE -> pauseTimer()
             TimerControl.CANCEL -> cancelTimer()
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onNotificationRequestEvent(event: NotificationRequest) {
+        notificationEnabled = when(event) {
+            NotificationRequest.SHOW ->  {
+                lastUpdated?.let {
+                    when(it.state) {
+                        UiTimerState.PAUSED -> showPausedTimerNotification()
+                        UiTimerState.RUNNING,UiTimerState.START,UiTimerState.RESUMED ->
+                            showRunningTimerNotification()
+                    }
+                }
+                true
+            }
+
+            NotificationRequest.HIDE -> {
+                dismissTimerNotification()
+                false
+            }
+        }
+    }
+
+    private fun showRunningTimerNotification() {
+        val notification = notificationFactory.createRunningTimerNotification(
+            lastUpdated!!.remainSeconds,
+            lastUpdated!!.remainMinutes,
+            lastUpdated!!.remainHours
+        )
+
+        notificationManager.notify(NOTIFICATION_ID_TIMER,notification)
+        startForeground(NOTIFICATION_ID_TIMER,notification)
+    }
+
+    private fun showPausedTimerNotification() {
+        val notification = notificationFactory.createPausedTimerNotification(
+            lastUpdated!!.remainSeconds,
+            lastUpdated!!.remainMinutes,
+            lastUpdated!!.remainHours
+        )
+
+        notificationManager.notify(NOTIFICATION_ID_TIMER,notification)
+        startForeground(NOTIFICATION_ID_TIMER,notification)
+    }
+
+    private fun dismissTimerNotification() {
+        stopForeground(true)
     }
 
     private fun startTimer(time: Long,resumed: Boolean = false) {
@@ -98,7 +152,10 @@ class TimerService : Service() {
             override fun onFinish() {
                 isTimerRunning = false
 
-                notificationsManager.showTimerAlertNotification()
+                notificationManager.notify(
+                    NOTIFICATION_ID_TIMER_ALERT,
+                    notificationFactory.createTimerAlertNotification()
+                )
                 stopSelf()
                 updateTimer(0,UiTimerState.DONE)
                 eventBus.postSticky(UiTimerProgress(0,0))
@@ -122,6 +179,15 @@ class TimerService : Service() {
         )
 
         lastUpdated?.let { eventBus.postSticky(it) }
+
+        if (notificationEnabled) {
+            when(state) {
+                UiTimerState.RUNNING -> showRunningTimerNotification()
+                UiTimerState.PAUSED -> showPausedTimerNotification()
+            }
+        } else {
+            dismissTimerNotification()
+        }
     }
 
     private fun cancelTimer() {
