@@ -4,11 +4,15 @@ import android.app.Application
 import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.diskin.alon.coolclock.common.presentation.RxViewModel
+import com.diskin.alon.coolclock.timer.data.TimerDuration
+import com.diskin.alon.coolclock.timer.data.TimerDurationStore
 import com.diskin.alon.coolclock.timer.presentation.infrastructure.KEY_TIMER_DURATION
 import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerService
 import com.diskin.alon.coolclock.timer.presentation.model.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -17,16 +21,31 @@ import javax.inject.Inject
 @HiltViewModel
 class TimerViewModel @Inject constructor(
     private val app: Application,
-    private val eventBus: EventBus
-) : ViewModel() {
+    private val eventBus: EventBus,
+    private val timerDurationStore: TimerDurationStore
+) : RxViewModel() {
 
-    private val _timer = MutableLiveData(UiTimer(0,0,0,0,UiTimerState.NOT_SET))
+    val timerDuration = MutableLiveData<UiTimerDuration>()
+    private val _timer = MutableLiveData<UiTimer>()
     val timer: LiveData<UiTimer> get() = _timer
     private val _progress = MutableLiveData<UiTimerProgress>()
     val progress: LiveData<UiTimerProgress> get() = _progress
 
     init {
         eventBus.register(this)
+
+        // Set default timer value,if non was passed as sticky event after bus registration
+        if (_timer.value == null) {
+            _timer.value = UiTimer(0,0,0,0,UiTimerState.NOT_SET)
+        }
+
+        // Get last timer duration
+        addSubscription(createTimerDurationSubscription())
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        saveTimerDuration()
     }
 
     fun startTimer(time: Long) {
@@ -63,5 +82,30 @@ class TimerViewModel @Inject constructor(
 
     fun showTimerNotification() {
         eventBus.post(NotificationRequest.SHOW)
+    }
+
+    private fun saveTimerDuration() {
+        timerDuration.value?.let {
+            timerDurationStore.save(
+                TimerDuration(
+                    it.seconds,
+                    it.minutes,
+                    it.hours
+                )
+            )
+        }
+    }
+
+    private fun createTimerDurationSubscription(): Disposable {
+        return timerDurationStore.getLast()
+            .observeOn(AndroidSchedulers.mainThread())
+            .map {
+                UiTimerDuration(
+                    it.seconds,
+                    it.minutes,
+                    it.hours
+                )
+            }
+            .subscribe({ timerDuration.value = it },{ it.printStackTrace() })
     }
 }

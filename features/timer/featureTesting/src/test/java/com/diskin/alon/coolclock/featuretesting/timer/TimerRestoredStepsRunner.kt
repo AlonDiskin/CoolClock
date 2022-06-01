@@ -1,8 +1,9 @@
-package com.diskin.alon.coolclock.featuretesting
+package com.diskin.alon.coolclock.featuretesting.timer
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.databinding.ViewDataBinding
 import androidx.test.filters.MediumTest
+import com.diskin.alon.coolclock.featuretesting.setFinalStatic
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
 import com.mauriciotogneri.greencoffee.ScenarioConfig
@@ -21,7 +22,7 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = HiltTestApplication::class,instrumentedPackages = ["androidx.loader.content"])
 @MediumTest
-class ControlTimerStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
+class TimerRestoredStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
 
     companion object {
         @JvmStatic
@@ -30,7 +31,7 @@ class ControlTimerStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenar
             val res = ArrayList<Array<Any>>()
             val scenarioConfigs = GreenCoffeeConfig()
                 .withFeatureFromAssets("feature/timer.feature")
-                .withTags("@control-timer")
+                .withTags("@timer-restored")
                 .scenarios()
 
             for (scenarioConfig in scenarioConfigs) {
@@ -52,6 +53,6 @@ class ControlTimerStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenar
         // Disable data binding Choreographer
         setFinalStatic(ViewDataBinding::class.java.getDeclaredField("USE_CHOREOGRAPHER"),false)
 
-        start(ControlTimerSteps())
+        start(TimerRestoredSteps())
     }
 }

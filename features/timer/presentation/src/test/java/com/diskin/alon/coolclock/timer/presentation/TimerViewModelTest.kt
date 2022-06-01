@@ -3,21 +3,41 @@ package com.diskin.alon.coolclock.timer.presentation
 import android.app.Application
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.ViewModel
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.diskin.alon.coolclock.timer.data.TimerDuration
+import com.diskin.alon.coolclock.timer.data.TimerDurationStore
 import com.diskin.alon.coolclock.timer.presentation.infrastructure.KEY_TIMER_DURATION
 import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerService
 import com.diskin.alon.coolclock.timer.presentation.model.*
 import com.diskin.alon.coolclock.timer.presentation.viewmodel.TimerViewModel
 import com.google.common.truth.Truth.assertThat
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
+import io.reactivex.android.plugins.RxAndroidPlugins
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.SingleSubject
 import org.greenrobot.eventbus.EventBus
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class TimerViewModelTest {
+
+    companion object {
+
+        @JvmStatic
+        @BeforeClass
+        fun setupClass() {
+            // Set Rx framework for testing
+            RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
+        }
+    }
 
     // Lifecycle testing rule
     @JvmField
@@ -30,13 +50,18 @@ class TimerViewModelTest {
     // Collaborators
     private val app: Application = mockk()
     private val eventBus: EventBus = mockk()
+    private val timerDurationStore: TimerDurationStore = mockk()
+
+    // Stub data
+    private val storeSubject = SingleSubject.create<TimerDuration>()
 
     @Before
     fun setUp() {
         // Stub mock
         every { eventBus.register(any()) } returns Unit
+        every { timerDurationStore.getLast() } returns storeSubject
 
-        viewModel = TimerViewModel(app,eventBus)
+        viewModel = TimerViewModel(app,eventBus,timerDurationStore)
     }
 
     @Test
@@ -146,5 +171,39 @@ class TimerViewModelTest {
 
         // Then
         verify { eventBus.post(NotificationRequest.HIDE) }
+    }
+
+    @Test
+    fun getLastTimerDuration_WhenCreated() {
+        // Given
+        val storeDuration = TimerDuration(10,2,0)
+        val uiDuration = UiTimerDuration(10,2,0)
+
+        // Then
+        verify { timerDurationStore.getLast() }
+
+        // When
+        storeSubject.onSuccess(storeDuration)
+
+        // Then
+        assertThat(viewModel.timerDuration.value).isEqualTo(uiDuration)
+    }
+
+    @Test
+    fun saveTimerDuration_WhenCleared() {
+        // Given
+        val storeDuration = TimerDuration(10,2,0)
+        val uiDuration = UiTimerDuration(10,2,0)
+        viewModel.timerDuration.value = uiDuration
+
+        every { timerDurationStore.save(any()) } returns Unit
+
+        // When
+        val method = ViewModel::class.java.getDeclaredMethod("onCleared")
+        method.isAccessible = true
+        method.invoke(viewModel)
+
+        // Then
+        verify { timerDurationStore.save(storeDuration) }
     }
 }

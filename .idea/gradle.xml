@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/features/alarms" />
             <option value="$PROJECT_DIR$/features/alarms/presentation" />
             <option value="$PROJECT_DIR$/features/common" />
+            <option value="$PROJECT_DIR$/features/common/instrumentationTesting" />
             <option value="$PROJECT_DIR$/features/common/presentation" />
             <option value="$PROJECT_DIR$/features/common/uiTesting" />
             <option value="$PROJECT_DIR$/features/common/unitTesting" />
@@ -24,6 +25,7 @@
             <option value="$PROJECT_DIR$/features/settings" />
             <option value="$PROJECT_DIR$/features/settings/presentation" />
             <option value="$PROJECT_DIR$/features/timer" />
+            <option value="$PROJECT_DIR$/features/timer/data" />
             <option value="$PROJECT_DIR$/features/timer/di" />
             <option value="$PROJECT_DIR$/features/timer/featureTesting" />
             <option value="$PROJECT_DIR$/features/timer/presentation" />

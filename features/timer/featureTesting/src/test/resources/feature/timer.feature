@@ -1,4 +1,4 @@
-Feature: Simple timer
+Feature: Timer controls features
 
   #Rule: Control timer
 
@@ -20,25 +20,15 @@ Feature: Simple timer
     And return to timer screen
     Then app should display current timer
 
-  #Rule: Show notification upon time up
+  #Rule: Restore last timer config
 
-  @alert-notification
-  Scenario: Notification shown after timer done
-    Given user started timer
-    When timer is finished
-    Then app should show notification
-
-  #Rule: Show ongoing status bar notification while timer is active
-  @timer-notification
-  Scenario Outline: Active timer notification shown
-    Given user started timer
-    When he close timer screen
-    Then app should show timer notification in status bar
-    When user "<action>" timer via notification
-    Then app should "<result>" timer
-    Examples:
-      | action  | result       |
-      | pause   | pause timer  |
-      | cancel  | cancel timer |
+  @timer-restored
+  Scenario: Last timer pick restored
+    Given user open timer screen for first time
+    Then timer should show timer set to zero
+    When user pick timer duration
+    And exit timer screen
+    When he return to timer screen
+    Then app should show last timer pick as current timer duration
 
 

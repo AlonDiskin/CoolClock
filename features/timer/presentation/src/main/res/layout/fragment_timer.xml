@@ -31,6 +31,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:theme="@style/TimerNumberPicker"
+            android:visibility="invisible"
+            tools:visibility="visible"
             app:layout_constraintBottom_toTopOf="@id/guideline"
             app:layout_constraintEnd_toStartOf="@+id/textView"
             app:layout_constraintHorizontal_bias="0.5"
@@ -70,6 +72,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:theme="@style/TimerNumberPicker"
+            android:visibility="invisible"
+            tools:visibility="visible"
             app:layout_constraintBottom_toTopOf="@id/guideline"
             app:layout_constraintEnd_toStartOf="@+id/textView2"
             app:layout_constraintHorizontal_bias="0.5"
@@ -108,6 +112,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:theme="@style/TimerNumberPicker"
+            android:visibility="invisible"
+            tools:visibility="visible"
             app:layout_constraintBottom_toTopOf="@id/guideline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -199,13 +205,14 @@
             android:layout_width="110dp"
             android:layout_height="60dp"
             android:backgroundTint="#D81B60"
-            android:text="start"
             android:textSize="16sp"
             app:cornerRadius="20dp"
+            android:enabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/guideline" />
+            app:layout_constraintTop_toBottomOf="@id/guideline"
+            tools:text="start"/>
 
     </androidx.constraintlayout.motion.widget.MotionLayout>
 

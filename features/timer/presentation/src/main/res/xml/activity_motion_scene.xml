@@ -129,9 +129,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/guideline">
 
-<!--            <CustomAttribute-->
-<!--                app:attributeName="enabled"-->
-<!--                app:customBoolean="false" />-->
+            <CustomAttribute
+                app:attributeName="text"
+                app:customStringValue="start" />
+
         </Constraint>
 
     </ConstraintSet>
@@ -258,9 +259,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/guideline">
 
-<!--            <CustomAttribute-->
-<!--                app:attributeName="enabled"-->
-<!--                app:customBoolean="true" />-->
+            <CustomAttribute
+                app:attributeName="text"
+                app:customStringValue="cancel" />
+
         </Constraint>
 
     </ConstraintSet>

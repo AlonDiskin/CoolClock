@@ -1,4 +1,4 @@
-package com.diskin.alon.coolclock.featuretesting
+package com.diskin.alon.coolclock.featuretesting.timer
 
 import android.os.Looper
 import android.widget.Button

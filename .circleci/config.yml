@@ -44,10 +44,12 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Run integration tests
-          command: ./gradlew featureTests --no-daemon --max-workers=2 --stacktrace
+          command: ./gradlew featureTests --no-daemon --max-workers=2
       - store_artifacts:
           path: app/build/reports
           destination: reports
+      - store_test_results:
+          path: features/timer/featureTesting/build/test-results
   e2e_tests:
     working_directory: ~/code
     docker:

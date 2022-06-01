@@ -8,6 +8,7 @@ import android.widget.NumberPicker
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.diskin.alon.coolclock.timer.presentation.databinding.FragmentTimerBinding
+import com.diskin.alon.coolclock.timer.presentation.model.UiTimerDuration
 import com.diskin.alon.coolclock.timer.presentation.model.UiTimerState
 import com.diskin.alon.coolclock.timer.presentation.viewmodel.TimerViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,95 +28,45 @@ class TimerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         layout = FragmentTimerBinding.inflate(inflater,container,false)
+
         return layout.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Set number pickers
-        setPickers()
+        // Set and config ui
+        setLayout()
 
-        // Observe timer state
-        viewModel.timer.observe(viewLifecycleOwner) {
-            when(it.state) {
-                UiTimerState.START -> {
-                    layout.timer = it
-                    layout.motionLayout.transitionToEnd()
-                    layout.buttonStartCancel.text = "cancel"
-                    layout.buttonStartCancel.isEnabled = true
-                }
-                UiTimerState.RUNNING -> {
-                    layout.timer = it
-                    layout.buttonStartCancel.isEnabled = true
-                    if (layout.buttonPauseResume.visibility == View.INVISIBLE) {
-                        layout.motionLayout.transitionToEnd()
-                        layout.buttonStartCancel.text = "cancel"
-                    }
-                }
-                UiTimerState.PAUSED -> {
-                    layout.timer = it
-                    layout.buttonStartCancel.isEnabled = true
-                    layout.buttonPauseResume.text = "resume"
-                    if (layout.buttonPauseResume.visibility == View.INVISIBLE) {
-                        layout.motionLayout.transitionToEnd()
-                        layout.buttonStartCancel.text = "cancel"
-                    }
-                }
-                UiTimerState.RESUMED -> {
-                    layout.buttonPauseResume.text = "pause"
-                    layout.buttonStartCancel.isEnabled = true
-                }
-                UiTimerState.DONE -> {
-                    layout.timer = it
-                    layout.buttonStartCancel.text = "start"
-                    layout.buttonPauseResume.text = "pause"
-                    layout.motionLayout.transitionToStart()
-                    layout.buttonStartCancel.isEnabled = (layout.secondsPicker.value > 0) ||
-                            (layout.minutesPicker.value > 0) || (layout.hoursPicker.value > 0)
-                }
-            }
-        }
-
-        // Observe timer progress
-        viewModel.progress.observe(viewLifecycleOwner) {
-            if (it.max != layout.progressBar.max) {
-                layout.progressBar.max = it.max
-            }
-
-            layout.progressBar.progress = it.progress
-        }
-
-        // Set start/cancel and pause buttons click listener
-        layout.buttonStartCancel.setOnClickListener {
-            when(viewModel.timer.value!!.state) {
-                UiTimerState.NOT_SET, UiTimerState.DONE ->
-                    viewModel.startTimer(getCurrentTimeFromTimerPickers())
-                else -> viewModel.cancelTimer()
-            }
-        }
-        layout.buttonPauseResume.setOnClickListener {
-            when(viewModel.timer.value!!.state) {
-                UiTimerState.PAUSED -> viewModel.resumeTimer()
-                else -> viewModel.pauseTimer()
-            }
-        }
-
-        // Set initial start\cancel button state
-        layout.buttonStartCancel.isEnabled = (layout.secondsPicker.value > 0) ||
-                (layout.minutesPicker.value > 0) || (layout.hoursPicker.value > 0)
+        // Set view model observers to handle model updates
+        setViewModelObservers()
     }
 
     override fun onStart() {
         super.onStart()
+
         // Hide status bar timer notification.if timer is running
         viewModel.hideTimerNotification()
     }
 
     override fun onStop() {
         super.onStop()
+
         // Show status bar timer notification.if timer is running
         viewModel.showTimerNotification()
+
+        // Save duration ui state
+        viewModel.timerDuration.value = UiTimerDuration(
+            layout.secondsPicker.value,
+            layout.minutesPicker.value,
+            layout.hoursPicker.value
+        )
+    }
+
+    private fun setLayout() {
+        setPickers()
+        setInitialTimerLayout()
+        setTimerButtonsListeners()
     }
 
     private fun setPickers() {
@@ -154,5 +105,103 @@ class TimerFragment : Fragment() {
         return TimeUnit.HOURS.toMillis(hours.toLong()) +
                 TimeUnit.MINUTES.toMillis(minutes.toLong()) +
                 TimeUnit.SECONDS.toMillis(seconds.toLong())
+    }
+
+    private fun setInitialTimerLayout() {
+        layout.motionLayout.setTransitionDuration(0)
+
+        when(viewModel.timer.value?.state) {
+            UiTimerState.NOT_SET,UiTimerState.DONE -> layout.motionLayout.transitionToStart()
+            UiTimerState.PAUSED,UiTimerState.RESUMED,UiTimerState.RUNNING,UiTimerState.START ->
+                layout.motionLayout.transitionToEnd()
+        }
+
+        layout.motionLayout.setTransitionDuration(400)
+    }
+
+    private fun setTimerButtonsListeners() {
+        // Set start/cancel and pause buttons click listener
+        layout.buttonStartCancel.setOnClickListener {
+            when(viewModel.timer.value!!.state) {
+                UiTimerState.NOT_SET, UiTimerState.DONE ->
+                    viewModel.startTimer(getCurrentTimeFromTimerPickers())
+                else -> viewModel.cancelTimer()
+            }
+        }
+        layout.buttonPauseResume.setOnClickListener {
+            when(viewModel.timer.value!!.state) {
+                UiTimerState.PAUSED -> viewModel.resumeTimer()
+                else -> viewModel.pauseTimer()
+            }
+        }
+    }
+
+    private fun setViewModelObservers() {
+        // Observe timer state
+        viewModel.timer.observe(viewLifecycleOwner) {
+            when(it.state) {
+                UiTimerState.START -> {
+                    layout.timer = it
+                    if (layout.motionLayout.currentState == layout.motionLayout.startState) {
+                        layout.motionLayout.transitionToEnd()
+                    }
+                }
+
+                UiTimerState.RUNNING -> {
+                    layout.timer = it
+                    if (layout.buttonPauseResume.visibility == View.INVISIBLE) {
+                        if (layout.motionLayout.currentState == layout.motionLayout.startState) {
+                            layout.motionLayout.transitionToEnd()
+                        }
+                        layout.buttonStartCancel.text = "cancel"
+                    }
+                }
+
+                UiTimerState.PAUSED -> {
+                    layout.timer = it
+                    layout.buttonPauseResume.text = "resume"
+                    if (layout.buttonPauseResume.visibility == View.INVISIBLE) {
+                        if (layout.motionLayout.currentState == layout.motionLayout.startState) {
+                            layout.motionLayout.transitionToEnd()
+                        }
+                        layout.buttonStartCancel.text = "cancel"
+                    }
+                }
+
+                UiTimerState.RESUMED -> layout.buttonPauseResume.text = "pause"
+
+                UiTimerState.DONE -> {
+                    layout.timer = it
+                    if (layout.motionLayout.currentState == layout.motionLayout.endState) {
+                        layout.motionLayout.transitionToStart()
+                    }
+                    layout.buttonStartCancel.isEnabled = (layout.secondsPicker.value > 0) ||
+                            (layout.minutesPicker.value > 0) || (layout.hoursPicker.value > 0)
+                }
+            }
+        }
+
+        // Observe timer progress
+        viewModel.progress.observe(viewLifecycleOwner) {
+            if (it.max != layout.progressBar.max) {
+                layout.progressBar.max = it.max
+            }
+
+            layout.progressBar.progress = it.progress
+        }
+
+        // Observe timer duration
+        viewModel.timerDuration.observe(viewLifecycleOwner) {
+            layout.secondsPicker.visibility = View.VISIBLE
+            layout.minutesPicker.visibility = View.VISIBLE
+            layout.hoursPicker.visibility = View.VISIBLE
+
+            layout.secondsPicker.value = it.seconds
+            layout.minutesPicker.value = it.minutes
+            layout.hoursPicker.value = it.hours
+
+            layout.buttonStartCancel.isEnabled = (layout.secondsPicker.value > 0) ||
+                    (layout.minutesPicker.value > 0) || (layout.hoursPicker.value > 0)
+        }
     }
 }

@@ -6,9 +6,6 @@ import android.os.CountDownTimer
 import android.os.IBinder
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.NotificationManagerCompat
-import com.diskin.alon.coolclock.timer.presentation.controller.NOTIFICATION_ID_TIMER
-import com.diskin.alon.coolclock.timer.presentation.controller.NOTIFICATION_ID_TIMER_ALERT
-import com.diskin.alon.coolclock.timer.presentation.controller.TimerNotificationFactory
 import com.diskin.alon.coolclock.timer.presentation.model.*
 import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
@@ -22,6 +19,12 @@ const val KEY_TIMER_DURATION = "duration"
 @AndroidEntryPoint
 class TimerService : Service() {
 
+    companion object {
+        var created = 0
+    }
+
+    @Inject
+    lateinit var alarmManager: TimerAlarmManager
     @Inject
     lateinit var eventBus: EventBus
     @Inject
@@ -40,6 +43,7 @@ class TimerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        created++
         eventBus.register(this)
         notificationFactory.createTimerNotificationChannel()
         notificationFactory.createTimerAlertNotificationChannel()
@@ -152,16 +156,21 @@ class TimerService : Service() {
             override fun onFinish() {
                 isTimerRunning = false
 
-                notificationManager.notify(
-                    NOTIFICATION_ID_TIMER_ALERT,
-                    notificationFactory.createTimerAlertNotification()
-                )
+                alarmManager.startAlarm()
+                showTimerAlertNotification()
                 stopSelf()
                 updateTimer(0,UiTimerState.DONE)
                 eventBus.postSticky(UiTimerProgress(0,0))
             }
 
         }.start()
+    }
+
+    private fun showTimerAlertNotification() {
+        notificationManager.notify(
+            NOTIFICATION_ID_TIMER_ALERT,
+            notificationFactory.createTimerAlertNotification()
+        )
     }
 
     private fun updateTimer(time: Long,state: UiTimerState) {

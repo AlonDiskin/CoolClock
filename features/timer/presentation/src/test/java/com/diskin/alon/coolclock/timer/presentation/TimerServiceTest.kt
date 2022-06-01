@@ -3,18 +3,16 @@ package com.diskin.alon.coolclock.timer.presentation
 import android.app.Notification
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Looper
 import androidx.core.app.NotificationManagerCompat
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.diskin.alon.coolclock.timer.presentation.controller.NOTIFICATION_ID_TIMER_ALERT
-import com.diskin.alon.coolclock.timer.presentation.controller.TimerNotificationFactory
+import com.diskin.alon.coolclock.timer.presentation.infrastructure.*
 import com.diskin.alon.coolclock.timer.presentation.model.TimerControl
 import com.diskin.alon.coolclock.timer.presentation.model.UiTimer
 import com.diskin.alon.coolclock.timer.presentation.model.UiTimerState
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.KEY_TIMER_DURATION
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerService
 import com.diskin.alon.coolclock.timer.presentation.model.NotificationRequest
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
@@ -60,6 +58,14 @@ class TimerServiceTest {
     @BindValue
     @JvmField
     val notificationManager: NotificationManagerCompat = mockk()
+
+    @BindValue
+    @JvmField
+    val alarmManager: TimerAlarmManager = mockk()
+
+    @BindValue
+    @JvmField
+    val sh: SharedPreferences = mockk()
 
     @Before
     fun setUp() {
@@ -171,6 +177,7 @@ class TimerServiceTest {
                 putExtra(KEY_TIMER_DURATION,duration)
             }
 
+        every { alarmManager.startAlarm() } returns Unit
         every { notificationManager.notify(any(),any()) } returns Unit
         every { notificationFactory.createTimerAlertNotification() } returns mockk()
         service.onStartCommand(intent,0,0)
@@ -276,6 +283,7 @@ class TimerServiceTest {
             }
         val notification: Notification = mockk()
 
+        every { alarmManager.startAlarm() } returns Unit
         every { notificationFactory.createTimerAlertNotification() } returns notification
         every { notificationManager.notify(any(),any()) } returns Unit
         service.onStartCommand(intent,0,0)
@@ -285,6 +293,28 @@ class TimerServiceTest {
 
         // Then
         verify { notificationManager.notify(NOTIFICATION_ID_TIMER_ALERT,notification) }
+    }
+
+    @Test
+    fun showStartAlarm_WhenTimerFinished() {
+        // Given
+        val appContext = ApplicationProvider.getApplicationContext<Context>()
+        val duration = 2000L
+        val intent = Intent(appContext,TimerService::class.java)
+            .apply {
+                putExtra(KEY_TIMER_DURATION,duration)
+            }
+
+        every { alarmManager.startAlarm() } returns Unit
+        every { notificationFactory.createTimerAlertNotification() } returns mockk()
+        every { notificationManager.notify(any(),any()) } returns Unit
+        service.onStartCommand(intent,0,0)
+
+        // When
+        service.countDownTimer.onFinish()
+
+        // Then
+        verify { alarmManager.startAlarm() }
     }
 
     @Test

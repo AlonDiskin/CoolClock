@@ -1,11 +1,13 @@
 package com.diskin.alon.coolclock.timer.presentation
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.core.app.NotificationManagerCompat
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.diskin.alon.coolclock.timer.presentation.controller.NOTIFICATION_ID_TIMER_ALERT
+import com.diskin.alon.coolclock.timer.presentation.infrastructure.NOTIFICATION_ID_TIMER_ALERT
+import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerAlarmManager
 import com.diskin.alon.coolclock.timer.presentation.model.TimerControl
 import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerNotificationReceiver
 import dagger.hilt.android.testing.BindValue
@@ -45,6 +47,14 @@ class TimerNotificationReceiverTest {
     @JvmField
     val notificationManager: NotificationManagerCompat = mockk()
 
+    @BindValue
+    @JvmField
+    val alarmManager: TimerAlarmManager = mockk()
+
+    @BindValue
+    @JvmField
+    val sh: SharedPreferences = mockk()
+
     @Before
     fun setUp() {
         receiver = TimerNotificationReceiver()
@@ -56,12 +66,28 @@ class TimerNotificationReceiverTest {
         val broadcastIntent = Intent().apply { action = "ACTION_TIMER_ALERT_CANCEL" }
 
         every { notificationManager.cancel(any()) } returns Unit
+        every { alarmManager.stopAlarm() } returns Unit
 
         // When
         receiver.onReceive(ApplicationProvider.getApplicationContext(),broadcastIntent)
 
         // Then
         verify { notificationManager.cancel(NOTIFICATION_ID_TIMER_ALERT) }
+    }
+
+    @Test
+    fun cancelAlertAlarm_WhenCancelTimerAlertBroadcastReceived() {
+        // Given
+        val broadcastIntent = Intent().apply { action = "ACTION_TIMER_ALERT_CANCEL" }
+
+        every { alarmManager.stopAlarm() } returns Unit
+        every { notificationManager.cancel(any()) } returns Unit
+
+        // When
+        receiver.onReceive(ApplicationProvider.getApplicationContext(),broadcastIntent)
+
+        // Then
+        verify { alarmManager.stopAlarm() }
     }
 
     @Test
@@ -79,7 +105,7 @@ class TimerNotificationReceiverTest {
     }
 
     @Test
-    fun resumeTimer_WhenPauseTimerBroadcastReceived() {
+    fun resumeTimer_WhenResumeTimerBroadcastReceived() {
         // Given
         val broadcastIntent = Intent().apply { action = "ACTION_TIMER_RESUME" }
 
@@ -93,7 +119,7 @@ class TimerNotificationReceiverTest {
     }
 
     @Test
-    fun cancelTimer_WhenPauseTimerBroadcastReceived() {
+    fun cancelTimer_WhenCancelTimerBroadcastReceived() {
         // Given
         val broadcastIntent = Intent().apply { action = "ACTION_TIMER_CANCEL" }
 

@@ -1,6 +1,7 @@
 package com.diskin.alon.coolclock.timer.presentation
 
 import android.os.Looper
+import android.view.View
 import android.widget.Button
 import android.widget.NumberPicker
 import android.widget.ProgressBar
@@ -11,6 +12,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelLazy
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -20,6 +23,7 @@ import com.diskin.alon.coolclock.common.uitesting.HiltTestActivity
 import com.diskin.alon.coolclock.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.coolclock.timer.presentation.controller.TimerFragment
 import com.diskin.alon.coolclock.timer.presentation.model.UiTimer
+import com.diskin.alon.coolclock.timer.presentation.model.UiTimerDuration
 import com.diskin.alon.coolclock.timer.presentation.model.UiTimerProgress
 import com.diskin.alon.coolclock.timer.presentation.model.UiTimerState
 import com.diskin.alon.coolclock.timer.presentation.viewmodel.TimerViewModel
@@ -50,6 +54,7 @@ class TimerFragmentTest {
 
     // Stub data
     private val timer = MutableLiveData<UiTimer>()
+    private val timerDuration = MutableLiveData<UiTimerDuration>()
     private val progress = MutableLiveData<UiTimerProgress>()
 
     @Before
@@ -67,6 +72,7 @@ class TimerFragmentTest {
         every { viewModel.progress } returns progress
         every { viewModel.showTimerNotification() } returns Unit
         every { viewModel.hideTimerNotification() } returns Unit
+        every { viewModel.timerDuration } returns timerDuration
 
         // Launch fragment under test
         scenario = launchFragmentInHiltContainer<TimerFragment>()
@@ -213,7 +219,7 @@ class TimerFragmentTest {
     }
 
     @Test
-    fun disableTimerStart_WhenTimeSelectedAsZero() {
+    fun disableTimerStartButton_WhenSelectedTimeDurationIsZero() {
         // Given
 
         // When
@@ -232,6 +238,24 @@ class TimerFragmentTest {
         // Then
         onView(withId(R.id.buttonStartCancel))
             .check(matches(not(isEnabled())))
+    }
+
+    @Test
+    fun enableTimerStartButton_WhenSelectedTimeDurationGraterThenZero() {
+        // Given
+
+        // When
+        scenario.onActivity {
+            val secondsPicker = it.findViewById<NumberPicker>(R.id.seconds_picker)
+
+            secondsPicker.value = 10
+            Shadows.shadowOf(secondsPicker).onValueChangeListener.onValueChange(null,0,0)
+        }
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        onView(withId(R.id.buttonStartCancel))
+            .check(matches(isEnabled()))
     }
 
     @Test
@@ -273,5 +297,49 @@ class TimerFragmentTest {
 
         // Then
         verify { viewModel.hideTimerNotification() }
+    }
+
+    @Test
+    fun showTimerLastPickedDuration_WhenLoaded() {
+        // Given
+        val uiTimerDuration = UiTimerDuration(15,1,0)
+        timer.value = UiTimer(0,0,0,0,UiTimerState.NOT_SET)
+
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When
+        timerDuration.value = uiTimerDuration
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        scenario.onActivity {
+            assertThat(it.findViewById<NumberPicker>(R.id.seconds_picker).visibility).isEqualTo(View.VISIBLE)
+            assertThat(it.findViewById<NumberPicker>(R.id.minutes_picker).visibility).isEqualTo(View.VISIBLE)
+            assertThat(it.findViewById<NumberPicker>(R.id.hours_picker).visibility).isEqualTo(View.VISIBLE)
+
+            assertThat(it.findViewById<NumberPicker>(R.id.seconds_picker).value).isEqualTo(uiTimerDuration.seconds)
+            assertThat(it.findViewById<NumberPicker>(R.id.minutes_picker).value).isEqualTo(uiTimerDuration.minutes)
+            assertThat(it.findViewById<NumberPicker>(R.id.hours_picker).value).isEqualTo(uiTimerDuration.hours)
+        }
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+    }
+
+    @Test
+    fun saveTimerPickDuration_WhenStopped() {
+        // Given
+        val uiTimerDuration = UiTimerDuration(15,1,0)
+
+        scenario.onActivity {
+            it.findViewById<NumberPicker>(R.id.seconds_picker).value = uiTimerDuration.seconds
+            it.findViewById<NumberPicker>(R.id.minutes_picker).value = uiTimerDuration.minutes
+            it.findViewById<NumberPicker>(R.id.hours_picker).value = uiTimerDuration.hours
+        }
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When
+        scenario.moveToState(Lifecycle.State.DESTROYED)
+
+        // Then
+        assertThat(viewModel.timerDuration.value).isEqualTo(uiTimerDuration)
     }
 }

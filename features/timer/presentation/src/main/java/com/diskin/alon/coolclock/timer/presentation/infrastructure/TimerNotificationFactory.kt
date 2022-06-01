@@ -1,4 +1,4 @@
-package com.diskin.alon.coolclock.timer.presentation.controller
+package com.diskin.alon.coolclock.timer.presentation.infrastructure
 
 import android.app.*
 import android.content.Context
@@ -7,6 +7,7 @@ import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import androidx.core.app.NotificationCompat
 import com.diskin.alon.coolclock.timer.presentation.R
 import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerNotificationReceiver
@@ -18,7 +19,7 @@ const val NOTIFICATION_ID_TIMER_ALERT = 200
 const val CHANNEL_ID_TIMER_ALERT = "timer alert notification channel id"
 const val CHANNEL_NAME_TIMER_ALERT = "timer alert notification channel name"
 const val CHANNEL_DESCRIPTION_TIMER_ALERT = "timer alert notification channel description"
-const val CHANNEL_ID_TIMER = "timer notification channel is"
+const val CHANNEL_ID_TIMER = "timer notification channel id"
 const val CHANNEL_NAME_TIMER = "timer notification channel name"
 const val CHANNEL_DESCRIPTION_TIMER = "timer notification channel description"
 
@@ -37,10 +38,11 @@ class TimerNotificationFactory @Inject constructor(
             cancelTimerIntent,
             0
         )
-        val alarmSound: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val alarmSound: Uri = Settings.System.DEFAULT_NOTIFICATION_URI//RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         val fullScreenIntent = app.packageManager.getLaunchIntentForPackage(app.packageName)
         val fullScreenPendingIntent = PendingIntent.getActivity(app, 0,
             fullScreenIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+
         return NotificationCompat.Builder(app, CHANNEL_ID_TIMER_ALERT )
             .setSmallIcon(R.drawable.ic_baseline_timer_24)
             .setContentTitle(app.getString(R.string.timer_alert_notification_title))
@@ -154,13 +156,13 @@ class TimerNotificationFactory @Inject constructor(
             // Register the channel with the system
             val notificationManager: NotificationManager = app
                 .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            val alarmSound: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            val alarmSound: Uri = Settings.System.DEFAULT_NOTIFICATION_URI//RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
             val audioAttributes = AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                 .build()
-            channel.setSound(alarmSound, audioAttributes)
 
+            channel.setSound(alarmSound, audioAttributes)
             notificationManager.createNotificationChannel(channel)
         }
     }
