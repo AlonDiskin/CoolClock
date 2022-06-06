@@ -2,4 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.diskin.alon.coolclock.common.uitesting">
 
+    <application>
+        <activity
+            android:name=".HiltTestActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.DarkActionBar"
+            android:exported="true"/>
+    </application>
+
 </manifest>

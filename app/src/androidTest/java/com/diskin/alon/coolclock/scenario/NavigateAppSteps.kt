@@ -45,7 +45,7 @@ class NavigateAppSteps : GreenCoffeeSteps() {
 
     @Then("^app should open timer screen$")
     fun app_should_open_timer_screen() {
-        onView(withId(com.diskin.alon.coolclock.timer.presentation.R.id.timer_root))
+        onView(withId(com.diskin.alon.coolclock.timer.presentation.R.id.motionLayout))
             .check(matches(isDisplayed()))
     }
 

@@ -4,10 +4,14 @@
     <bytecodeTargetLevel target="1.8">
       <module name="CoolClock.app" target="11" />
       <module name="CoolClock.features.alarms.presentation" target="11" />
+      <module name="CoolClock.features.common.instrumentationTesting" target="11" />
       <module name="CoolClock.features.common.presentation" target="11" />
       <module name="CoolClock.features.common.uiTesting" target="11" />
       <module name="CoolClock.features.home.presentation" target="11" />
       <module name="CoolClock.features.settings.presentation" target="11" />
+      <module name="CoolClock.features.timer.data" target="11" />
+      <module name="CoolClock.features.timer.di" target="11" />
+      <module name="CoolClock.features.timer.featureTesting" target="11" />
       <module name="CoolClock.features.timer.presentation" target="11" />
       <module name="CoolClock.features.worldClocks.presentation" target="11" />
     </bytecodeTargetLevel>

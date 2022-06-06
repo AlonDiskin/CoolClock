@@ -7,4 +7,9 @@
         android:title="@string/title_action_settings"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/action_scores"
+        android:title="@string/title_action_scores"
+        app:showAsAction="never"/>
+
 </menu>

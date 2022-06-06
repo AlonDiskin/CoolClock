@@ -51,7 +51,7 @@ dependencies {
     implementation project(':features:home:presentation')
     implementation project(':features:alarms:presentation')
     implementation project(':features:settings:presentation')
-    implementation project(':features:timer:presentation')
+    implementation project(':features:timer:di')
     implementation project(':features:worldClocks:presentation')
 
     // Android core

@@ -1,4 +1,4 @@
-Feature: Navigate through app features
+Feature: User journey to navigate through app features
 
   Scenario: User navigate through app features
     Given User launched app fro device home screen

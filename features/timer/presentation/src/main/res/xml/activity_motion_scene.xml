@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Define a Transition -->
+    <Transition
+        app:constraintSetStart="@+id/start"
+        app:constraintSetEnd="@+id/end"
+        app:motionInterpolator="overshoot"
+        app:duration="400"/>
+
+    <!-- Define @id/start -->
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@+id/hours_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/hours_picker"
+            app:layout_constraintEnd_toEndOf="@+id/hours_picker"
+            app:layout_constraintStart_toStartOf="@+id/hours_picker" />
+
+        <Constraint
+            android:id="@+id/hours_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@+id/textView"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Constraint
+            android:id="@+id/hours_countdown"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="@id/hours_picker"
+            app:layout_constraintEnd_toEndOf="@id/hours_picker"
+            app:layout_constraintBottom_toBottomOf="@+id/hours_picker"
+            app:layout_constraintTop_toTopOf="@+id/hours_picker" />
+
+        <Constraint
+            android:id="@+id/minutes_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/minutes_picker"
+            app:layout_constraintEnd_toEndOf="@+id/minutes_picker"
+            app:layout_constraintStart_toStartOf="@+id/minutes_picker" />
+
+        <Constraint
+            android:id="@+id/minutes_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@+id/textView2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Constraint
+            android:id="@+id/minutes_countdown"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="@id/minutes_picker"
+            app:layout_constraintEnd_toEndOf="@id/minutes_picker"
+            app:layout_constraintBottom_toBottomOf="@+id/minutes_picker"
+            app:layout_constraintTop_toTopOf="@+id/minutes_picker" />
+
+        <Constraint
+            android:id="@+id/seconds_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/seconds_picker"
+            app:layout_constraintEnd_toEndOf="@+id/seconds_picker"
+            app:layout_constraintStart_toStartOf="@+id/seconds_picker" />
+
+        <Constraint
+            android:id="@+id/seconds_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Constraint
+            android:id="@+id/seconds_countdown"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="@id/seconds_picker"
+            app:layout_constraintEnd_toEndOf="@id/seconds_picker"
+            app:layout_constraintBottom_toBottomOf="@+id/seconds_picker"
+            app:layout_constraintTop_toTopOf="@+id/seconds_picker" />
+
+        <Constraint
+            android:id="@+id/progressBar"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <Constraint
+            android:id="@+id/buttonPauseResume"
+            android:layout_width="110dp"
+            android:layout_height="60dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline" />
+
+        <Constraint
+            android:id="@+id/buttonStartCancel"
+            android:layout_width="110dp"
+            android:layout_height="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline">
+
+            <CustomAttribute
+                app:attributeName="text"
+                app:customStringValue="start" />
+
+        </Constraint>
+
+    </ConstraintSet>
+
+    <!-- Define @id/end -->
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/hours_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/hours_picker"
+            app:layout_constraintEnd_toEndOf="@+id/hours_picker"
+            app:layout_constraintStart_toStartOf="@+id/hours_picker" />
+
+        <Constraint
+            android:id="@+id/hours_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@+id/textView"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Constraint
+            android:id="@+id/hours_countdown"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="@id/hours_picker"
+            app:layout_constraintEnd_toEndOf="@id/hours_picker"
+            app:layout_constraintBottom_toBottomOf="@+id/hours_picker"
+            app:layout_constraintTop_toTopOf="@+id/hours_picker" />
+
+        <Constraint
+            android:id="@+id/minutes_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/minutes_picker"
+            app:layout_constraintEnd_toEndOf="@+id/minutes_picker"
+            app:layout_constraintStart_toStartOf="@+id/minutes_picker" />
+
+        <Constraint
+            android:id="@+id/minutes_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@+id/textView2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Constraint
+            android:id="@+id/minutes_countdown"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="@id/minutes_picker"
+            app:layout_constraintEnd_toEndOf="@id/minutes_picker"
+            app:layout_constraintBottom_toBottomOf="@+id/minutes_picker"
+            app:layout_constraintTop_toTopOf="@+id/minutes_picker" />
+
+        <Constraint
+            android:id="@+id/seconds_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/seconds_picker"
+            app:layout_constraintEnd_toEndOf="@+id/seconds_picker"
+            app:layout_constraintStart_toStartOf="@+id/seconds_picker" />
+
+        <Constraint
+            android:id="@+id/seconds_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Constraint
+            android:id="@+id/seconds_countdown"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="@id/seconds_picker"
+            app:layout_constraintEnd_toEndOf="@id/seconds_picker"
+            app:layout_constraintBottom_toBottomOf="@+id/seconds_picker"
+            app:layout_constraintTop_toTopOf="@+id/seconds_picker" />
+
+        <Constraint
+            android:id="@+id/progressBar"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <Constraint
+            android:id="@+id/buttonPauseResume"
+            android:layout_width="110dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline" />
+
+        <Constraint
+            android:id="@+id/buttonStartCancel"
+            android:layout_width="110dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline">
+
+            <CustomAttribute
+                app:attributeName="text"
+                app:customStringValue="cancel" />
+
+        </Constraint>
+
+    </ConstraintSet>
+
+</MotionScene>

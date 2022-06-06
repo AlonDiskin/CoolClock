@@ -2,4 +2,28 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.diskin.alon.coolclock.timer.presentation">
 
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <application>
+        <service
+            android:name=".infrastructure.TimerService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver
+            android:name=".infrastructure.TimerNotificationReceiver"
+            android:enabled="true"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="ACTION_TIMER_PAUSE" />
+                <action android:name="ACTION_TIMER_RESUME" />
+                <action android:name="ACTION_TIMER_CANCEL" />
+                <action android:name="ACTION_TIMER_ALERT_CANCEL" />
+            </intent-filter>
+        </receiver>
+    </application>
+
 </manifest>
