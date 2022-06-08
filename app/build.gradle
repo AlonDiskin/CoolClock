@@ -52,7 +52,7 @@ dependencies {
     implementation project(':features:alarms:presentation')
     implementation project(':features:settings:presentation')
     implementation project(':features:timer:di')
-    implementation project(':features:worldClocks:presentation')
+    implementation project(':features:worldClocks:di')
 
     // Android core
     implementation 'androidx.core:core-ktx:1.7.0'
@@ -63,6 +63,12 @@ dependencies {
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
+
+    // Room
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-paging:$room_version"
 
     // Instrumentation testing
     androidTestImplementation project(':features:common:uiTesting')

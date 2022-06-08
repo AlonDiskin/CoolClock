@@ -3,15 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/world_clocks"
-    app:startDestination="@id/worldClocksFragment">
+    app:startDestination="@id/citiesTimeFragment">
 
     <fragment
-        android:id="@+id/worldClocksFragment"
-        android:name="com.diskin.alon.coolclock.worldclocks.presentation.WorldClocksFragment"
+        android:id="@+id/citiesTimeFragment"
+        android:name="com.diskin.alon.coolclock.worldclocks.presentation.controller.CitiesTimeFragment"
         android:label=""
-        tools:layout="@layout/fragment_world_clocks">
+        tools:layout="@layout/fragment_cities_time">
 
         <deepLink app:uri="@string/uri_world_clocks" />
+        <action
+            android:id="@+id/action_worldClocksFragment_to_citiesSearchFragment"
+            app:destination="@id/citiesSearchFragment" />
 
     </fragment>
+    <fragment
+        android:id="@+id/citiesSearchFragment"
+        android:name="com.diskin.alon.coolclock.worldclocks.presentation.controller.CitiesSearchFragment"
+        android:label=""
+        tools:layout="@layout/fragment_cities_search"/>
 </navigation>

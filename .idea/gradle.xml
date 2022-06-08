@@ -30,6 +30,11 @@
             <option value="$PROJECT_DIR$/features/timer/featureTesting" />
             <option value="$PROJECT_DIR$/features/timer/presentation" />
             <option value="$PROJECT_DIR$/features/worldClocks" />
+            <option value="$PROJECT_DIR$/features/worldClocks/application" />
+            <option value="$PROJECT_DIR$/features/worldClocks/data" />
+            <option value="$PROJECT_DIR$/features/worldClocks/di" />
+            <option value="$PROJECT_DIR$/features/worldClocks/domain" />
+            <option value="$PROJECT_DIR$/features/worldClocks/featureTesting" />
             <option value="$PROJECT_DIR$/features/worldClocks/presentation" />
           </set>
         </option>

@@ -1,0 +1,1 @@
+Feature: User selected world clocks browser feature rules

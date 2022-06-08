@@ -9,7 +9,7 @@
     <item
         android:id="@id/world_clocks"
         android:icon="@drawable/ic_baseline_public_24"
-        android:title="World" />
+        android:title="World Clock" />
 
     <item
         android:id="@id/timer"

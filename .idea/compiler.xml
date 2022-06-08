@@ -13,6 +13,9 @@
       <module name="CoolClock.features.timer.di" target="11" />
       <module name="CoolClock.features.timer.featureTesting" target="11" />
       <module name="CoolClock.features.timer.presentation" target="11" />
+      <module name="CoolClock.features.worldClocks.data" target="11" />
+      <module name="CoolClock.features.worldClocks.di" target="11" />
+      <module name="CoolClock.features.worldClocks.featureTesting" target="11" />
       <module name="CoolClock.features.worldClocks.presentation" target="11" />
     </bytecodeTargetLevel>
   </component>

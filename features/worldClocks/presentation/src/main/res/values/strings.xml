@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_hint">Search world cities</string>
+    <string name="title_action_search">Search</string>
+    <string name="error_message_local_network">Device network error,please check your connection</string>
+    <string name="error_message_remote_server">Remote server error,please try again later</string>
+    <string name="error_message_unknown">App error,feature is currently unavailable</string>
+</resources>

@@ -10,7 +10,7 @@ class AppGraphProviderImpl @Inject constructor() : AppGraphProvider {
     }
 
     override fun getClocksDest(): Int {
-        return com.diskin.alon.coolclock.worldclocks.presentation.R.id.worldClocksFragment
+        return com.diskin.alon.coolclock.worldclocks.presentation.R.id.citiesTimeFragment
     }
 
     override fun getTimerDest(): Int {

@@ -32,7 +32,7 @@ class AlertNotificationShownStepsRunner(scenario: ScenarioConfig) : GreenCoffeeT
         fun data(): Collection<Array<Any>> {
             val res = ArrayList<Array<Any>>()
             val scenarioConfigs = GreenCoffeeConfig()
-                .withFeatureFromAssets("feature/timer_notification.feature")
+                .withFeatureFromAssets("feature/notification.feature")
                 .withTags("@alert-notification")
                 .scenarios()
 
