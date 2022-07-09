@@ -15,19 +15,21 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.action.ViewActions.pressImeActionButton
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.VISIBLE
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.diskin.alon.coolclock.common.presentation.SingleLiveEvent
 import com.diskin.alon.coolclock.common.uitesting.HiltTestActivity
 import com.diskin.alon.coolclock.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.coolclock.common.uitesting.launchFragmentInHiltContainer
+import com.diskin.alon.coolclock.worldclocks.application.util.AppError
 import com.diskin.alon.coolclock.worldclocks.presentation.controller.CitiesSearchFragment
 import com.diskin.alon.coolclock.worldclocks.presentation.controller.CitiesSearchResultsAdapter.ResultViewHolder
+import com.diskin.alon.coolclock.worldclocks.presentation.controller.loadIconResIntoImageButton
 import com.diskin.alon.coolclock.worldclocks.presentation.model.UiCitySearchResult
 import com.diskin.alon.coolclock.worldclocks.presentation.viewmodel.CitiesSearchViewModel
 import com.google.common.truth.Truth.assertThat
@@ -56,7 +58,9 @@ class CitiesSearchFragmentTest {
 
     // Stub data
     private val results = MutableLiveData<PagingData<UiCitySearchResult>>()
+    private val addedCity = MutableLiveData<String>()
     private val searchTextSlot = slot<String>()
+    private val addCityError = SingleLiveEvent<AppError>()
 
     @Before
     fun setUp() {
@@ -67,8 +71,10 @@ class CitiesSearchFragmentTest {
         // Stub view model
         searchTextSlot.captured = ""
         every { viewModel.results } returns results
+        every { viewModel.addedCity } returns addedCity
         every { viewModel.searchText = capture(searchTextSlot) } answers { }
         every { viewModel.searchText } answers { searchTextSlot.captured }
+        every { viewModel.addCityError } returns addCityError
 
         // Setup test nav controller
         navController.setGraph(R.navigation.world_clocks_graph)
@@ -247,7 +253,102 @@ class CitiesSearchFragmentTest {
         // Then
         val toastMessage = ShadowToast.getTextOfLatestToast()
         val expectedMessage = ApplicationProvider.getApplicationContext<Context>()
-            .getString(R.string.error_message_unknown)
+            .getString(R.string.error_message_unknown,"Search")
+
+        assertThat(toastMessage).isEqualTo(expectedMessage)
+    }
+
+    @Test
+    fun enableToAddResultToUsersCityClocks_WhenResultNotAlreadyAdded() {
+        // Given
+        val searchResults = listOf(
+            UiCitySearchResult(1,
+                "name",
+                "country",
+                "state",
+                false
+            )
+        )
+
+        results.value = PagingData.from(searchResults)
+
+        mockkStatic("com.diskin.alon.coolclock.worldclocks.presentation.controller.BindingAdaptersKt")
+        every { viewModel.addCity(any()) } returns Unit
+        every { loadIconResIntoImageButton(any(),any()) } returns Unit
+
+        // Then
+        onView(withId(R.id.button_add))
+            .check(matches(isEnabled()))
+        verify(exactly = 1) { loadIconResIntoImageButton(any(),R.drawable.ic_baseline_add_24) }
+
+        // When
+        onView(withId(R.id.button_add))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        verify(exactly = 1) { viewModel.addCity(searchResults.first()) }
+    }
+
+    @Test
+    fun disableAddingResultToUsersCityClocks_WhenResultAlreadyAdded() {
+        // Given
+        val searchResults = listOf(
+            UiCitySearchResult(1,
+                "name",
+                "country",
+                "state",
+                true
+            )
+        )
+
+        results.value = PagingData.from(searchResults)
+
+        mockkStatic("com.diskin.alon.coolclock.worldclocks.presentation.controller.BindingAdaptersKt")
+        every { viewModel.addCity(any()) } returns Unit
+        every { loadIconResIntoImageButton(any(),any()) } returns Unit
+
+        // Then
+        onView(withId(R.id.button_add))
+            .check(matches(not(isEnabled())))
+        verify(exactly = 1) { loadIconResIntoImageButton(any(),R.drawable.ic_baseline_done_24) }
+
+        // When
+        onView(withId(R.id.button_add))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        verify(exactly = 0) { viewModel.addCity(searchResults.first()) }
+    }
+
+    @Test
+    fun notifyUser_WhenCityAddedToHisClocksList() {
+        // Given
+        val cityName = "Paris"
+
+        // When
+        addedCity.value = cityName
+
+        // Then
+        val toastMessage = ShadowToast.getTextOfLatestToast()
+        val expectedMessage = ApplicationProvider.getApplicationContext<Context>()
+            .getString(R.string.city_added_message,cityName)
+
+        assertThat(toastMessage).isEqualTo(expectedMessage)
+    }
+
+    @Test
+    fun notifyWithErrorMessage_WhenAddingCityFailUponUnknownError() {
+        // Given
+
+        // When
+        addCityError.value = AppError.UNKNOWN_ERROR
+
+        // Then
+        val toastMessage = ShadowToast.getTextOfLatestToast()
+        val expectedMessage = ApplicationProvider.getApplicationContext<Context>()
+            .getString(R.string.error_message_unknown,"Add city")
 
         assertThat(toastMessage).isEqualTo(expectedMessage)
     }

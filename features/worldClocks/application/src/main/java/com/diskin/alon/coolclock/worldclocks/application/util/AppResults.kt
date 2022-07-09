@@ -77,3 +77,8 @@ private fun <T : Any> toSuccessAppResult(data: T): AppResult<T> {
 private fun <T : Any> toAppResultError(throwable: Throwable, errorHandler: ((Throwable) -> (AppError))? = null): AppResult<T> {
     return AppResult.Error(errorHandler?.invoke(throwable) ?: AppError.UNKNOWN_ERROR)
 }
+
+fun <T : Any> Single<T>.toSingleAppResult(errorHandler: ((Throwable) -> (AppError))? = null): Single<AppResult<T>> {
+    return this.map { toSuccessAppResult(it) }
+        .onErrorReturn { toAppResultError(it,errorHandler) }
+}

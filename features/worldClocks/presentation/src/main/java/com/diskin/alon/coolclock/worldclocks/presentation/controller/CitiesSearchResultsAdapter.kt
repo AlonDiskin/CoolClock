@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.diskin.alon.coolclock.worldclocks.presentation.databinding.CitySearchResultBinding
 import com.diskin.alon.coolclock.worldclocks.presentation.model.UiCitySearchResult
 
-class CitiesSearchResultsAdapter : PagingDataAdapter<UiCitySearchResult, CitiesSearchResultsAdapter.ResultViewHolder>(
+class CitiesSearchResultsAdapter(
+    private val addCityClickListener: (UiCitySearchResult) -> (Unit)
+) : PagingDataAdapter<UiCitySearchResult, CitiesSearchResultsAdapter.ResultViewHolder>(
     DIFF_CALLBACK
 ){
 
@@ -26,8 +28,13 @@ class CitiesSearchResultsAdapter : PagingDataAdapter<UiCitySearchResult, CitiesS
     }
 
     class ResultViewHolder(
-        private val binding: CitySearchResultBinding
+        private val binding: CitySearchResultBinding,
+        addCityClickListener: (UiCitySearchResult) -> (Unit)
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.addClickListener = addCityClickListener
+        }
 
         fun bind(result: UiCitySearchResult) {
             binding.result = result
@@ -41,7 +48,7 @@ class CitiesSearchResultsAdapter : PagingDataAdapter<UiCitySearchResult, CitiesS
             false
         )
 
-        return ResultViewHolder(binding)
+        return ResultViewHolder(binding,addCityClickListener)
     }
 
     override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {

@@ -11,3 +11,16 @@ Feature: World clocks search feature rules
       | existing    | display    |
       | matching    | should     |
       | no matching | should not |
+
+  #Rule: Enable adding world city to user list
+
+  @add-city
+  Scenario Outline: User adds world city
+    Given user found a "<city>" via search
+    When he select to add it to his list
+    Then app should "<add>" city to user list
+    Examples:
+      | city           | add     |
+      | not added city | add     |
+      | added city     | not add |
+

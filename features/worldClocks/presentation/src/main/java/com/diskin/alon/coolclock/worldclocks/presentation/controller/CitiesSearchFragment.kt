@@ -13,8 +13,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
+import com.diskin.alon.coolclock.worldclocks.application.util.AppError
 import com.diskin.alon.coolclock.worldclocks.presentation.R
 import com.diskin.alon.coolclock.worldclocks.presentation.databinding.FragmentCitiesSearchBinding
+import com.diskin.alon.coolclock.worldclocks.presentation.model.UiCitySearchResult
 import com.diskin.alon.coolclock.worldclocks.presentation.viewmodel.CitiesSearchViewModel
 import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,6 +45,7 @@ class CitiesSearchFragment : Fragment(), MenuItem.OnActionExpandListener, Search
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
         inflater.inflate(R.menu.menu_cities_search,menu)
 
         val searchItem = menu.findItem(R.id.action_search)
@@ -94,15 +97,15 @@ class CitiesSearchFragment : Fragment(), MenuItem.OnActionExpandListener, Search
         super.onViewCreated(view, savedInstanceState)
 
         // Set search results paging adapter
-        val adapter = CitiesSearchResultsAdapter()
+        val adapter = CitiesSearchResultsAdapter(::handleResultAddClick)
         layout.results.adapter = adapter
 
         adapter.addLoadStateListener(::handleLoadStateUpdate)
 
         // Observe view model state
-        viewModel.results.observe(viewLifecycleOwner) {
-            adapter.submitData(lifecycle,it)
-        }
+        viewModel.results.observe(viewLifecycleOwner) { adapter.submitData(lifecycle,it) }
+        viewModel.addedCity.observe(viewLifecycleOwner,::notifyCityAddedToUserClocks)
+        viewModel.addCityError.observe(viewLifecycleOwner,::handleAddCityError)
     }
 
     @VisibleForTesting
@@ -113,15 +116,33 @@ class CitiesSearchFragment : Fragment(), MenuItem.OnActionExpandListener, Search
 
         // Handle error
         if (state.append is LoadState.Error || state.refresh is LoadState.Error) {
-            notifyUnknownError()
+            notifyUnknownError("Search")
         }
     }
 
-    private fun notifyUnknownError() {
+    private fun notifyUnknownError(featureName: String) {
         Toast.makeText(
             requireContext(),
-            getString(R.string.error_message_unknown),
+            getString(R.string.error_message_unknown,featureName),
             Toast.LENGTH_LONG)
             .show()
+    }
+
+    private fun handleResultAddClick(result: UiCitySearchResult) {
+        viewModel.addCity(result)
+    }
+
+    private fun notifyCityAddedToUserClocks(name: String) {
+        Toast.makeText(
+            requireContext(),
+            getString(R.string.city_added_message,name),
+            Toast.LENGTH_LONG)
+            .show()
+    }
+
+    private fun handleAddCityError(error: AppError) {
+        when(error) {
+            AppError.UNKNOWN_ERROR -> notifyUnknownError("Add city")
+        }
     }
 }

@@ -8,6 +8,10 @@ import com.diskin.alon.coolclock.worldclocks.domain.City
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import io.reactivex.Observable
 import androidx.paging.rxjava2.observable
+import com.diskin.alon.coolclock.worldclocks.application.util.AppError
+import com.diskin.alon.coolclock.worldclocks.application.util.AppResult
+import com.diskin.alon.coolclock.worldclocks.application.util.toSingleAppResult
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -24,5 +28,12 @@ class CitiesRepositoryImpl @Inject constructor(
             .observable
             .subscribeOn(Schedulers.io())
             .map(mapper::map)
+    }
+
+    override fun addToSelected(id: Long): Single<AppResult<Unit>> {
+        return dao.select(id)
+            .toSingleDefault(Unit)
+            .subscribeOn(Schedulers.io())
+            .toSingleAppResult { AppError.UNKNOWN_ERROR }
     }
 }

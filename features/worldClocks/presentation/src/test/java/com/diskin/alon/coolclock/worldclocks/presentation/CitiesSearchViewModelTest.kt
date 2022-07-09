@@ -5,7 +5,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.diskin.alon.coolclock.worldclocks.application.usecase.AddCityUseCase
 import com.diskin.alon.coolclock.worldclocks.application.usecase.SearchCitiesUseCase
+import com.diskin.alon.coolclock.worldclocks.application.util.AppResult
 import com.diskin.alon.coolclock.worldclocks.presentation.viewmodel.CitiesSearchViewModel
 import com.diskin.alon.coolclock.worldclocks.presentation.viewmodel.KEY_SEARCH_QUERY
 import com.diskin.alon.coolclock.worldclocks.presentation.viewmodel.KEY_SEARCH_TEXT
@@ -15,6 +17,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import io.reactivex.Observable
+import io.reactivex.Single
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,12 +37,13 @@ class CitiesSearchViewModelTest {
 
     // Collaborators
     private val searchUseCase: SearchCitiesUseCase = mockk()
+    private val addCitiesUseCase: AddCityUseCase = mockk()
     private val savedState = SavedStateHandle()
     private val resultsMapper: SearchResultsMapper = mockk()
 
     @Before
     fun setUp() {
-        viewModel = CitiesSearchViewModel(searchUseCase, savedState,resultsMapper)
+        viewModel = CitiesSearchViewModel(searchUseCase, addCitiesUseCase,savedState,resultsMapper)
     }
 
     @Test
@@ -49,7 +53,7 @@ class CitiesSearchViewModelTest {
         savedState.set(KEY_SEARCH_TEXT,searchText)
 
         // When
-        viewModel = CitiesSearchViewModel(searchUseCase, savedState,resultsMapper)
+        viewModel = CitiesSearchViewModel(searchUseCase, addCitiesUseCase, savedState,resultsMapper)
 
         // Then
         assertThat(viewModel.searchText).isEqualTo(searchText)
@@ -65,7 +69,7 @@ class CitiesSearchViewModelTest {
         every { resultsMapper.map(any()) } returns PagingData.empty()
 
         // When
-        viewModel = CitiesSearchViewModel(searchUseCase, savedState,resultsMapper)
+        viewModel = CitiesSearchViewModel(searchUseCase, addCitiesUseCase, savedState,resultsMapper)
 
         // Then
         verify { searchUseCase.execute(searchQuery) }
@@ -89,5 +93,21 @@ class CitiesSearchViewModelTest {
         verify { searchUseCase.execute(query) }
         verify { resultsMapper.map(any()) }
         assertThat(viewModel.results.value).isEqualTo(mappedResults)
+    }
+
+    @Test
+    fun addCityToUserClocks_WhenCityAdded() {
+        // Given
+        val city = createUiCitySearchResults().first()
+
+        every { addCitiesUseCase.execute(any()) } returns Single.just(AppResult.Success(Unit))
+
+        // When
+        viewModel.addCity(city)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        verify(exactly = 1) { addCitiesUseCase.execute(city.id) }
+        assertThat(viewModel.addedCity.value).isEqualTo(city.name)
     }
 }
