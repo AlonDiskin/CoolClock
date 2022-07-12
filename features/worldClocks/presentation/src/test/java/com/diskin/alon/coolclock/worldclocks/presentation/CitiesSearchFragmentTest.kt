@@ -108,7 +108,7 @@ class CitiesSearchFragmentTest {
         pressBack()
 
         // Then
-        assertThat(navController.currentDestination?.id).isEqualTo(R.id.citiesTimeFragment)
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.cityClocksFragment)
     }
 
     @Test

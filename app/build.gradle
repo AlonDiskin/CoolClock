@@ -16,7 +16,15 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "com.diskin.alon.coolclock.util.CustomTestRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
         multiDexEnabled true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation":
+                                      "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
@@ -34,6 +42,9 @@ android {
     }
     buildFeatures {
         dataBinding true
+    }
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 }
 

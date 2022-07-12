@@ -2,7 +2,7 @@ package com.diskin.alon.coolclock.scenario
 
 import androidx.test.filters.LargeTest
 import com.diskin.alon.coolclock.AppDataModule
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerAlarmManager
+import com.diskin.alon.coolclock.di.AppTestDatabase
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
 import com.mauriciotogneri.greencoffee.ScenarioConfig
@@ -20,7 +20,7 @@ import javax.inject.Inject
 @UninstallModules(AppDataModule::class)
 @RunWith(Parameterized::class)
 @LargeTest
-class SetTimerStepsRunner(scenario: ScenarioConfig?) : GreenCoffeeTest(scenario)  {
+class CheckWorldCityTimeStepsRunner(scenario: ScenarioConfig?) : GreenCoffeeTest(scenario)  {
 
     companion object {
         @Parameterized.Parameters(name = "{0}")
@@ -28,7 +28,7 @@ class SetTimerStepsRunner(scenario: ScenarioConfig?) : GreenCoffeeTest(scenario)
         @JvmStatic
         fun scenarios(): Iterable<ScenarioConfig> {
             return GreenCoffeeConfig()
-                .withFeatureFromAssets("assets/feature/set_timer.feature")
+                .withFeatureFromAssets("assets/feature/check_time_in_world_city.feature")
                 .scenarios()
         }
     }
@@ -37,11 +37,11 @@ class SetTimerStepsRunner(scenario: ScenarioConfig?) : GreenCoffeeTest(scenario)
     val hiltRule = HiltAndroidRule(this)
 
     @Inject
-    lateinit var alarmManager: TimerAlarmManager
+    lateinit var db: AppTestDatabase
 
     @Test
     fun test() {
         hiltRule.inject()
-        start(SetTimerSteps(alarmManager))
+        start(CheckWorldCityTimeSteps(db))
     }
 }

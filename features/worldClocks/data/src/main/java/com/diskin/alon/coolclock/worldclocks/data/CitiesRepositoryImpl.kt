@@ -13,6 +13,7 @@ import com.diskin.alon.coolclock.worldclocks.application.util.AppResult
 import com.diskin.alon.coolclock.worldclocks.application.util.toSingleAppResult
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 import javax.inject.Inject
 
 const val PAGE_SIZE = 20
@@ -31,9 +32,23 @@ class CitiesRepositoryImpl @Inject constructor(
     }
 
     override fun addToSelected(id: Long): Single<AppResult<Unit>> {
-        return dao.select(id)
+        return dao.select(id,Calendar.getInstance().timeInMillis)
             .toSingleDefault(Unit)
             .subscribeOn(Schedulers.io())
             .toSingleAppResult { AppError.UNKNOWN_ERROR }
+    }
+
+    override fun removeFromSelected(id: Long): Single<AppResult<Unit>> {
+        return dao.unSelect(id)
+            .toSingleDefault(Unit)
+            .subscribeOn(Schedulers.io())
+            .toSingleAppResult { AppError.UNKNOWN_ERROR }
+    }
+
+    override fun getAllSelected(): Observable<PagingData<City>> {
+        return Pager(PagingConfig(PAGE_SIZE)) { dao.getSelected() }
+            .observable
+            .subscribeOn(Schedulers.io())
+            .map(mapper::map)
     }
 }

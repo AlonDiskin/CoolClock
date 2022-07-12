@@ -13,6 +13,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiSelector
 import com.diskin.alon.coolclock.common.uitesting.isWithProgress
 import com.diskin.alon.coolclock.timer.presentation.infrastructure.CHANNEL_ID_TIMER_ALERT
@@ -24,13 +25,14 @@ import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given
 import com.mauriciotogneri.greencoffee.annotations.Then
 import com.mauriciotogneri.greencoffee.annotations.When
+import java.util.regex.Pattern
 
 class SetTimerSteps(
     private val alarmManager: TimerAlarmManager
 ) : GreenCoffeeSteps() {
 
     init {
-        DeviceUtil.clearSharedPrefs()
+        //DeviceUtil.clearSharedPrefs()
     }
 
     @Given("^user started a timer$")
@@ -91,10 +93,10 @@ class SetTimerSteps(
     @When("^user dismiss notification$")
     fun user_dismiss_notification() {
         DeviceUtil.openNotifications()
+        Thread.sleep(2000)
 
-        val dismissButton = DeviceUtil.getDevice().findObject(
-            UiSelector().text("DISMISS")
-        )
+        val dismissButton = DeviceUtil.getDevice()
+            .findObject(By.text(Pattern.compile("dismiss", Pattern.CASE_INSENSITIVE)))
 
         dismissButton.click()
     }

@@ -10,4 +10,5 @@ data class CityEntity(val name: String,
                       val population: Int,
                       val timezone: String,
                       val isSelected: Boolean = false,
+                      val selectedDate: Long? = null,
                       @PrimaryKey(autoGenerate = true) val id: Long? = null)

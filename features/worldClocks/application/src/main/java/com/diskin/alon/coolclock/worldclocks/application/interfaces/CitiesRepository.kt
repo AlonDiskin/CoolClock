@@ -11,4 +11,8 @@ interface CitiesRepository {
     fun search(query: String): Observable<PagingData<City>>
 
     fun addToSelected(id: Long): Single<AppResult<Unit>>
+
+    fun removeFromSelected(id: Long): Single<AppResult<Unit>>
+
+    fun getAllSelected(): Observable<PagingData<City>>
 }

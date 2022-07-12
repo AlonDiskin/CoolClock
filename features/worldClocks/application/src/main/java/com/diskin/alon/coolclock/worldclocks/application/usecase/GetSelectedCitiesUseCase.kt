@@ -7,13 +7,13 @@ import com.diskin.alon.coolclock.worldclocks.application.util.UseCase
 import io.reactivex.Observable
 import javax.inject.Inject
 
-class SearchCitiesUseCase @Inject constructor(
-    private val repository: CitiesRepository,
+class GetSelectedCitiesUseCase @Inject constructor(
+    private val  repository: CitiesRepository,
     private val mapper: CitiesPagingMapper
-) : UseCase<String,Observable<PagingData<CityDto>>> {
+) : UseCase<Unit,Observable<PagingData<CityDto>>> {
 
-    override fun execute(param: String): Observable<PagingData<CityDto>> {
-        return repository.search(param)
+    override fun execute(param: Unit): Observable<PagingData<CityDto>> {
+        return repository.getAllSelected()
             .map(mapper::map)
     }
 }

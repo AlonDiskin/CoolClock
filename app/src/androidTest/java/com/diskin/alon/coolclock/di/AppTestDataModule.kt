@@ -1,4 +1,4 @@
-package com.diskin.alon.coolclock
+package com.diskin.alon.coolclock.di
 
 import android.app.Application
 import androidx.room.Room
@@ -11,21 +11,19 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppDataModule {
+object AppTestDataModule {
 
     @Singleton
     @Provides
-    fun provideDatabase(app: Application): AppDatabase {
-        return Room.databaseBuilder(app,
-            AppDatabase::class.java, "coolclock-db")
-            .createFromAsset("coolclock.db")
-            .addMigrations(MIGRATION_1_2)
+    fun provideDatabase(app: Application): AppTestDatabase {
+        return Room.inMemoryDatabaseBuilder(app, AppTestDatabase::class.java)
+            .allowMainThreadQueries()
             .build()
     }
 
     @Singleton
     @Provides
-    fun provideCityDao(database: AppDatabase): CityDao {
+    fun provideCityDao(database: AppTestDatabase): CityDao {
         return database.cityDao()
     }
 }

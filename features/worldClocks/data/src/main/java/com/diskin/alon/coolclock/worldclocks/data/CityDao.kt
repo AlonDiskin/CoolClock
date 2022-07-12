@@ -11,6 +11,12 @@ interface CityDao {
     @Query("SELECT * FROM cities WHERE name LIKE :query || '%' ORDER BY population DESC ")
     fun getStartsWith(query: String): PagingSource<Int, CityEntity>
 
-    @Query("UPDATE cities SET isSelected = 1 WHERE id = :id ")
-    fun select(id: Long): Completable
+    @Query("UPDATE cities SET isSelected = 1,selectedDate = :selectedDate WHERE id = :id ")
+    fun select(id: Long,selectedDate: Long): Completable
+
+    @Query("SELECT * FROM cities WHERE isSelected ORDER BY selectedDate DESC")
+    fun getSelected(): PagingSource<Int, CityEntity>
+
+    @Query("UPDATE cities SET isSelected = 0 WHERE id = :id")
+    fun unSelect(id: Long): Completable
 }

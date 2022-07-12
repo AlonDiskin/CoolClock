@@ -3,7 +3,7 @@ package com.diskin.alon.coolclock.worldclocks.application
 import androidx.paging.PagingData
 import com.diskin.alon.coolclock.worldclocks.application.interfaces.CitiesRepository
 import com.diskin.alon.coolclock.worldclocks.application.model.CityDto
-import com.diskin.alon.coolclock.worldclocks.application.usecase.CitiesMapper
+import com.diskin.alon.coolclock.worldclocks.application.usecase.CitiesPagingMapper
 import com.diskin.alon.coolclock.worldclocks.application.usecase.SearchCitiesUseCase
 import com.diskin.alon.coolclock.worldclocks.domain.City
 import io.mockk.every
@@ -20,7 +20,7 @@ class SearchCitiesUseCaseTest {
 
     // Collaborators
     private val repository: CitiesRepository = mockk()
-    private val mapper: CitiesMapper = mockk()
+    private val mapper: CitiesPagingMapper = mockk()
 
     @Before
     fun setUp() {
@@ -41,8 +41,8 @@ class SearchCitiesUseCaseTest {
         val observer = useCase.execute(query).test()
 
         // Then
-        verify { repository.search(query) }
-        verify { mapper.map(repoResults) }
+        verify(exactly = 1) { repository.search(query) }
+        verify(exactly = 1) { mapper.map(repoResults) }
         observer.assertValue(mappedResults)
     }
 }

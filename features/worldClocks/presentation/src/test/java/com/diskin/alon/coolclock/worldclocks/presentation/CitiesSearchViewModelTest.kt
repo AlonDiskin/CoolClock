@@ -24,6 +24,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows
 
+// Using android junit test runner due to robolectric incompatibility with paging 'cachedIn' rx operator
 @RunWith(AndroidJUnit4::class)
 class CitiesSearchViewModelTest {
 

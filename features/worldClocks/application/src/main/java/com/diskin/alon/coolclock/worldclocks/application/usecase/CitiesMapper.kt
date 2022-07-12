@@ -1,22 +1,20 @@
 package com.diskin.alon.coolclock.worldclocks.application.usecase
 
-import androidx.paging.PagingData
-import androidx.paging.map
 import com.diskin.alon.coolclock.worldclocks.application.model.CityDto
 import com.diskin.alon.coolclock.worldclocks.domain.City
 import javax.inject.Inject
 
 class CitiesMapper @Inject constructor() {
 
-    fun map(results: PagingData<City>): PagingData<CityDto> {
-        return results.map {
+    fun map(cities: List<City>): List<CityDto> {
+        return cities.map { city ->
             CityDto(
-                it.id,
-                it.name,
-                it.country,
-                it.state,
-                it.gmt,
-                it.isSelected
+                city.id,
+                city.name,
+                city.country,
+                city.state,
+                city.gmt,
+                city.isSelected
             )
         }
     }
