@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="kotlin.jvm.functions.Function2"/>
+        <import type="kotlin.Unit"/>
+        <import type="android.view.View"/>
+        <import type="com.diskin.alon.coolclock.worldclocks.presentation.model.UiCityClock"/>
+
+        <variable
+            name="cityClock"
+            type="UiCityClock" />
+        <variable
+            name="menuClickListener"
+            type="Function2&lt;UiCityClock,View,Unit>" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/city_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="@{cityClock.name}"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            app:layout_constraintBottom_toTopOf="@+id/city_location"
+            app:layout_constraintEnd_toStartOf="@+id/textClockTime"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Milano" />
+
+        <TextView
+            android:id="@+id/city_location"
+            setCityLocation="@{cityClock}"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/city_name"
+            app:layout_constraintStart_toStartOf="@id/city_name"
+            app:layout_constraintTop_toBottomOf="@+id/city_name"
+            tools:text="Italy" />
+
+        <ImageButton
+            android:id="@+id/options_button"
+            style="@style/Widget.AppCompat.ActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{(v) -> menuClickListener.invoke(cityClock,v)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_more_vert_24" />
+
+        <TextClock
+            android:id="@+id/textClockTime"
+            setClockTimeZone="@{cityClock.gmt}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:format12Hour="@string/clock_time_format_12"
+            android:format24Hour="@string/clock_time_format_24"
+            android:textAppearance="?attr/textAppearanceHeadline5"
+            android:textColor="@color/pink_700"
+            android:textSize="34sp"
+            app:layout_constraintBottom_toTopOf="@+id/textClockDate"
+            app:layout_constraintEnd_toStartOf="@+id/options_button"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="16:03" />
+
+        <TextClock
+            android:id="@+id/textClockDate"
+            setClockTimeZone="@{cityClock.gmt}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:format12Hour="null"
+            android:format24Hour="@string/clock_date_format_24"
+            android:textSize="14sp"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textClockTime"
+            app:layout_constraintStart_toStartOf="@+id/textClockTime"
+            app:layout_constraintTop_toBottomOf="@+id/textClockTime"
+            tools:text="Fri, 19 Mar" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1.5dp"
+            android:layout_marginTop="24dp"
+            android:background="#12000000"
+            app:layout_constraintEnd_toStartOf="@id/options_button"
+            app:layout_constraintStart_toStartOf="@id/city_location"
+            app:layout_constraintTop_toBottomOf="@id/city_location" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

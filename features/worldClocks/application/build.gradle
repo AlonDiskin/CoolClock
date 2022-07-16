@@ -1,0 +1,27 @@
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+dependencies {
+    // Project modules
+    implementation project(':features:worldClocks:domain')
+
+    // Javax
+    implementation "javax.inject:javax.inject:$javax_annotation_version"
+
+    // Rx
+    api "io.reactivex.rxjava2:rxjava:$rx_java_version"
+    api "io.reactivex.rxjava2:rxkotlin:$rx_kotlin_version"
+
+    // Paging
+    api "androidx.paging:paging-common-ktx:$paging_version"
+
+    // Unit testing
+    testImplementation project(':features:common:unitTesting')
+}

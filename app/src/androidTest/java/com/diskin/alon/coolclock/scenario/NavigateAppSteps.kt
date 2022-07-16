@@ -33,7 +33,7 @@ class NavigateAppSteps : GreenCoffeeSteps() {
 
     @Then("^app should open world clocks screen$")
     fun app_should_open_world_clocks_screen() {
-        onView(withId(com.diskin.alon.coolclock.worldclocks.presentation.R.id.clocks_root))
+        onView(withId(com.diskin.alon.coolclock.worldclocks.presentation.R.id.clocks))
             .check(matches(isDisplayed()))
     }
 

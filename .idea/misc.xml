@@ -14,7 +14,20 @@
         <entry key="features/timer/presentation/src/main/res/drawable/circle_shape.xml" value="0.1975" />
         <entry key="features/timer/presentation/src/main/res/drawable/circular_progress_bar.xml" value="0.1975" />
         <entry key="features/timer/presentation/src/main/res/layout/fragment_timer.xml" value="0.22" />
+        <entry key="features/worldClocks/presentation/src/main/res/drawable/ic_baseline_add_24.xml" value="0.2155" />
+        <entry key="features/worldClocks/presentation/src/main/res/drawable/ic_baseline_done_24.xml" value="0.2155" />
+        <entry key="features/worldClocks/presentation/src/main/res/drawable/ic_baseline_search_24.xml" value="0.289" />
+        <entry key="features/worldClocks/presentation/src/main/res/layout/city.xml" value="0.33" />
+        <entry key="features/worldClocks/presentation/src/main/res/layout/city_clock.xml" value="0.4685185185185185" />
+        <entry key="features/worldClocks/presentation/src/main/res/layout/city_search_result.xml" value="0.5" />
+        <entry key="features/worldClocks/presentation/src/main/res/layout/city_time.xml" value="0.67" />
+        <entry key="features/worldClocks/presentation/src/main/res/layout/fragment_cities_search.xml" value="0.33" />
+        <entry key="features/worldClocks/presentation/src/main/res/layout/fragment_cities_time.xml" value="0.15177426250534418" />
+        <entry key="features/worldClocks/presentation/src/main/res/layout/fragment_city_clocks.xml" value="0.2954253954681488" />
         <entry key="features/worldClocks/presentation/src/main/res/layout/fragment_world_clocks.xml" value="0.19739583333333333" />
+        <entry key="features/worldClocks/presentation/src/main/res/menu/menu_cities_search.xml" value="0.294570329200513" />
+        <entry key="features/worldClocks/presentation/src/main/res/menu/menu_cities_time.xml" value="0.22" />
+        <entry key="features/worldClocks/presentation/src/main/res/menu/menu_city_clock.xml" value="0.294570329200513" />
       </map>
     </option>
   </component>

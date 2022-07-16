@@ -15,6 +15,9 @@
         <item name="textAppearanceCaption">@style/TextAppearance.Caption</item>
         <item name="textAppearanceHeadline5">@style/TextAppearance.Headline5</item>
         <item name="textAppearanceHeadline6">@style/TextAppearance.Headline6</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.Subtitle1</item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.Subtitle2</item>
+        <item name="searchViewStyle">@style/MySearchViewStyle</item>
     </style>
 
     <style name="TextAppearance.Caption" parent="TextAppearance.MaterialComponents.Caption">
@@ -22,13 +25,26 @@
         <item name="android:fontFamily">@font/ubuntu_medium</item>
     </style>
     <style name="TextAppearance.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
-        <item name="fontFamily">@font/ubuntu_regular</item>
-        <item name="android:fontFamily">@font/ubuntu_regular</item>
-        <item name="android:textSize">20sp</item>
+        <item name="fontFamily">@font/ubuntu_medium</item>
+        <item name="android:fontFamily">@font/ubuntu_medium</item>
+        <item name="android:textSize">18sp</item>
     </style>
     <style name="TextAppearance.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
         <item name="fontFamily">@font/ubuntu_regular</item>
         <item name="android:fontFamily">@font/ubuntu_regular</item>
         <item name="android:textSize">23sp</item>
+    </style>
+    <style name="TextAppearance.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="fontFamily">@font/ubuntu_regular</item>
+        <item name="android:fontFamily">@font/ubuntu_regular</item>
+    </style>
+
+    <style name="TextAppearance.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="fontFamily">@font/ubuntu_regular</item>
+        <item name="android:fontFamily">@font/ubuntu_regular</item>
+    </style>
+    <style name="MySearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="searchHintIcon">@null</item>
+        <item name="queryBackground">@android:color/transparent</item>
     </style>
 </resources>
