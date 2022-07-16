@@ -1,7 +1,9 @@
 package com.diskin.alon.coolclock.worldclocks.presentation
 
 import android.content.Context
+import android.content.Intent
 import android.os.Looper
+import android.text.format.DateFormat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelLazy
@@ -17,6 +19,8 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -41,6 +45,8 @@ import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowToast
+import java.text.SimpleDateFormat
+import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -243,5 +249,49 @@ class CityClocksFragmentTest {
 
         // Then
         verify(exactly = 1) { viewModel.deleteCityClock(clocks.first()) }
+    }
+
+    @Test
+    fun shareCityTime_WhenUserSelectToShareIt() {
+        // Given
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val clocks = createUiCityClocks()
+        cityClocks.value = PagingData.from(clocks)
+        val tz = TimeZone.getTimeZone(clocks.first().gmt)
+        val calendar = Calendar.getInstance(tz)
+        val date = calendar.time
+        val format = if(DateFormat.is24HourFormat(context)) {
+            context.getString(R.string.clock_time_format_24)
+        } else {
+            context.getString(R.string.clock_time_format_12)
+        }
+        val df = SimpleDateFormat(format)
+        df.timeZone = tz
+        val expectedCityTimeString = context.getString(
+            R.string.share_city_time_message,
+            clocks.first().name,
+            df.format(date)
+        )
+
+        Intents.init()
+
+        // When
+        onView(withRecyclerView(R.id.clocks).atPositionOnView(0, R.id.options_button))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+        onView(withText(R.string.title_action_share))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        Intents.intended(IntentMatchers.hasAction(Intent.ACTION_CHOOSER))
+        Intents.intended(IntentMatchers.hasExtraWithKey(Intent.EXTRA_INTENT))
+
+        val intent = Intents.getIntents().first().extras?.get(Intent.EXTRA_INTENT) as Intent
+
+        assertThat(intent.type).isEqualTo(context.getString(R.string.mime_type_text))
+        assertThat(intent.getStringExtra(Intent.EXTRA_TEXT)).isEqualTo(expectedCityTimeString)
+
+        Intents.release()
     }
 }

@@ -71,7 +71,7 @@
             android:format24Hour="@string/clock_time_format_24"
             android:textAppearance="?attr/textAppearanceHeadline5"
             android:textColor="@color/pink_700"
-            android:textSize="34sp"
+            android:textSize="28sp"
             app:layout_constraintBottom_toTopOf="@+id/textClockDate"
             app:layout_constraintEnd_toStartOf="@+id/options_button"
             app:layout_constraintTop_toTopOf="parent"

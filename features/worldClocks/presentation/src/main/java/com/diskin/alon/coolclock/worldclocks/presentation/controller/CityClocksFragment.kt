@@ -1,10 +1,12 @@
 package com.diskin.alon.coolclock.worldclocks.presentation.controller
 
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.*
 import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.app.ShareCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,6 +19,8 @@ import com.diskin.alon.coolclock.worldclocks.presentation.model.UiCityClock
 import com.diskin.alon.coolclock.worldclocks.presentation.viewmodel.CityClocksViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.migration.OptionalInject
+import java.text.SimpleDateFormat
+import java.util.*
 
 @AndroidEntryPoint
 @OptionalInject
@@ -95,11 +99,42 @@ class CityClocksFragment : Fragment(R.layout.fragment_city_clocks) {
                         true
                     }
 
+                    R.id.action_share -> {
+                        shareCityTime(cityClock)
+                        true
+                    }
+
                     else -> false
                 }
             }
             inflate(R.menu.menu_city_clock)
             show()
         }
+    }
+
+    private fun shareCityTime(cityClock: UiCityClock) {
+        activity?.let {
+            ShareCompat.IntentBuilder
+                .from(it)
+                .setType(getString(R.string.mime_type_text))
+                .setText(getString(R.string.share_city_time_message,cityClock.name,getCurrentCityTextTime(cityClock)))
+                .setChooserTitle(getString(R.string.share_city_time_chooser_title))
+                .startChooser()
+        }
+    }
+
+    private fun getCurrentCityTextTime(cityClock: UiCityClock): String {
+        val tz = TimeZone.getTimeZone(cityClock.gmt)
+        val calendar = Calendar.getInstance(tz)
+        val date = calendar.time
+        val format = if(DateFormat.is24HourFormat(context)) {
+            getString(R.string.clock_time_format_24)
+        } else {
+            getString(R.string.clock_time_format_12)
+        }
+        val df = SimpleDateFormat(format)
+        df.timeZone = tz
+
+        return df.format(date)
     }
 }
