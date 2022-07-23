@@ -7,10 +7,14 @@
     <string name="error_message_unknown">%1$s error,feature is currently unavailable</string>
     <string name="city_added_message">%1$s added to your clocks</string>
     <string name="clock_time_format_24">HH:mm</string>
+    <string name="mime_type_text">text/plain</string>
     <string name="clock_time_format_12">hh:mm aa</string>
     <string name="clock_date_format_24">EEE, dd MMM</string>
     <string name="clocks_browser_feature">Clocks browser</string>
     <string name="title_action_delete_clock">Delete</string>
     <string name="title_option_2">Option 2</string>
     <string name="title_option_3">Option 3</string>
+    <string name="title_action_share">Share</string>
+    <string name="share_city_time_message">%1$s current time:%2$s</string>
+    <string name="share_city_time_chooser_title">Share city time</string>
 </resources>

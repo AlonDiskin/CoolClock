@@ -6,11 +6,7 @@
         android:title="@string/title_action_delete_clock"/>
 
     <item
-        android:id="@+id/action_option_2"
-        android:title="@string/title_option_2"/>
-
-    <item
-        android:id="@+id/action_option_3"
-        android:title="@string/title_option_3"/>
+        android:id="@+id/action_share"
+        android:title="@string/title_action_share"/>
 
 </menu>
