@@ -1,0 +1,19 @@
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+dependencies {
+
+    // Javax
+    api "javax.inject:javax.inject:$javax_annotation_version"
+
+    // Rx
+    api "io.reactivex.rxjava2:rxjava:$rx_java_version"
+    api "io.reactivex.rxjava2:rxkotlin:$rx_kotlin_version"
+}

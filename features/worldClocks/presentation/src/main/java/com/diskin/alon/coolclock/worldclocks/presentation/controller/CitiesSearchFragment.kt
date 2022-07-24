@@ -123,7 +123,7 @@ class CitiesSearchFragment : Fragment(), MenuItem.OnActionExpandListener, Search
     private fun notifyUnknownError(featureName: String) {
         Toast.makeText(
             requireContext(),
-            getString(R.string.error_message_unknown,featureName),
+            getString(com.diskin.alon.coolclock.common.presentation.R.string.error_message_unknown,featureName),
             Toast.LENGTH_LONG)
             .show()
     }

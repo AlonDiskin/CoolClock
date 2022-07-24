@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/alarmsFragment"
-        android:name="com.diskin.alon.coolclock.alarms.presentation.AlarmsFragment"
+        android:name="com.diskin.alon.coolclock.alarms.presentation.controller.AlarmsFragment"
         android:label=""
         tools:layout="@layout/fragment_alarms">
 

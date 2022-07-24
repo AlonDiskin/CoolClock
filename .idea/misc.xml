@@ -4,7 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.35" />
-        <entry key="features/alarms/presentation/src/main/res/layout/fragment_alarms.xml" value="0.19739583333333333" />
+        <entry key="features/alarms/presentation/src/main/res/layout/alarm.xml" value="0.40028901734104044" />
+        <entry key="features/alarms/presentation/src/main/res/layout/fragment_alarms.xml" value="0.5" />
         <entry key="features/home/presentation/src/debug/res/layout/fragment_blank.xml" value="0.35989583333333336" />
         <entry key="features/home/presentation/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="features/home/presentation/src/main/res/layout/activity_scores.xml" value="0.35989583333333336" />
@@ -18,12 +19,13 @@
         <entry key="features/worldClocks/presentation/src/main/res/drawable/ic_baseline_done_24.xml" value="0.2155" />
         <entry key="features/worldClocks/presentation/src/main/res/drawable/ic_baseline_search_24.xml" value="0.289" />
         <entry key="features/worldClocks/presentation/src/main/res/layout/city.xml" value="0.33" />
-        <entry key="features/worldClocks/presentation/src/main/res/layout/city_clock.xml" value="0.4685185185185185" />
+        <entry key="features/worldClocks/presentation/src/main/res/layout/city_clock.xml" value="0.5" />
         <entry key="features/worldClocks/presentation/src/main/res/layout/city_search_result.xml" value="0.5" />
         <entry key="features/worldClocks/presentation/src/main/res/layout/city_time.xml" value="0.67" />
         <entry key="features/worldClocks/presentation/src/main/res/layout/fragment_cities_search.xml" value="0.33" />
         <entry key="features/worldClocks/presentation/src/main/res/layout/fragment_cities_time.xml" value="0.15177426250534418" />
         <entry key="features/worldClocks/presentation/src/main/res/layout/fragment_city_clocks.xml" value="0.2954253954681488" />
+        <entry key="features/worldClocks/presentation/src/main/res/layout/fragment_city_clocks_2.xml" value="0.25" />
         <entry key="features/worldClocks/presentation/src/main/res/layout/fragment_world_clocks.xml" value="0.19739583333333333" />
         <entry key="features/worldClocks/presentation/src/main/res/menu/menu_cities_search.xml" value="0.294570329200513" />
         <entry key="features/worldClocks/presentation/src/main/res/menu/menu_cities_time.xml" value="0.22" />

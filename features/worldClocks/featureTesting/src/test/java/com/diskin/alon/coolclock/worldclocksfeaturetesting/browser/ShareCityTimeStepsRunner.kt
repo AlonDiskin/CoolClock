@@ -34,7 +34,7 @@ class ShareCityTimeStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scena
         fun data(): Collection<Array<Any>> {
             val res = ArrayList<Array<Any>>()
             val scenarioConfigs = GreenCoffeeConfig()
-                .withFeatureFromAssets("feature/browser.feature")
+                .withFeatureFromAssets("feature/clocks_browser.feature")
                 .withTags("@time-shared")
                 .scenarios()
 

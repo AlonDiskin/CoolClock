@@ -3,13 +3,32 @@ package com.diskin.alon.coolclock.common.uitesting
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextClock
+import android.widget.TextView
+import androidx.annotation.ColorRes
+import androidx.appcompat.widget.SwitchCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.matcher.BoundedMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 
+fun withSwitchText(text: String): Matcher<View> {
+    return object : BoundedMatcher<View, SwitchCompat>(SwitchCompat::class.java) {
+
+        override fun describeTo(description: Description) {
+            description.appendText("with switch text:$text")
+        }
+
+        override fun matchesSafely(item: SwitchCompat): Boolean {
+            return item.text.toString() == text
+        }
+
+    }
+}
+
 fun isRecyclerViewItemsCount(size: Int): Matcher<View> {
     return object : BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
+
         override fun describeTo(description: Description) {
             description.appendText("with items count:${size}")
         }
@@ -23,6 +42,7 @@ fun isRecyclerViewItemsCount(size: Int): Matcher<View> {
 
 fun isWithProgress(progress: Int): Matcher<View> {
     return object : BoundedMatcher<View,ProgressBar>(ProgressBar::class.java) {
+
         override fun describeTo(description: Description) {
             description.appendText("with progress:$progress")
         }
@@ -48,6 +68,7 @@ fun withTimeZone(timeZone: String): Matcher<View> {
 
 fun withTimeFormat24(format: String?): Matcher<View> {
     return object : BoundedMatcher<View, TextClock>(TextClock::class.java) {
+
         override fun describeTo(description: Description) {
             description.appendText("with 24 time format:${format}")
         }
@@ -63,6 +84,7 @@ fun withTimeFormat24(format: String?): Matcher<View> {
 
 fun withTimeFormat12(format: String?): Matcher<View> {
     return object : BoundedMatcher<View,TextClock>(TextClock::class.java) {
+
         override fun describeTo(description: Description) {
             description.appendText("with 12 time format:${format}")
         }
@@ -72,6 +94,23 @@ fun withTimeFormat12(format: String?): Matcher<View> {
                 null -> item.format12Hour == null
                 else -> item.format12Hour.toString() == format
             }
+        }
+    }
+}
+
+fun withTextViewTextColor(@ColorRes colorId: Int): Matcher<View> {
+    return object : BoundedMatcher<View, TextView>(TextView::class.java) {
+
+        override fun describeTo(description: Description) {
+            description.appendText("with text view text color :$colorId")
+        }
+
+        override fun matchesSafely(item: TextView): Boolean {
+            val color = ContextCompat.getColor(
+                item.context,
+                colorId
+            )
+            return item.currentTextColor == color
         }
     }
 }

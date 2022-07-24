@@ -64,6 +64,7 @@ dependencies {
     implementation project(':features:settings:presentation')
     implementation project(':features:timer:di')
     implementation project(':features:worldClocks:di')
+    implementation project(':features:alarms:di')
 
     // Android core
     implementation 'androidx.core:core-ktx:1.7.0'

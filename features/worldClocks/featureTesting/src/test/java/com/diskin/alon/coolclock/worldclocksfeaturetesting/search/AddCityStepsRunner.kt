@@ -34,7 +34,7 @@ class AddCityStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
         fun data(): Collection<Array<Any>> {
             val res = ArrayList<Array<Any>>()
             val scenarioConfigs = GreenCoffeeConfig()
-                .withFeatureFromAssets("feature/search.feature")
+                .withFeatureFromAssets("feature/cities_search.feature")
                 .withTags("@add-city")
                 .scenarios()
 

@@ -224,7 +224,7 @@ class CityClocksFragmentTest {
         val toastMessage = ShadowToast.getTextOfLatestToast()
         val context = ApplicationProvider.getApplicationContext<Context>()
         val expectedMessage = context.getString(
-            R.string.error_message_unknown,
+            com.diskin.alon.coolclock.common.presentation.R.string.error_message_unknown,
             context.getString(R.string.clocks_browser_feature)
         )
 

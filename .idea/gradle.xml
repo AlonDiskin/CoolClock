@@ -14,8 +14,14 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/alarms" />
+            <option value="$PROJECT_DIR$/features/alarms/application" />
+            <option value="$PROJECT_DIR$/features/alarms/data" />
+            <option value="$PROJECT_DIR$/features/alarms/di" />
+            <option value="$PROJECT_DIR$/features/alarms/domain" />
+            <option value="$PROJECT_DIR$/features/alarms/featureTesting" />
             <option value="$PROJECT_DIR$/features/alarms/presentation" />
             <option value="$PROJECT_DIR$/features/common" />
+            <option value="$PROJECT_DIR$/features/common/application" />
             <option value="$PROJECT_DIR$/features/common/instrumentationTesting" />
             <option value="$PROJECT_DIR$/features/common/presentation" />
             <option value="$PROJECT_DIR$/features/common/uiTesting" />

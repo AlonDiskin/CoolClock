@@ -4,7 +4,6 @@
     <string name="title_action_search">Search</string>
     <string name="error_message_local_network">Device network error,please check your connection</string>
     <string name="error_message_remote_server">Remote server error,please try again later</string>
-    <string name="error_message_unknown">%1$s error,feature is currently unavailable</string>
     <string name="city_added_message">%1$s added to your clocks</string>
     <string name="clock_time_format_24">HH:mm</string>
     <string name="mime_type_text">text/plain</string>

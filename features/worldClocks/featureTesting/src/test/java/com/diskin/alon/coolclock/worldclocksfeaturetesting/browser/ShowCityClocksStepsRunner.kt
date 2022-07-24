@@ -34,7 +34,7 @@ class ShowCityClocksStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scen
         fun data(): Collection<Array<Any>> {
             val res = ArrayList<Array<Any>>()
             val scenarioConfigs = GreenCoffeeConfig()
-                .withFeatureFromAssets("feature/browser.feature")
+                .withFeatureFromAssets("feature/clocks_browser.feature")
                 .withTags("@show-clocks")
                 .scenarios()
 
