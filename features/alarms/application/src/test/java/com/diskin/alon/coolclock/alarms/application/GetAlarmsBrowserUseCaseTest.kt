@@ -2,9 +2,9 @@ package com.diskin.alon.coolclock.alarms.application
 
 import androidx.paging.PagingData
 import com.diskin.alon.coolclock.alarms.application.interfaces.AlarmsRepository
-import com.diskin.alon.coolclock.alarms.application.model.CreatedAlarm
+import com.diskin.alon.coolclock.alarms.application.model.BrowserAlarm
 import com.diskin.alon.coolclock.alarms.application.usecase.AlarmsMapper
-import com.diskin.alon.coolclock.alarms.application.usecase.GetCreatedAlarmsUseCase
+import com.diskin.alon.coolclock.alarms.application.usecase.GetAlarmsBrowserUseCase
 import com.diskin.alon.coolclock.alarms.domain.Alarm
 import io.mockk.every
 import io.mockk.mockk
@@ -13,10 +13,10 @@ import io.reactivex.Observable
 import org.junit.Before
 import org.junit.Test
 
-class GetCreatedAlarmsUseCaseTest {
+class GetAlarmsBrowserUseCaseTest {
 
     // Test subject
-    private lateinit var useCase: GetCreatedAlarmsUseCase
+    private lateinit var useCase: GetAlarmsBrowserUseCase
 
     // Collaborators
     private val alarmsRepo: AlarmsRepository = mockk()
@@ -24,14 +24,14 @@ class GetCreatedAlarmsUseCaseTest {
 
     @Before
     fun setUp() {
-        useCase = GetCreatedAlarmsUseCase(alarmsRepo, alarmsMapper)
+        useCase = GetAlarmsBrowserUseCase(alarmsRepo, alarmsMapper)
     }
 
     @Test
     fun getAllAlarms_WhenExecuted() {
         // Given
         val repoAlarms = PagingData.empty<Alarm>()
-        val createdAlarms = PagingData.empty<CreatedAlarm>()
+        val createdAlarms = PagingData.empty<BrowserAlarm>()
 
         every { alarmsRepo.getAll() } returns Observable.just(repoAlarms)
         every { alarmsMapper.map(any()) } returns createdAlarms

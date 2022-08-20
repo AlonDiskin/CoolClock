@@ -1,7 +1,7 @@
 package com.diskin.alon.coolclock.alarms.di
 
 import com.diskin.alon.coolclock.alarms.application.interfaces.AlarmsRepository
-import com.diskin.alon.coolclock.alarms.data.implementations.AlarmsRepositoryImpl
+import com.diskin.alon.coolclock.alarms.data.implementation.AlarmsRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

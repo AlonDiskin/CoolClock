@@ -6,6 +6,8 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.diskin.alon.coolclock.alarms.data.local.AlarmEntity
+import com.diskin.alon.coolclock.alarms.domain.WeekDay
 import com.diskin.alon.coolclock.alarms.featuretesting.util.TestDatabase
 import com.diskin.alon.coolclock.alarms.presentation.R
 import com.diskin.alon.coolclock.alarms.presentation.controller.AlarmsAdapter.AlarmViewHolder
@@ -46,6 +48,12 @@ class AlarmsListedSteps(
             "Not scheduled",
             false,
             "02:30"
+        ),
+        TestUiAlarm(
+            "alarm_4",
+            "Sun, 18 Sep",
+            true,
+            "15:35"
         )
     )
 
@@ -57,23 +65,75 @@ class AlarmsListedSteps(
     init {
         // Set current system time
         DateTimeUtils.setCurrentMillisFixed(
-            DateTime()
-                .withHourOfDay(12)
-                .withMinuteOfHour(0)
+            DateTime(2022,9,13,12,0)
                 .millis
         )
 
         // Populate test db
-        val insert1 = "INSERT INTO alarms (name,hour,minute,repeatDays,isActive,ringtone,isVibrate,isSound,id)" +
-                "VALUES ('alarm_1',12,15,'empty',1,'sound_1',0,1,1)"
-        val insert2 = "INSERT INTO alarms (name,hour,minute,repeatDays,isActive,ringtone,isVibrate,isSound,id)" +
-                "VALUES ('alarm_2',10,15,'empty',1,'sound_2',0,1,2)"
-        val insert3 = "INSERT INTO alarms (name,hour,minute,repeatDays,isActive,ringtone,isVibrate,isSound,id)" +
-                "VALUES ('alarm_3',2,30,'empty',0,'sound_3',0,1,3)"
+        val alarms = listOf(
+            AlarmEntity(
+                "alarm_1",
+                12,
+                15,
+                emptySet(),
+                true,
+                "sound_1",
+                false,
+                true,
+                1,
+                5,
+                false,
+                5,
+                1
+            ),
+            AlarmEntity(
+                "alarm_2",
+                10,
+                15,
+                emptySet(),
+                true,
+                "sound_1",
+                false,
+                true,
+                1,
+                5,
+                false,
+                5,
+                1
+            ),
+            AlarmEntity(
+                "alarm_3",
+                2,
+                30,
+                emptySet(),
+                false,
+                "sound_1",
+                false,
+                true,
+                1,
+                5,
+                false,
+                5,
+                1
+            ),
+            AlarmEntity(
+                "alarm_4",
+                15,
+                35,
+                setOf(WeekDay.SUN,WeekDay.MON),
+                true,
+                "sound_1",
+                false,
+                true,
+                1,
+                5,
+                false,
+                5,
+                1
+            )
+        )
 
-        db.compileStatement(insert1).executeInsert()
-        db.compileStatement(insert2).executeInsert()
-        db.compileStatement(insert3).executeInsert()
+        alarms.forEach { db.alarmDao().insert(it).blockingAwait() }
     }
 
     @Given("^user opened alarms screen$")

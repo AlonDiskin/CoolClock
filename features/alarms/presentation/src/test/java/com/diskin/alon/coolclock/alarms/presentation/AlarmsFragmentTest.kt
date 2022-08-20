@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelLazy
 import androidx.paging.PagingData
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -17,11 +18,14 @@ import com.diskin.alon.coolclock.alarms.presentation.controller.AlarmsAdapter.Al
 import com.diskin.alon.coolclock.alarms.presentation.controller.AlarmsFragment
 import com.diskin.alon.coolclock.alarms.presentation.model.UiAlarm
 import com.diskin.alon.coolclock.alarms.presentation.viewmodel.AlarmsViewModel
+import com.diskin.alon.coolclock.common.presentation.SingleLiveEvent
 import com.diskin.alon.coolclock.common.uitesting.*
 import com.diskin.alon.coolclock.common.uitesting.RecyclerViewMatcher.withRecyclerView
+import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkConstructor
+import io.mockk.verify
 import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Test
@@ -29,6 +33,7 @@ import org.junit.runner.RunWith
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadows.ShadowToast
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -44,6 +49,7 @@ class AlarmsFragmentTest {
 
     // Stub data
     private val alarms = MutableLiveData<PagingData<UiAlarm>>()
+    private val latestScheduledAlarm = SingleLiveEvent<String>()
 
     @Before
     fun setUp() {
@@ -53,6 +59,7 @@ class AlarmsFragmentTest {
 
         // Stub view model
         every { viewModel.alarms } returns alarms
+        every { viewModel.latestScheduledAlarm } returns latestScheduledAlarm
 
         // Launch fragment under test
         scenario = launchFragmentInHiltContainer<AlarmsFragment>()
@@ -152,6 +159,62 @@ class AlarmsFragmentTest {
 
             onView(withRecyclerView(R.id.alarms).atPositionOnView(index, R.id.active_switcher))
                 .check(matches(withSwitchText(uiAlarm.time)))
+
+            onView(withRecyclerView(R.id.alarms).atPositionOnView(index, R.id.active_switcher))
+                .check(matches(withSwitchChecked(uiAlarm.isActive)))
         }
+    }
+
+    @Test
+    fun activateAlarm_WhenUserSwitchOnUnActivatedAlarm() {
+        // Given
+        val alarm = createUnActiveAlarm()
+
+        every { viewModel.changeAlarmActivation(any(),any()) } returns Unit
+
+        alarms.value = PagingData.from(listOf(alarm))
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When
+        onView(withId(R.id.active_switcher))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        verify(exactly = 1) { viewModel.changeAlarmActivation(alarm.id,true) }
+    }
+
+    @Test
+    fun deActivateAlarm_WhenUserSwitchOfActivatedAlarm() {
+        // Given
+        val alarm = createActiveAlarm()
+
+        every { viewModel.changeAlarmActivation(any(),any()) } returns Unit
+
+        alarms.value = PagingData.from(listOf(alarm))
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When
+        onView(withId(R.id.active_switcher))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        verify(exactly = 1) { viewModel.changeAlarmActivation(alarm.id,false) }
+    }
+
+    @Test
+    fun notifyOfLatestScheduledAlarm_WhenActivatedAlarmScheduled() {
+        // Given
+        val date = "date"
+
+        // When
+        latestScheduledAlarm.value = date
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        val toastMessage = ShadowToast.getTextOfLatestToast()
+
+        assertThat(toastMessage).isEqualTo(date)
     }
 }

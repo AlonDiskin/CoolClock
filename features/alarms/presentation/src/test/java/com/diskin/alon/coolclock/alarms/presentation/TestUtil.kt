@@ -31,3 +31,21 @@ fun createUiAlarms(): List<UiAlarm> {
         )
     )
 }
+
+fun createUnActiveAlarm() = UiAlarm(
+    3,
+    "13:15",
+    "name_3",
+    false,
+    "Tue,Jul 23",
+    setOf(RepeatDay.SUN,RepeatDay.WED)
+)
+
+fun createActiveAlarm() = UiAlarm(
+    3,
+    "13:15",
+    "name_3",
+    true,
+    "Tue,Jul 23",
+    setOf(RepeatDay.SUN,RepeatDay.WED)
+)

@@ -7,13 +7,12 @@ data class Alarm(val id: Int,
                  var time: Time,
                  var repeatDays: Set<WeekDay>,
                  var isActive: Boolean,
-                 var ringtone: String,
                  var isVibrate: Boolean,
-                 var isSound: Boolean) {
-
-    init {
-        require(if (isSound) ringtone.isNotEmpty() else ringtone.isEmpty())
-    }
+                 var sound: Sound,
+                 var duration: Duration,
+                 var volume: Volume,
+                 var snooze: Snooze
+) {
 
     fun nextAlarm(): Long {
         return when(isActive) {

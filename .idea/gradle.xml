@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/features/alarms" />
             <option value="$PROJECT_DIR$/features/alarms/application" />
             <option value="$PROJECT_DIR$/features/alarms/data" />
+            <option value="$PROJECT_DIR$/features/alarms/device" />
             <option value="$PROJECT_DIR$/features/alarms/di" />
             <option value="$PROJECT_DIR$/features/alarms/domain" />
             <option value="$PROJECT_DIR$/features/alarms/featureTesting" />

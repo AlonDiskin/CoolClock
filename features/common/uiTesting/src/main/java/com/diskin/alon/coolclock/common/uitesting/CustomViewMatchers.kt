@@ -26,6 +26,20 @@ fun withSwitchText(text: String): Matcher<View> {
     }
 }
 
+fun withSwitchChecked(checked: Boolean): Matcher<View> {
+    return object : BoundedMatcher<View, SwitchCompat>(SwitchCompat::class.java) {
+
+        override fun describeTo(description: Description) {
+            description.appendText("with switch checked:$checked")
+        }
+
+        override fun matchesSafely(item: SwitchCompat): Boolean {
+            return item.isChecked == checked
+        }
+
+    }
+}
+
 fun isRecyclerViewItemsCount(size: Int): Matcher<View> {
     return object : BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
 

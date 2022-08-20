@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.diskin.alon.coolclock.alarms.device">
+
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <application>
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="ACTION_ALARM" />
+                <action android:name="ACTION_ALARM_CANCEL" />
+            </intent-filter>
+        </receiver>
+        <service
+            android:name=".AlarmService"
+            android:enabled="true"
+            android:exported="false" />
+    </application>
+
+</manifest>

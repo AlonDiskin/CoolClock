@@ -48,7 +48,13 @@ class AlarmDaoTest {
             true,
             "sound_1",
             false,
-            true),
+            true,
+                1,
+                5,
+                false,
+                5,
+                1,
+            ),
             AlarmEntity(
                 "name_2",
                 11,
@@ -57,10 +63,64 @@ class AlarmDaoTest {
                 false,
                 "sound_2",
                 true,
-                true)
+                true,
+                2,
+                10,
+                true,
+                5,
+                1,
+            )
         )
         val expected = listOf(
             AlarmEntity(
+                "name_1",
+                12,
+                10,
+                setOf(WeekDay.SUN,WeekDay.MON),
+                true,
+                "sound_1",
+                false,
+                true,
+                1,
+                5,
+                false,
+                5,
+                1,
+                1
+            ),
+            AlarmEntity(
+                "name_2",
+                11,
+                15,
+                emptySet(),
+                false,
+                "sound_2",
+                true,
+                true,
+                2,
+                10,
+                true,
+                5,
+                1,
+                2
+            )
+        ).asReversed()
+
+        // When
+        entities.forEach { dao.insert(it).blockingAwait() }
+
+        // Then
+        val actual = dao.getAll().load(
+            PagingSource.LoadParams.Refresh(null,20,false)
+        ) as PagingSource.LoadResult.Page<Int, AlarmEntity>
+
+        assertThat(actual.data).isEqualTo(expected)
+    }
+
+    @Test
+    fun insertAndQueryAlarmById() {
+        // Given
+        val entity = AlarmEntity(
             "name_1",
             12,
             10,
@@ -69,27 +129,66 @@ class AlarmDaoTest {
             "sound_1",
             false,
             true,
-            1),
-            AlarmEntity(
-                "name_2",
-                11,
-                15,
-                emptySet(),
-                false,
-                "sound_2",
-                true,
-                true,
-                2)
-        ).asReversed()
+            1,
+            5,
+            false,
+            5,
+            1,
+            1
+        )
+
+        dao.insert(entity).blockingAwait()
 
         // When
-        entities.forEach { dao.insert(it).test() }
+        val actual = dao.get(entity.id!!).blockingGet()
 
         // Then
-        val actual = dao.getAll().load(
-            PagingSource.LoadParams.Refresh(null,20,false)
-        ) as PagingSource.LoadResult.Page<Int, AlarmEntity>
+        assertThat(actual).isEqualTo(entity)
+    }
 
-        assertThat(actual.data).isEqualTo(expected)
+    @Test
+    fun insertAndUpdateAlarmActiveState() {
+        // Given
+        val entity = AlarmEntity(
+            "name_1",
+            12,
+            10,
+            setOf(WeekDay.SUN,WeekDay.MON),
+            true,
+            "sound_1",
+            false,
+            true,
+            1,
+            5,
+            false,
+            5,
+            1,
+            1
+        )
+        val expected = AlarmEntity(
+            "name_1",
+            12,
+            10,
+            setOf(WeekDay.SUN,WeekDay.MON),
+            false,
+            "sound_1",
+            false,
+            true,
+            1,
+            5,
+            false,
+            5,
+            1,
+            1
+        )
+
+        dao.insert(entity).blockingAwait()
+
+        // When
+        dao.updateIsActive(entity.id!!,!entity.isActive).blockingAwait()
+        val actual = dao.get(entity.id!!).blockingGet()
+
+        // Then
+        assertThat(actual).isEqualTo(expected)
     }
 }

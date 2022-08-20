@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object TestDataModule {
+object TestAppDataModule {
 
     @Singleton
     @Provides

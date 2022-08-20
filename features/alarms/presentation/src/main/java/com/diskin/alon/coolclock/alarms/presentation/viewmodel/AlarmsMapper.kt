@@ -3,7 +3,8 @@ package com.diskin.alon.coolclock.alarms.presentation.viewmodel
 import android.app.Application
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.diskin.alon.coolclock.alarms.application.model.CreatedAlarm
+import com.diskin.alon.coolclock.alarms.application.model.BrowserAlarm
+import com.diskin.alon.coolclock.alarms.application.model.NextAlarm
 import com.diskin.alon.coolclock.alarms.presentation.R
 import com.diskin.alon.coolclock.alarms.presentation.model.UiAlarm
 import org.joda.time.DateTime
@@ -16,7 +17,7 @@ class AlarmsMapper @Inject constructor(
 
     private val res = app.resources
 
-    fun map(alarms: PagingData<CreatedAlarm>): PagingData<UiAlarm> {
+    fun map(alarms: PagingData<BrowserAlarm>): PagingData<UiAlarm> {
         return alarms.map {
             UiAlarm(
                 it.id,
@@ -29,13 +30,13 @@ class AlarmsMapper @Inject constructor(
         }
     }
 
-    private fun mapNextAlarm(nextAlarm: Long): String {
+    private fun mapNextAlarm(nextAlarm: NextAlarm): String {
         return when {
-            nextAlarm == 0L -> res.getString(R.string.label_alarm_not_active)
-            isAlarmToday(nextAlarm) -> res.getString(R.string.label_alarm_today)
-            isAlarmTomorrow(nextAlarm) -> res.getString(R.string.label_alarm_tomorrow)
+            nextAlarm is NextAlarm.None -> res.getString(R.string.label_alarm_not_active)
+            isAlarmToday((nextAlarm as NextAlarm.Next).millis) -> res.getString(R.string.label_alarm_today)
+            isAlarmTomorrow(nextAlarm.millis) -> res.getString(R.string.label_alarm_tomorrow)
             else -> {
-                DateTime(nextAlarm)
+                DateTime(nextAlarm.millis)
                     .toString(
                         DateTimeFormat.forPattern(res.getString(R.string.alarm_date_format))
                     )

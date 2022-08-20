@@ -1,6 +1,7 @@
 package com.diskin.alon.coolclock.common.application
 
 import io.reactivex.Observable
+import io.reactivex.ObservableSource
 import io.reactivex.Single
 import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
@@ -58,6 +59,20 @@ fun <T : Any, R : Any> Observable<AppResult<T>>.flatMapAppResult(mapper: (T) -> 
     }
 }
 
+fun <T : Any, R : Any> Single<AppResult<T>>.flatMapSingleAppResult(mapper: (T) -> (Single<AppResult<R>>)): Single<AppResult<R>> {
+    return this.flatMap {
+        when(it) {
+            is AppResult.Success -> mapper.invoke(it.data)
+            is AppResult.Error -> Single.just(
+                AppResult.Error(
+                    it.error
+                )
+            )
+            is AppResult.Loading -> Single.just(AppResult.Loading())
+        }
+    }
+}
+
 fun <T : Any> Observable<T>.toAppResult(errorHandler: ((Throwable) -> (AppError))? = null): Observable<AppResult<T>> {
     return this.map { toSuccessAppResult(it) }
         .onErrorReturn { toAppResultError(it,errorHandler) }
@@ -68,6 +83,35 @@ fun <T : Any> Observable<T>.toIOLoadingAppResult(errorHandler: ((Throwable) -> (
         .map { toSuccessAppResult(it) }
         .onErrorReturn { toAppResultError(it,errorHandler) }
         .startWith(AppResult.Loading())
+}
+
+fun <T : Any, P : Any,R : Any> combineLatestAppResults(
+    source1: Observable<AppResult<T>>,
+    source2: Observable<AppResult<P>>,
+    combiner: (T,P) -> (R)
+): Observable<AppResult<R>> {
+    return Observable.combineLatest(source1,source2) { r1, r2 ->
+        when {
+            r1 is AppResult.Success && r2 is AppResult.Success -> {
+                // both success
+                AppResult.Success(combiner.invoke(r1.data,r2.data))
+            }
+
+            r1 is AppResult.Loading || r2 is AppResult.Loading -> {
+                // at least one of them is loading
+                AppResult.Loading()
+            }
+
+            else -> {
+                // at least one of them is loading
+                if (r1 is AppResult.Error) {
+                    AppResult.Error(r1.error)
+                } else {
+                    AppResult.Error((r2 as AppResult.Error).error)
+                }
+            }
+        }
+    }
 }
 
 private fun <T : Any> toSuccessAppResult(data: T): AppResult<T> {

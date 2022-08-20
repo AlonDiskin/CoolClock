@@ -11,9 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import com.diskin.alon.coolclock.alarms.presentation.viewmodel.AlarmsViewModel
 import com.diskin.alon.coolclock.alarms.presentation.R
 import com.diskin.alon.coolclock.alarms.presentation.databinding.FragmentAlarmsBinding
+import com.diskin.alon.coolclock.alarms.presentation.viewmodel.AlarmsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.migration.OptionalInject
 
@@ -37,13 +37,14 @@ class AlarmsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Set alarms paging adapter
-        val adapter = AlarmsAdapter()
+        val adapter = AlarmsAdapter(::handleAlarmActivationSwitch)
         layout.alarms.adapter = adapter
 
         adapter.addLoadStateListener(::handleLoadStateUpdate)
 
         // Observe view model state
         viewModel.alarms.observe(viewLifecycleOwner) { adapter.submitData(lifecycle,it) }
+        viewModel.latestScheduledAlarm.observe(viewLifecycleOwner,::notifyOfLatestScheduledAlarm)
     }
 
     @VisibleForTesting
@@ -64,5 +65,17 @@ class AlarmsFragment : Fragment() {
             getString(com.diskin.alon.coolclock.common.presentation.R.string.error_message_unknown,featureName),
             Toast.LENGTH_LONG)
             .show()
+    }
+
+    private fun handleAlarmActivationSwitch(id: Int,activation: Boolean) {
+        viewModel.changeAlarmActivation(id,activation)
+    }
+
+    private fun notifyOfLatestScheduledAlarm(date: String) {
+        Toast.makeText(
+            requireContext(),
+            date,
+            Toast.LENGTH_LONG
+        ).show()
     }
 }

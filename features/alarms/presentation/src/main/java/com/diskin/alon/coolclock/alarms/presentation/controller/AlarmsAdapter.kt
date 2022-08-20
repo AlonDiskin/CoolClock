@@ -9,6 +9,7 @@ import com.diskin.alon.coolclock.alarms.presentation.model.UiAlarm
 import com.diskin.alon.coolclock.alarms.presentation.databinding.AlarmBinding
 
 class AlarmsAdapter(
+    private val activationSwitchListener: (Int,Boolean) -> (Unit),
 ) : PagingDataAdapter<UiAlarm, AlarmsAdapter.AlarmViewHolder>(
     DIFF_CALLBACK
 ){
@@ -27,11 +28,17 @@ class AlarmsAdapter(
     }
 
     class AlarmViewHolder(
-        private val binding: AlarmBinding
+        private val binding: AlarmBinding,
+        private val activationSwitchListener: (Int,Boolean) -> (Unit)
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(alarm: UiAlarm) {
+            binding.activeSwitcher.setOnCheckedChangeListener(null)
             binding.alarm = alarm
+            binding.executePendingBindings()
+            binding.activeSwitcher.setOnCheckedChangeListener { _, checked ->
+                binding.alarm?.let { activationSwitchListener.invoke(it.id,checked) }
+            }
         }
     }
 
@@ -42,7 +49,7 @@ class AlarmsAdapter(
             false
         )
 
-        return AlarmViewHolder(binding)
+        return AlarmViewHolder(binding,activationSwitchListener)
     }
 
     override fun onBindViewHolder(holder: AlarmViewHolder, position: Int) {
