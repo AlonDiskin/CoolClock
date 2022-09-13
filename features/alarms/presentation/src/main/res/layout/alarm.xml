@@ -4,38 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="kotlin.jvm.functions.Function2"/>
+        <import type="kotlin.Unit"/>
+        <import type="android.view.View"/>
+        <import type="com.diskin.alon.coolclock.alarms.presentation.model.UiAlarm"/>
+
         <variable
             name="alarm"
-            type="com.diskin.alon.coolclock.alarms.presentation.model.UiAlarm" />
+            type="UiAlarm" />
+        <variable
+            name="menuClickListener"
+            type="Function2&lt;UiAlarm,View,Unit>" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="88dp">
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/active_switcher"
+        <ImageButton
+            android:id="@+id/options_button"
+            style="@style/Widget.AppCompat.ActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:textAppearance="?attr/textAppearanceHeadline5"
-            android:textColor="@color/pink_700"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:checked="@{alarm.active}"
-            android:text="@{alarm.time}"
-            app:layout_constraintBottom_toTopOf="@+id/sunday_label"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp"
+            android:onClick="@{(v) -> menuClickListener.invoke(alarm,v)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:checked="true"
-            tools:text="12:03 " />
+            app:srcCompat="@drawable/ic_baseline_more_vert_24" />
 
         <TextView
             android:id="@+id/next_alarm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginEnd="4dp"
             android:ellipsize="end"
             android:lines="1"
@@ -44,7 +45,7 @@
             app:layout_constraintBottom_toTopOf="@+id/alarm_name"
             app:layout_constraintEnd_toStartOf="@+id/active_switcher"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/options_button"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="Today" />
@@ -165,6 +166,24 @@
             app:layout_constraintStart_toEndOf="@+id/friday_label"
             app:layout_constraintTop_toTopOf="@+id/friday_label"
             tools:textColor="@color/material_on_background_disabled" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/active_switcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:checked="@{alarm.active}"
+            android:text="@{alarm.time}"
+            android:textAppearance="?attr/textAppearanceHeadline5"
+            android:textColor="@color/pink_700"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:checked="true"
+            tools:text="12:03 " />
 
         <View
             android:id="@+id/view"

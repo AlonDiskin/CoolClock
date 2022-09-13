@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.rxjava2.cachedIn
 import com.diskin.alon.coolclock.alarms.application.model.AlarmActivation
 import com.diskin.alon.coolclock.alarms.application.model.NextAlarm
+import com.diskin.alon.coolclock.alarms.application.usecase.DeleteAlarmUseCase
 import com.diskin.alon.coolclock.alarms.application.usecase.GetAlarmsBrowserUseCase
 import com.diskin.alon.coolclock.alarms.application.usecase.SetAlarmActivationUseCase
 import com.diskin.alon.coolclock.alarms.presentation.model.UiAlarm
@@ -24,6 +25,7 @@ import javax.inject.Inject
 class AlarmsViewModel @Inject constructor(
     private val getAlarms: GetAlarmsBrowserUseCase,
     private val setAlarmActivation: SetAlarmActivationUseCase,
+    private val deleteAlarm: DeleteAlarmUseCase,
     private val alarmsMapper: AlarmsMapper,
     private val dateFormatter: ScheduledAlarmDateFormatter
 ) : RxViewModel() {
@@ -33,12 +35,23 @@ class AlarmsViewModel @Inject constructor(
     val latestScheduledAlarm = SingleLiveEvent<String>()
     private val alarmActivationSubject = BehaviorSubject.create<AlarmActivation>()
     val alarmActivationError = SingleLiveEvent<AppError>()
+    private val alarmDeletionSubject = BehaviorSubject.create<Int>()
+    val alarmDeletionError = SingleLiveEvent<AppError>()
 
     init {
         addSubscription(
             createAlarmsSubscription(),
-            createAlarmActivationSubscription()
+            createAlarmActivationSubscription(),
+            createAlarmDeletionSubscription()
         )
+    }
+
+    fun changeAlarmActivation(id: Int, activation: Boolean) {
+        alarmActivationSubject.onNext(AlarmActivation(id,activation))
+    }
+
+    fun deleteAlarm(id: Int) {
+        alarmDeletionSubject.onNext(id)
     }
 
     private fun createAlarmsSubscription(): Disposable {
@@ -61,8 +74,18 @@ class AlarmsViewModel @Inject constructor(
             },::handleAlarmActivationSubscriptionError)
     }
 
-    fun changeAlarmActivation(id: Int, activation: Boolean) {
-        alarmActivationSubject.onNext(AlarmActivation(id,activation))
+    private fun createAlarmDeletionSubscription(): Disposable {
+        return alarmDeletionSubject.concatMapSingle { deleteAlarm.execute(it) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                when(it) {
+                    is AppResult.Error -> alarmDeletionError.value = it.error
+                }
+            },{
+                println("ALARM DELETE ERROR:${it.message}")
+                it.printStackTrace()
+                alarmDeletionError.value = AppError.UNKNOWN_ERROR
+            })
     }
 
     private fun handleAlarmActivationSuccess(scheduled: NextAlarm) {
@@ -77,5 +100,7 @@ class AlarmsViewModel @Inject constructor(
 
     private fun handleAlarmActivationSubscriptionError(error: Throwable) {
         alarmActivationError.value = AppError.UNKNOWN_ERROR
+        println("ALARM ACTIVATION ERROR:${error.message}")
+        error.printStackTrace()
     }
 }

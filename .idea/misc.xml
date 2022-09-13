@@ -4,8 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.35" />
-        <entry key="features/alarms/presentation/src/main/res/layout/alarm.xml" value="0.40028901734104044" />
-        <entry key="features/alarms/presentation/src/main/res/layout/fragment_alarms.xml" value="0.5" />
+        <entry key="features/alarms/presentation/src/main/res/drawable/ic_baseline_more_vert_24.xml" value="0.2685" />
+        <entry key="features/alarms/presentation/src/main/res/layout/alarm.xml" value="0.67" />
+        <entry key="features/alarms/presentation/src/main/res/layout/fragment_alarms.xml" value="0.33" />
+        <entry key="features/alarms/presentation/src/main/res/menu/menu_alarm.xml" value="0.1611799914493373" />
+        <entry key="features/alarms/presentation/src/main/res/menu/menu_city_clock.xml" value="0.16203505771697307" />
         <entry key="features/home/presentation/src/debug/res/layout/fragment_blank.xml" value="0.35989583333333336" />
         <entry key="features/home/presentation/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="features/home/presentation/src/main/res/layout/activity_scores.xml" value="0.35989583333333336" />

@@ -2,6 +2,7 @@ package com.diskin.alon.coolclock.di
 
 import android.app.Application
 import androidx.room.Room
+import com.diskin.alon.coolclock.alarms.data.local.AlarmDao
 import com.diskin.alon.coolclock.worldclocks.data.CityDao
 import dagger.Module
 import dagger.Provides
@@ -25,5 +26,11 @@ object AppTestDataModule {
     @Provides
     fun provideCityDao(database: AppTestDatabase): CityDao {
         return database.cityDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideAlarmsDao(database: AppTestDatabase): AlarmDao {
+        return database.alarmDao()
     }
 }

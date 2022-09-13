@@ -24,4 +24,8 @@ class AlarmsRepositoryImpl @Inject constructor(
     override fun setActive(id: Int, isActive: Boolean): Single<AppResult<Unit>> {
         return localSource.setActive(id, isActive)
     }
+
+    override fun delete(id: Int): Single<AppResult<Unit>> {
+        return localSource.delete(id)
+    }
 }

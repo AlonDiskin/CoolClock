@@ -1,10 +1,7 @@
 package com.diskin.alon.coolclock.alarms.data.local
 
 import androidx.paging.PagingSource
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -22,4 +19,7 @@ interface AlarmDao {
 
     @Query("UPDATE alarms SET isActive = :isActive WHERE id = :id")
     fun updateIsActive(id: Int,isActive: Boolean): Completable
+
+    @Query("DELETE FROM alarms WHERE id = :id")
+    fun delete(id: Int): Completable
 }

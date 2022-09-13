@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.VisibleForTesting
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,6 +14,7 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import com.diskin.alon.coolclock.alarms.presentation.R
 import com.diskin.alon.coolclock.alarms.presentation.databinding.FragmentAlarmsBinding
+import com.diskin.alon.coolclock.alarms.presentation.model.UiAlarm
 import com.diskin.alon.coolclock.alarms.presentation.viewmodel.AlarmsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.migration.OptionalInject
@@ -37,7 +39,7 @@ class AlarmsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Set alarms paging adapter
-        val adapter = AlarmsAdapter(::handleAlarmActivationSwitch)
+        val adapter = AlarmsAdapter(::handleAlarmActivationSwitch,::handleAlarmMenuClick)
         layout.alarms.adapter = adapter
 
         adapter.addLoadStateListener(::handleLoadStateUpdate)
@@ -77,5 +79,26 @@ class AlarmsFragment : Fragment() {
             date,
             Toast.LENGTH_LONG
         ).show()
+    }
+
+    private fun handleAlarmMenuClick(alarm: UiAlarm,view: View) {
+        PopupMenu(requireActivity(), view).apply {
+            setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.action_delete_alarm -> {
+                        viewModel.deleteAlarm(alarm.id)
+                        true
+                    }
+
+                    R.id.action_edit_alarm -> {
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+            inflate(R.menu.menu_alarm)
+            show()
+        }
     }
 }

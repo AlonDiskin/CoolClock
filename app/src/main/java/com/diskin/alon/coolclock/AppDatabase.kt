@@ -11,7 +11,7 @@ import com.diskin.alon.coolclock.worldclocks.data.CityEntity
 
 @Database(
     entities = [CityEntity::class, AlarmEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = true
 )
 @TypeConverters(AlarmEntityConverters::class)

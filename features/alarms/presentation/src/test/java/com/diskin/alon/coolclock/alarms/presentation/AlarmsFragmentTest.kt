@@ -217,4 +217,25 @@ class AlarmsFragmentTest {
 
         assertThat(toastMessage).isEqualTo(date)
     }
+
+    @Test
+    fun deleteAlarm_WhenUserSelectToDeleteIt() {
+        // Given
+        val alarmsData = createUiAlarms()
+        alarms.value = PagingData.from(alarmsData)
+
+        every { viewModel.deleteAlarm(any()) } returns Unit
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When
+        onView(withRecyclerView(R.id.alarms).atPositionOnView(0, R.id.options_button))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+        onView(withText(R.string.title_action_delete))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        verify(exactly = 1) { viewModel.deleteAlarm(alarmsData.first().id) }
+    }
 }

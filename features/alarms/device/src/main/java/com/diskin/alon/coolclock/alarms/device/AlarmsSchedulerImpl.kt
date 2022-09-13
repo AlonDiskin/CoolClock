@@ -23,7 +23,9 @@ class AlarmsSchedulerImpl @Inject constructor(
 
     override fun cancel(alarm: Alarm): Single<AppResult<Unit>> {
         return Single.create<Unit> {
-            alarmManager.cancel(createAlarmPendingIntent(alarm))
+            val alarmIntent = createAlarmPendingIntent(alarm)
+            alarmManager.cancel(alarmIntent)
+            alarmIntent.cancel()
             it.onSuccess(Unit)
         }
             .subscribeOn(Schedulers.computation())

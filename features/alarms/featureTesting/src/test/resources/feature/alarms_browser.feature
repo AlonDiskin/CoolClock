@@ -18,3 +18,13 @@ Feature: User alarms browser feature rules
       | current activation | changed activation |
       | active             | not active         |
       | not active         | active             |
+
+
+  #Rule: Enable alarm deletion from browser
+
+  @alarm-deleted
+  Scenario: Listed alarm deleted
+    Given user opened alarms browser
+    When he select to delete first listed active alarm
+    Then app should delete its record
+    And cancel its scheduled alarm

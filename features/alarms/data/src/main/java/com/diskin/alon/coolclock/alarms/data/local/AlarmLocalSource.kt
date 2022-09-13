@@ -43,4 +43,11 @@ class AlarmLocalSource @Inject constructor(
             .toSingleDefault(Unit)
             .toSingleAppResult(errorHandler::handle)
     }
+
+    fun delete(id: Int): Single<AppResult<Unit>> {
+        return dao.delete(id)
+            .subscribeOn(Schedulers.io())
+            .toSingleDefault(Unit)
+            .toSingleAppResult(errorHandler::handle)
+    }
 }

@@ -117,6 +117,7 @@ class AlarmsSchedulerImplTest(
         every { alarm.id } returns id
         every { alarmManager.cancel(any<PendingIntent>()) } returns Unit
         every { PendingIntent.getBroadcast(any(),capture(requestCodeSlot),capture(intentSlot),any()) } returns pendingIntent
+        every { pendingIntent.cancel() } returns Unit
 
         // When
         val observer = scheduler.cancel(alarm).test()

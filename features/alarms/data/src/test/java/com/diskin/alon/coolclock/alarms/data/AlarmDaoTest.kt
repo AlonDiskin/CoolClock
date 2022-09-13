@@ -191,4 +191,54 @@ class AlarmDaoTest {
         // Then
         assertThat(actual).isEqualTo(expected)
     }
+
+    @Test
+    fun insertAndDelete() = runBlocking {
+        // Given
+        val entities = listOf(
+            AlarmEntity(
+                "name_1",
+                12,
+                10,
+                setOf(WeekDay.SUN,WeekDay.MON),
+                true,
+                "sound_1",
+                false,
+                true,
+                1,
+                5,
+                false,
+                5,
+                1,
+            ),
+            AlarmEntity(
+                "name_2",
+                11,
+                15,
+                emptySet(),
+                false,
+                "sound_2",
+                true,
+                true,
+                2,
+                10,
+                true,
+                5,
+                1,
+            )
+        )
+
+        entities.forEach { dao.insert(it).blockingAwait() }
+
+        // When
+        dao.delete(1).blockingAwait()
+
+        // Then
+        val actual = dao.getAll().load(
+            PagingSource.LoadParams.Refresh(null,20,false)
+        ) as PagingSource.LoadResult.Page<Int, AlarmEntity>
+
+        assertThat(actual.data.size).isEqualTo(1)
+        assertThat(actual.data.first().id).isEqualTo(2)
+    }
 }

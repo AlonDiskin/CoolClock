@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.diskin.alon.coolclock.alarms.application.model.AlarmActivation
 import com.diskin.alon.coolclock.alarms.application.model.BrowserAlarm
 import com.diskin.alon.coolclock.alarms.application.model.NextAlarm
+import com.diskin.alon.coolclock.alarms.application.usecase.DeleteAlarmUseCase
 import com.diskin.alon.coolclock.alarms.application.usecase.GetAlarmsBrowserUseCase
 import com.diskin.alon.coolclock.alarms.application.usecase.SetAlarmActivationUseCase
 import com.diskin.alon.coolclock.alarms.presentation.viewmodel.AlarmsMapper
@@ -38,6 +39,7 @@ class AlarmsViewModelTest {
     private val alarmsMapper: AlarmsMapper = mockk()
     private val setAlarmActivation: SetAlarmActivationUseCase = mockk()
     private val dateFormatter: ScheduledAlarmDateFormatter = mockk()
+    private val deleteAlarm: DeleteAlarmUseCase = mockk()
 
     // Stub data
     private val alarmsSubject = BehaviorSubject.create<PagingData<BrowserAlarm>>()
@@ -48,7 +50,7 @@ class AlarmsViewModelTest {
         every { getAlarms.execute(Unit) } returns alarmsSubject
 
         // Init subject
-        viewModel = AlarmsViewModel(getAlarms,setAlarmActivation,alarmsMapper,dateFormatter)
+        viewModel = AlarmsViewModel(getAlarms,setAlarmActivation,deleteAlarm,alarmsMapper,dateFormatter)
     }
 
     @Test
@@ -65,7 +67,7 @@ class AlarmsViewModelTest {
     }
 
     @Test
-    fun changeAlarmActivationAccordingly_WhenActivationChanged() {
+    fun changeModelAlarmActivationAccordingly_WhenActivationChangedByView() {
         // Given
         val changes = listOf(true,false)
         val id = 1
@@ -84,7 +86,7 @@ class AlarmsViewModelTest {
     }
 
     @Test
-    fun updateLatestScheduledAlarmDate_WhenAlarmActivated() {
+    fun notifyViewOfLatestScheduledAlarmDate_WhenModelAlarmActivated() {
         // Given
         val scheduledDate = 12345L
         val formattedDate = "format date"
@@ -104,7 +106,7 @@ class AlarmsViewModelTest {
     }
 
     @Test
-    fun updateAlarmActivationError_WhenAlarmActivationFail() {
+    fun notifyViewOfAlarmActivationError_WhenModelAlarmActivationFail() {
         // Given
         val error = AppError.UNKNOWN_ERROR
 
@@ -116,5 +118,37 @@ class AlarmsViewModelTest {
 
         // Then
         assertThat(viewModel.alarmActivationError.value).isEqualTo(error)
+    }
+
+    @Test
+    fun deleteAlarmFromModel_WhenDeletedByView() {
+        // Given
+        val id = 1
+
+        every { deleteAlarm.execute(id) } returns Single.just(AppResult.Success(Unit))
+
+        // When
+        viewModel.deleteAlarm(id)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        verify(exactly = 1) { deleteAlarm.execute(id) }
+    }
+
+    @Test
+    fun notifyViewOfDeletionError_WhenModelAlarmDeletionFail() {
+        // Given
+        val id = 1
+        val error = AppError.UNKNOWN_ERROR
+
+        every { deleteAlarm.execute(id) } returns Single.just(AppResult.Error(error))
+
+        // When
+        viewModel.deleteAlarm(id)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        verify(exactly = 1) { deleteAlarm.execute(id) }
+        assertThat(viewModel.alarmDeletionError.value).isEqualTo(error)
     }
 }

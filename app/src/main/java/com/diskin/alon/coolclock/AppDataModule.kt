@@ -20,7 +20,7 @@ object AppDataModule {
         return Room.databaseBuilder(app,
             AppDatabase::class.java, "coolclock-db")
             .createFromAsset("coolclock.db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
             .build()
     }
 
