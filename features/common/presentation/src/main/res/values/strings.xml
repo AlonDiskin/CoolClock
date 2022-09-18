@@ -5,4 +5,5 @@
     <string name="uri_alarms">android-app://com.diskin.alon.coolclock/alarms</string>
     <string name="uri_world_clocks">android-app://com.diskin.alon.coolclock/clocks</string>
     <string name="uri_timer">android-app://com.diskin.alon.coolclock/timer</string>
+    <string name="error_message_unknown">%1$s error,feature is currently unavailable</string>
 </resources>

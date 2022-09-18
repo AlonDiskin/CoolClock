@@ -34,7 +34,7 @@ class DeleteCityClockStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(sce
         fun data(): Collection<Array<Any>> {
             val res = ArrayList<Array<Any>>()
             val scenarioConfigs = GreenCoffeeConfig()
-                .withFeatureFromAssets("feature/browser.feature")
+                .withFeatureFromAssets("feature/clocks_browser.feature")
                 .withTags("@clock-deleted")
                 .scenarios()
 

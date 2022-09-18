@@ -3,6 +3,10 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.8">
       <module name="CoolClock.app" target="11" />
+      <module name="CoolClock.features.alarms.data" target="11" />
+      <module name="CoolClock.features.alarms.device" target="11" />
+      <module name="CoolClock.features.alarms.di" target="11" />
+      <module name="CoolClock.features.alarms.featureTesting" target="11" />
       <module name="CoolClock.features.alarms.presentation" target="11" />
       <module name="CoolClock.features.common.instrumentationTesting" target="11" />
       <module name="CoolClock.features.common.presentation" target="11" />

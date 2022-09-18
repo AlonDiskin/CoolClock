@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AlarmWeekday" parent="Widget.AppCompat.TextView" >
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textAppearance">?attr/textAppearanceCaption</item>
+    </style>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="day_label_sun">S</string>
+    <string name="day_label_mon">M</string>
+    <string name="day_label_tue">T</string>
+    <string name="day_label_wed">W</string>
+    <string name="day_label_thu">T</string>
+    <string name="day_label_fri">F</string>
+    <string name="day_label_sat">S</string>
+    <string name="alarms_browser_feature">Alarms browser</string>
+    <string name="label_alarm_today">Today</string>
+    <string name="label_alarm_tomorrow">Tomorrow</string>
+    <string name="alarm_date_format">EEE, dd MMM</string>
+    <string name="label_alarm_not_active">Not scheduled</string>
+    <string name="title_action_delete">Delete</string>
+    <string name="title_action_edit">Edit</string>
+</resources>

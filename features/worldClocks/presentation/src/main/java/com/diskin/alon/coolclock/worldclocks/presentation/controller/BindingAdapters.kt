@@ -4,6 +4,7 @@ import android.widget.ImageButton
 import android.widget.TextClock
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.core.widget.addTextChangedListener
 import androidx.databinding.BindingAdapter
 import com.diskin.alon.coolclock.worldclocks.presentation.R
 import com.diskin.alon.coolclock.worldclocks.presentation.model.UiCityClock

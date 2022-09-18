@@ -253,7 +253,7 @@ class CitiesSearchFragmentTest {
         // Then
         val toastMessage = ShadowToast.getTextOfLatestToast()
         val expectedMessage = ApplicationProvider.getApplicationContext<Context>()
-            .getString(R.string.error_message_unknown,"Search")
+            .getString(com.diskin.alon.coolclock.common.presentation.R.string.error_message_unknown,"Search")
 
         assertThat(toastMessage).isEqualTo(expectedMessage)
     }
@@ -348,7 +348,7 @@ class CitiesSearchFragmentTest {
         // Then
         val toastMessage = ShadowToast.getTextOfLatestToast()
         val expectedMessage = ApplicationProvider.getApplicationContext<Context>()
-            .getString(R.string.error_message_unknown,"Add city")
+            .getString(com.diskin.alon.coolclock.common.presentation.R.string.error_message_unknown,"Add city")
 
         assertThat(toastMessage).isEqualTo(expectedMessage)
     }

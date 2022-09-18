@@ -64,6 +64,7 @@ dependencies {
     implementation project(':features:settings:presentation')
     implementation project(':features:timer:di')
     implementation project(':features:worldClocks:di')
+    implementation project(':features:alarms:di')
 
     // Android core
     implementation 'androidx.core:core-ktx:1.7.0'
@@ -87,4 +88,6 @@ dependencies {
     androidTestImplementation  "com.google.dagger:hilt-android-testing:$hilt_version"
     androidTestImplementation "com.mauriciotogneri:greencoffee:$greencoffee_version"
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
+    androidTestImplementation "joda-time:joda-time:2.10.4"
+    androidTestImplementation 'com.squareup.rx.idler:rx2-idler:0.11.0'
 }

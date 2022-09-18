@@ -1,5 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
+    ext.sdkVersion = 31
     ext.robolectric_version = "4.7.3"
     ext.hilt_version = "2.42" // 2.38.1
     ext.data_binding_compiler = "7.1.3"
