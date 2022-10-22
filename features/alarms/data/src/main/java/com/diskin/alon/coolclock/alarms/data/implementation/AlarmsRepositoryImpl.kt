@@ -28,4 +28,8 @@ class AlarmsRepositoryImpl @Inject constructor(
     override fun delete(id: Int): Single<AppResult<Unit>> {
         return localSource.delete(id)
     }
+
+    override fun add(alarm: Alarm): Single<AppResult<Int>> {
+        return localSource.add(alarm)
+    }
 }

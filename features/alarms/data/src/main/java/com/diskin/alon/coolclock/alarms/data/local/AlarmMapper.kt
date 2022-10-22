@@ -9,14 +9,16 @@ class AlarmMapper @Inject constructor() {
         return Alarm(
             entity.id!!,
             entity.name,
-            Time(entity.hour,entity.minute),
+            entity.hour,
+            entity.minute,
             entity.repeatDays,
-            entity.isActive,
+            entity.isScheduled,
             entity.isVibrate,
-            if (entity.isSound) Sound.Ringtone(entity.ringtone) else Sound.None,
-            Duration(entity.duration),
-            Volume(entity.volume),
-            if (entity.isSnooze) Snooze.Active(entity.snoozeRepeat,entity.snoozeInterval) else Snooze.None
+            entity.sound,
+            entity.duration,
+            entity.volume,
+            entity.snooze,
+            entity.isSnoozed
         )
     }
 }

@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.mockk.mockk
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Singleton
 
 @Module
@@ -16,5 +17,11 @@ object TestInfrastructureModule {
     @Provides
     fun provideTimerAlarmManager(): TimerAlarmManager {
         return mockk()
+    }
+
+    @Singleton
+    @Provides
+    fun provideEventBus(): EventBus {
+        return EventBus.getDefault()
     }
 }

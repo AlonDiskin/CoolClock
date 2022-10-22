@@ -7,6 +7,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.diskin.alon.coolclock.alarms.data.local.AlarmDao
 import com.diskin.alon.coolclock.alarms.data.local.AlarmEntity
+import com.diskin.alon.coolclock.alarms.domain.Sound
 import com.diskin.alon.coolclock.alarms.domain.WeekDay
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
@@ -46,14 +47,12 @@ class AlarmDaoTest {
              10,
             setOf(WeekDay.SUN,WeekDay.MON),
             true,
-            "sound_1",
+            Sound.AlarmSound("sound_1"),
             false,
-            true,
+            5,
                 1,
                 5,
-                false,
-                5,
-                1,
+                false
             ),
             AlarmEntity(
                 "name_2",
@@ -61,14 +60,12 @@ class AlarmDaoTest {
                 15,
                 emptySet(),
                 false,
-                "sound_2",
+                Sound.AlarmSound("sound_2"),
                 true,
-                true,
+                4,
                 2,
                 10,
-                true,
-                5,
-                1,
+                true
             )
         )
         val expected = listOf(
@@ -78,14 +75,12 @@ class AlarmDaoTest {
                 10,
                 setOf(WeekDay.SUN,WeekDay.MON),
                 true,
-                "sound_1",
-                false,
-                true,
-                1,
-                5,
+                Sound.AlarmSound("sound_1"),
                 false,
                 5,
                 1,
+                5,
+                false,
                 1
             ),
             AlarmEntity(
@@ -94,20 +89,18 @@ class AlarmDaoTest {
                 15,
                 emptySet(),
                 false,
-                "sound_2",
+                Sound.AlarmSound("sound_2"),
                 true,
-                true,
+                4,
                 2,
                 10,
                 true,
-                5,
-                1,
                 2
             )
         ).asReversed()
 
         // When
-        entities.forEach { dao.insert(it).blockingAwait() }
+        entities.forEach { dao.insert(it).blockingGet() }
 
         // Then
         val actual = dao.getAll().load(
@@ -126,18 +119,16 @@ class AlarmDaoTest {
             10,
             setOf(WeekDay.SUN,WeekDay.MON),
             true,
-            "sound_1",
-            false,
-            true,
-            1,
-            5,
+            Sound.AlarmSound("sound_1"),
             false,
             5,
             1,
+            5,
+            false,
             1
         )
 
-        dao.insert(entity).blockingAwait()
+        dao.insert(entity).blockingGet()
 
         // When
         val actual = dao.get(entity.id!!).blockingGet()
@@ -155,14 +146,12 @@ class AlarmDaoTest {
             10,
             setOf(WeekDay.SUN,WeekDay.MON),
             true,
-            "sound_1",
-            false,
-            true,
-            1,
-            5,
+            Sound.AlarmSound("sound_1"),
             false,
             5,
             1,
+            5,
+            false,
             1
         )
         val expected = AlarmEntity(
@@ -171,21 +160,19 @@ class AlarmDaoTest {
             10,
             setOf(WeekDay.SUN,WeekDay.MON),
             false,
-            "sound_1",
-            false,
-            true,
-            1,
-            5,
+            Sound.AlarmSound("sound_1"),
             false,
             5,
             1,
+            5,
+            false,
             1
         )
 
-        dao.insert(entity).blockingAwait()
+        dao.insert(entity).blockingGet()
 
         // When
-        dao.updateIsActive(entity.id!!,!entity.isActive).blockingAwait()
+        dao.updateScheduled(entity.id!!,!entity.isScheduled).blockingAwait()
         val actual = dao.get(entity.id!!).blockingGet()
 
         // Then
@@ -202,14 +189,12 @@ class AlarmDaoTest {
                 10,
                 setOf(WeekDay.SUN,WeekDay.MON),
                 true,
-                "sound_1",
-                false,
-                true,
-                1,
-                5,
+                Sound.AlarmSound("sound_1"),
                 false,
                 5,
                 1,
+                5,
+                false
             ),
             AlarmEntity(
                 "name_2",
@@ -217,18 +202,16 @@ class AlarmDaoTest {
                 15,
                 emptySet(),
                 false,
-                "sound_2",
+                Sound.AlarmSound("sound_2"),
                 true,
-                true,
+                4,
                 2,
                 10,
-                true,
-                5,
-                1,
+                true
             )
         )
 
-        entities.forEach { dao.insert(it).blockingAwait() }
+        entities.forEach { dao.insert(it).blockingGet() }
 
         // When
         dao.delete(1).blockingAwait()

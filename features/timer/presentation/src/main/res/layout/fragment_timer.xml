@@ -204,7 +204,7 @@
             android:id="@+id/buttonStartCancel"
             android:layout_width="110dp"
             android:layout_height="60dp"
-            android:backgroundTint="#D81B60"
+            android:backgroundTint="@color/design_default_color_secondary"
             android:textSize="16sp"
             app:cornerRadius="20dp"
             android:enabled="false"

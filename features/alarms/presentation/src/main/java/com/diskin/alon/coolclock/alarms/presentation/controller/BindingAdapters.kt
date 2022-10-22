@@ -1,5 +1,6 @@
 package com.diskin.alon.coolclock.alarms.presentation.controller
 
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
@@ -81,5 +82,18 @@ fun setRepeatDayLabel(tv: TextView,alarm: UiAlarm?) {
         }
 
         tv.setTextColor(color)
+    }
+}
+
+@BindingAdapter("setAlarmName")
+fun setAlarmName(tv: TextView,alarm: UiAlarm?) {
+    alarm?.let {
+        when(it.name) {
+            "" -> tv.visibility = View.GONE
+            else -> {
+                tv.visibility = View.VISIBLE
+                tv.text = it.name
+            }
+        }
     }
 }

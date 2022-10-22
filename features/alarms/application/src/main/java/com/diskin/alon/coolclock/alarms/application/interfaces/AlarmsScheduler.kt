@@ -6,7 +6,7 @@ import io.reactivex.Single
 
 interface AlarmsScheduler {
 
-    fun cancel(alarm: Alarm): Single<AppResult<Unit>>
+    fun schedule(alarm: Alarm): Single<AppResult<Long>>
 
-    fun schedule(alarm: Alarm): Single<AppResult<Unit>>
+    fun cancel(alarm: Alarm): Single<AppResult<Unit>>
 }

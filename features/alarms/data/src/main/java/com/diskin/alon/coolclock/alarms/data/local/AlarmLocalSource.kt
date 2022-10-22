@@ -20,6 +20,7 @@ class AlarmLocalSource @Inject constructor(
     private val dao: AlarmDao,
     private val pagingMapper: AlarmsPagingMapper,
     private val alarmMapper: AlarmMapper,
+    private val entityMapper: AlarmEntityMapper,
     private val errorHandler: AlarmsDaoErrorHandler
 ) {
 
@@ -38,7 +39,7 @@ class AlarmLocalSource @Inject constructor(
     }
 
     fun setActive(id: Int, isActive: Boolean): Single<AppResult<Unit>> {
-        return dao.updateIsActive(id, isActive)
+        return dao.updateScheduled(id, isActive)
             .subscribeOn(Schedulers.io())
             .toSingleDefault(Unit)
             .toSingleAppResult(errorHandler::handle)
@@ -48,6 +49,13 @@ class AlarmLocalSource @Inject constructor(
         return dao.delete(id)
             .subscribeOn(Schedulers.io())
             .toSingleDefault(Unit)
+            .toSingleAppResult(errorHandler::handle)
+    }
+
+    fun add(alarm: Alarm): Single<AppResult<Int>> {
+        return dao.insert(entityMapper.mapNew(alarm))
+            .subscribeOn(Schedulers.io())
+            .map { it.toInt() }
             .toSingleAppResult(errorHandler::handle)
     }
 }

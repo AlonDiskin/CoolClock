@@ -1,4 +1,4 @@
-package com.diskin.alon.coolclock
+package com.diskin.alon.coolclock.db
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -22,5 +22,17 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
         database.execSQL("ALTER TABLE alarms ADD COLUMN isSnooze INTEGER NOT NULL DEFAULT 0")
         database.execSQL("ALTER TABLE alarms ADD COLUMN snoozeRepeat INTEGER NOT NULL DEFAULT 0")
         database.execSQL("ALTER TABLE alarms ADD COLUMN snoozeInterval INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+val MIGRATION_4_5 = object : Migration(4, 5) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("DROP TABLE `alarms`")
+        database.execSQL("CREATE TABLE `user_alarms` (`name` TEXT NOT NULL," +
+                "`hour` INTEGER NOT NULL,`minute` INTEGER NOT NULL,`repeatDays` TEXT NOT NULL," +
+                "`isScheduled` INTEGER NOT NULL,`sound` TEXT NOT NULL,`isVibrate` INTEGER NOT NULL," +
+                "`duration` INTEGER NOT NULL,`volume` INTEGER NOT NULL,`snooze` INTEGER NOT NULL," +
+                "`isSnoozed` INTEGER NOT NULL," +
+                "`id` INTEGER PRIMARY KEY)")
     }
 }

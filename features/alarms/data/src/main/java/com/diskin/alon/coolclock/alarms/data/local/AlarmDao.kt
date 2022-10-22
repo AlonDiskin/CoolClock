@@ -8,18 +8,18 @@ import io.reactivex.Single
 @Dao
 interface AlarmDao {
 
-    @Query("SELECT * FROM alarms ORDER BY id DESC")
+    @Query("SELECT * FROM user_alarms ORDER BY id DESC")
     fun getAll(): PagingSource<Int, AlarmEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(alarm: AlarmEntity): Completable
+    fun insert(alarm: AlarmEntity): Single<Long>
 
-    @Query("SELECT * FROM alarms WHERE id = :id")
+    @Query("SELECT * FROM user_alarms WHERE id = :id")
     fun get(id: Int): Single<AlarmEntity>
 
-    @Query("UPDATE alarms SET isActive = :isActive WHERE id = :id")
-    fun updateIsActive(id: Int,isActive: Boolean): Completable
+    @Query("UPDATE user_alarms SET isScheduled = :scheduled WHERE id = :id")
+    fun updateScheduled(id: Int,scheduled: Boolean): Completable
 
-    @Query("DELETE FROM alarms WHERE id = :id")
+    @Query("DELETE FROM user_alarms WHERE id = :id")
     fun delete(id: Int): Completable
 }

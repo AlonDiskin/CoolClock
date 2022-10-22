@@ -8,5 +8,6 @@
     <fragment
         android:id="@+id/clocksDest"
         tools:layout="@layout/fragment_blank"
+        android:label="@string/title_world_clocks_dest"
         android:name="com.diskin.alon.coolclock.home.presentation.BlankFragment"/>
 </navigation>

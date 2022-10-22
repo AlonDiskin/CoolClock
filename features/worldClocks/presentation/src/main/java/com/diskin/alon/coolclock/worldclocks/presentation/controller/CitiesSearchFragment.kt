@@ -68,17 +68,6 @@ class CitiesSearchFragment : Fragment(), MenuItem.OnActionExpandListener, Search
         searchItem.setOnActionExpandListener(this)
     }
 
-    override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
-        collapsed = false
-        return true
-    }
-
-    override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
-        findNavController().navigateUp()
-        collapsed = true
-        return true
-    }
-
     override fun onQueryTextSubmit(query: String?): Boolean {
         query?.let { viewModel.search(it) }
         return false
@@ -144,5 +133,16 @@ class CitiesSearchFragment : Fragment(), MenuItem.OnActionExpandListener, Search
         when(error) {
             AppError.UNKNOWN_ERROR -> notifyUnknownError("Add city")
         }
+    }
+
+    override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+        collapsed = false
+        return true
+    }
+
+    override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+        findNavController().navigateUp()
+        collapsed = true
+        return true
     }
 }

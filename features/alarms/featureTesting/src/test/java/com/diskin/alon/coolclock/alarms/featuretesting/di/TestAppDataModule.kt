@@ -24,7 +24,7 @@ object TestAppDataModule {
 
     @Singleton
     @Provides
-    fun provideCityDao(database: TestDatabase): AlarmDao {
+    fun provideAlarmDao(database: TestDatabase): AlarmDao {
         return database.alarmDao()
     }
 }

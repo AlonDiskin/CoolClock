@@ -12,20 +12,6 @@ import androidx.test.espresso.matcher.BoundedMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 
-fun withSwitchText(text: String): Matcher<View> {
-    return object : BoundedMatcher<View, SwitchCompat>(SwitchCompat::class.java) {
-
-        override fun describeTo(description: Description) {
-            description.appendText("with switch text:$text")
-        }
-
-        override fun matchesSafely(item: SwitchCompat): Boolean {
-            return item.text.toString() == text
-        }
-
-    }
-}
-
 fun withSwitchChecked(checked: Boolean): Matcher<View> {
     return object : BoundedMatcher<View, SwitchCompat>(SwitchCompat::class.java) {
 

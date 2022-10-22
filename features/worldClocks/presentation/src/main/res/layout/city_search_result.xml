@@ -54,7 +54,6 @@
             style="@style/Widget.AppCompat.ActionButton"
             android:layout_marginEnd="8dp"
             android:onClick="@{() -> addClickListener.invoke(result)}"
-            app:tint="@color/pink_700"
             app:setAddCityButton="@{result}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

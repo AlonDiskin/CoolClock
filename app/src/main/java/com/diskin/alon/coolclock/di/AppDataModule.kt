@@ -1,8 +1,9 @@
-package com.diskin.alon.coolclock
+package com.diskin.alon.coolclock.di
 
 import android.app.Application
 import androidx.room.Room
 import com.diskin.alon.coolclock.alarms.data.local.AlarmDao
+import com.diskin.alon.coolclock.db.*
 import com.diskin.alon.coolclock.worldclocks.data.CityDao
 import dagger.Module
 import dagger.Provides
@@ -20,7 +21,7 @@ object AppDataModule {
         return Room.databaseBuilder(app,
             AppDatabase::class.java, "coolclock-db")
             .createFromAsset("coolclock.db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
             .build()
     }
 

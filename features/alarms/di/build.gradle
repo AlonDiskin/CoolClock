@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk sdkVersion
 
     defaultConfig {
         minSdk 21
-        targetSdk 31
+        targetSdk sdkVersion
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -37,7 +37,7 @@ kapt {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation "androidx.core:core-ktx:$androidCore"
 
     // Project modules
     api project(':features:alarms:presentation')

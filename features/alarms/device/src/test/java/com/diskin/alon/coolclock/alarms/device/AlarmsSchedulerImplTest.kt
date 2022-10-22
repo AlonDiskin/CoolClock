@@ -12,16 +12,21 @@ import io.mockk.*
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import org.joda.time.DateTime
+import org.joda.time.DateTimeConstants
 import org.joda.time.DateTimeUtils
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.ParameterizedRobolectricTestRunner
+import org.robolectric.Shadows
+import org.robolectric.shadows.ShadowAlarmManager
 
 @RunWith(ParameterizedRobolectricTestRunner::class)
 class AlarmsSchedulerImplTest(
     private val currentDate: DateTime,
+    private val unrepeatedAlarm: Alarm,
+    private val expectedUnrepeatedAlarmDate: DateTime,
     private val repeatedAlarm: Alarm,
     private val expectedRepeatedAlarmDates: List<DateTime>
 ) {
@@ -36,19 +41,107 @@ class AlarmsSchedulerImplTest(
                 Alarm(
                     1,
                     "alarm_1",
-                    Time(16,45),
+                    16,
+                    40,
+                    emptySet(),
+                    true,
+                    true,
+                    Sound.AlarmSound("sound_1"),
+                    1,
+                    5,
+                    0,
+                    false
+                ),
+                DateTime(2022,8,24,16,40),
+                Alarm(
+                    1,
+                    "alarm_1",
+                    16,
+                    45,
                     setOf(WeekDay.SUN,WeekDay.TUE,WeekDay.FRI),
                     true,
                     true,
-                    Sound.Ringtone("sound_1"),
-                    Duration(1),
-                    Volume(5),
-                    Snooze.None
+                    Sound.AlarmSound("sound_1"),
+                    1,
+                    5,
+                    0,
+                    false
                 ),
                 listOf(
-                    DateTime(2022,8,30,16,45),
                     DateTime(2022,8,26,16,45),
-                    DateTime(2022,8,28,16,45)
+                    DateTime(2022,8,28,16,45),
+                    DateTime(2022,8,30,16,45)
+                )
+            ),
+            arrayOf(
+                DateTime(2022,8,23,16,45),
+                Alarm(
+                    2,
+                    "alarm_1",
+                    16,
+                    46,
+                    emptySet(),
+                    true,
+                    true,
+                    Sound.AlarmSound("sound_1"),
+                    1,
+                    5,
+                    0,
+                    false
+                ),
+                DateTime(2022,8,23,16,46),
+                Alarm(
+                    1,
+                    "alarm_1",
+                    16,
+                    46,
+                    setOf(WeekDay.MON,WeekDay.THU),
+                    true,
+                    true,
+                    Sound.AlarmSound("sound_1"),
+                    1,
+                    5,
+                    0,
+                    false
+                ),
+                listOf(
+                    DateTime(2022,8,25,16,46),
+                    DateTime(2022,8,29,16,46)
+                )
+            ),
+            arrayOf(
+                DateTime(2022,8,23,16,45),
+                Alarm(
+                    3,
+                    "alarm_1",
+                    16,
+                    45,
+                    emptySet(),
+                    true,
+                    true,
+                    Sound.AlarmSound("sound_1"),
+                    1,
+                    5,
+                    0,
+                    false
+                ),
+                DateTime(2022,8,24,16,45),
+                Alarm(
+                    1,
+                    "alarm_1",
+                    16,
+                    46,
+                    setOf(WeekDay.TUE),
+                    true,
+                    true,
+                    Sound.AlarmSound("sound_1"),
+                    1,
+                    5,
+                    0,
+                    false
+                ),
+                listOf(
+                    DateTime(2022,8,23,16,46)
                 )
             )
         )
@@ -64,102 +157,142 @@ class AlarmsSchedulerImplTest(
     private lateinit var scheduler: AlarmsSchedulerImpl
 
     // Collaborators
-    private val alarmManager: AlarmManager = mockk()
-    private val context: Context = ApplicationProvider.getApplicationContext()
+    private val appContext = ApplicationProvider.getApplicationContext<Context>()
+    private val alarmManager: AlarmManager = (appContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager)
 
     @Before
     fun setUp() {
-        scheduler = AlarmsSchedulerImpl(context,alarmManager)
+        // Set fake current date
+        DateTimeUtils.setCurrentMillisFixed(currentDate.millis)
+
+        // Init subject
+        scheduler = AlarmsSchedulerImpl(appContext,alarmManager)
+    }
+
+    @Test
+    fun scheduleUnrepeatedAlarm() {
+        // Given
+        val shadowAlarmManager = Shadows.shadowOf(alarmManager)
+
+        // When
+        val observer = scheduler.schedule(unrepeatedAlarm).test()
+
+        // Then
+        val alarmPendingIntent = shadowAlarmManager.scheduledAlarms[0].operation!!
+        val alarmIntent = Shadows.shadowOf(alarmPendingIntent).savedIntent
+
+        assertThat(shadowAlarmManager.scheduledAlarms.size).isEqualTo(1)
+        assertThat(shadowAlarmManager.scheduledAlarms[0].triggerAtTime)
+            .isEqualTo(expectedUnrepeatedAlarmDate.millis)
+        assertThat(shadowAlarmManager.scheduledAlarms[0].type).isEqualTo(AlarmManager.RTC_WAKEUP)
+        observer.assertValue(AppResult.Success(expectedUnrepeatedAlarmDate.millis))
+        assertThat(alarmPendingIntent.isBroadcast).isTrue()
+        assertThat(alarmIntent.action).isEqualTo(ACTION_ALARM)
+        assertThat(alarmIntent.getIntExtra(ALARM_ID,-1)).isEqualTo(unrepeatedAlarm.id)
+        assertThat(alarmIntent.component!!.className).isEqualTo(AlarmReceiver::class.java.name)
+    }
+
+    @Test
+    fun cancelUnrepeatedAlarm() {
+        // Given
+        val shadowAlarmManager = Shadows.shadowOf(alarmManager)
+        val alarmPendingIntent = Intent(appContext, AlarmReceiver::class.java).let { intent ->
+            intent.action = ACTION_ALARM
+
+            intent.putExtra(ALARM_ID,unrepeatedAlarm.id)
+            PendingIntent.getBroadcast(appContext, unrepeatedAlarm.id, intent, 0)
+        }
+        val scheduledAlarm = ShadowAlarmManager.ScheduledAlarm(
+            AlarmManager.RTC_WAKEUP,
+            unrepeatedAlarm.nextAlarm(),
+            alarmPendingIntent,
+            null
+        )
+
+        shadowAlarmManager.scheduledAlarms.add(scheduledAlarm)
+        // When
+        val observer = scheduler.cancel(unrepeatedAlarm).test()
+
+        // Then
+        assertThat(shadowAlarmManager.scheduledAlarms.size).isEqualTo(0)
+        observer.assertValue(AppResult.Success(Unit))
     }
 
     @Test
     fun scheduleRepeatedAlarm() {
         // Given
-        val intentSlot = slot<Intent>()
-        val requestCodeSlot = slot<Int>()
-        val pendingIntent = mockk<PendingIntent>()
-        val weekMillis = 1000L * 60 * 60 * 24 * 7
-
-        mockkStatic(PendingIntent::class)
-        every { alarmManager.setRepeating(any(),any(),any(),any()) } returns Unit
-        every { PendingIntent.getBroadcast(any(),capture(requestCodeSlot),capture(intentSlot),any()) } returns pendingIntent
-        DateTimeUtils.setCurrentMillisFixed(currentDate.millis)
+        val shadowAlarmManager = Shadows.shadowOf(alarmManager)
+        val weekMillisInterval = 1000L * 60 * 60 * 24 * 7
 
         // When
         val observer = scheduler.schedule(repeatedAlarm).test()
 
         // Then
-        expectedRepeatedAlarmDates.forEach {
-            verify(exactly = 1) {
-                alarmManager.setRepeating(
-                    AlarmManager.RTC_WAKEUP,
-                    it.millis,
-                    weekMillis,
-                    pendingIntent
-                )
-                assertThat(requestCodeSlot.captured).isEqualTo(repeatedAlarm.id)
-                assertThat(intentSlot.captured.action).isEqualTo(ACTION_ALARM)
-                assertThat(intentSlot.captured.getIntExtra(ALARM_ID,-1)).isEqualTo(repeatedAlarm.id)
-            }
+        assertThat(shadowAlarmManager.scheduledAlarms.size).isEqualTo(repeatedAlarm.repeatDays.size)
+        shadowAlarmManager.scheduledAlarms.forEachIndexed { index, scheduledAlarm ->
+            val alarmPendingIntent = scheduledAlarm.operation!!
+            val alarmIntent = Shadows.shadowOf(alarmPendingIntent).savedIntent
+
+            assertThat(scheduledAlarm.triggerAtTime).isEqualTo(expectedRepeatedAlarmDates[index].millis)
+            assertThat(scheduledAlarm.interval).isEqualTo(weekMillisInterval)
+            assertThat(scheduledAlarm.type).isEqualTo(AlarmManager.RTC_WAKEUP)
+            assertThat(alarmPendingIntent.isBroadcast).isTrue()
+
+            assertThat(alarmIntent.action).isEqualTo(ACTION_ALARM)
+            assertThat(alarmIntent.hasCategory(getWeekDayFromScheduledAlarm(expectedRepeatedAlarmDates[index])
+                .name)).isTrue()
+
+            assertThat(alarmIntent.getIntExtra(ALARM_ID,-1)).isEqualTo(repeatedAlarm.id)
+            assertThat(alarmIntent.component!!.className).isEqualTo(AlarmReceiver::class.java.name)
+
         }
+
+        observer.assertValue(AppResult.Success(expectedRepeatedAlarmDates[0].millis))
     }
 
     @Test
-    fun cancelScheduledAlarm() {
+    fun cancelRepeatedAlarm() {
         // Given
-        val id = 1
-        val alarm = mockk<Alarm>()
-        val intentSlot = slot<Intent>()
-        val requestCodeSlot = slot<Int>()
-        val pendingIntent = mockk<PendingIntent>()
+        val shadowAlarmManager = Shadows.shadowOf(alarmManager)
+        val weekMillisInterval = 1000L * 60 * 60 * 24 * 7
 
-        mockkStatic(PendingIntent::class)
-        every { alarm.id } returns id
-        every { alarmManager.cancel(any<PendingIntent>()) } returns Unit
-        every { PendingIntent.getBroadcast(any(),capture(requestCodeSlot),capture(intentSlot),any()) } returns pendingIntent
-        every { pendingIntent.cancel() } returns Unit
+        expectedRepeatedAlarmDates.forEach { dateTime ->
+            val alarmPendingIntent = Intent(appContext, AlarmReceiver::class.java).let { intent ->
+                intent.action = ACTION_ALARM
+                intent.addCategory(getWeekDayFromScheduledAlarm(dateTime).name)
+
+                intent.putExtra(ALARM_ID,repeatedAlarm.id)
+                PendingIntent.getBroadcast(appContext, repeatedAlarm.id, intent, 0)
+            }
+            val scheduledAlarm = ShadowAlarmManager.ScheduledAlarm(
+                AlarmManager.RTC_WAKEUP,
+                dateTime.millis,
+                weekMillisInterval,
+                alarmPendingIntent,
+                null
+            )
+
+            shadowAlarmManager.scheduledAlarms.add(scheduledAlarm)
+        }
 
         // When
-        val observer = scheduler.cancel(alarm).test()
+        val observer = scheduler.cancel(repeatedAlarm).test()
 
         // Then
+        assertThat(shadowAlarmManager.scheduledAlarms.size).isEqualTo(0)
         observer.assertValue(AppResult.Success(Unit))
-        verify(exactly = 1) { alarmManager.cancel(pendingIntent) }
-        assertThat(requestCodeSlot.captured).isEqualTo(alarm.id)
-        assertThat(intentSlot.captured.action).isEqualTo(ACTION_ALARM)
-        assertThat(intentSlot.captured.getIntExtra(ALARM_ID,-1)).isEqualTo(alarm.id)
     }
 
-    @Test
-    fun scheduleNewUnrepeatedAlarm() {
-        val id = 1
-        val nextAlarm = 10L
-        val alarm = mockk<Alarm>()
-        val intentSlot = slot<Intent>()
-        val requestCodeSlot = slot<Int>()
-        val pendingIntent = mockk<PendingIntent>()
-
-        mockkStatic(PendingIntent::class)
-        every { alarm.id } returns id
-        every { alarm.nextAlarm() } returns nextAlarm
-        every { alarm.repeatDays } returns emptySet()
-        every { alarmManager.setExact(any(),any(),any()) } returns Unit
-        every { PendingIntent.getBroadcast(any(),capture(requestCodeSlot),capture(intentSlot),any()) } returns pendingIntent
-
-        // When
-        val observer = scheduler.schedule(alarm).test()
-
-        // Then
-        observer.assertValue(AppResult.Success(Unit))
-        verify(exactly = 1) {
-            alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP,
-                nextAlarm,
-                pendingIntent
-            )
+    private fun getWeekDayFromScheduledAlarm(date: DateTime): WeekDay {
+        return when(date.dayOfWeek) {
+            DateTimeConstants.SUNDAY -> WeekDay.SUN
+            DateTimeConstants.MONDAY -> WeekDay.MON
+            DateTimeConstants.TUESDAY -> WeekDay.TUE
+            DateTimeConstants.WEDNESDAY -> WeekDay.WED
+            DateTimeConstants.THURSDAY -> WeekDay.THU
+            DateTimeConstants.FRIDAY -> WeekDay.FRI
+            DateTimeConstants.SATURDAY -> WeekDay.SAT
+            else -> throw IllegalArgumentException("Unknown week day arg")
         }
-        assertThat(requestCodeSlot.captured).isEqualTo(id)
-        assertThat(intentSlot.captured.action).isEqualTo(ACTION_ALARM)
-        assertThat(intentSlot.captured.getIntExtra(ALARM_ID,-1)).isEqualTo(id)
     }
 }

@@ -1,4 +1,4 @@
-package com.diskin.alon.coolclock
+package com.diskin.alon.coolclock.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
@@ -11,7 +11,7 @@ import com.diskin.alon.coolclock.worldclocks.data.CityEntity
 
 @Database(
     entities = [CityEntity::class, AlarmEntity::class],
-    version = 4,
+    version = 5,
     exportSchema = true
 )
 @TypeConverters(AlarmEntityConverters::class)

@@ -108,7 +108,7 @@ class AlarmsViewModelTest {
     @Test
     fun notifyViewOfAlarmActivationError_WhenModelAlarmActivationFail() {
         // Given
-        val error = AppError.UNKNOWN_ERROR
+        val error = AppError.INTERNAL_ERROR
 
         every { setAlarmActivation.execute(any()) } returns Single.just(AppResult.Error(error))
 
@@ -139,7 +139,7 @@ class AlarmsViewModelTest {
     fun notifyViewOfDeletionError_WhenModelAlarmDeletionFail() {
         // Given
         val id = 1
-        val error = AppError.UNKNOWN_ERROR
+        val error = AppError.INTERNAL_ERROR
 
         every { deleteAlarm.execute(id) } returns Single.just(AppResult.Error(error))
 

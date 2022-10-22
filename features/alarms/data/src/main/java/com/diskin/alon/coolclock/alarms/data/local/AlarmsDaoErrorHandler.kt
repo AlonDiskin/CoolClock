@@ -6,6 +6,6 @@ import javax.inject.Inject
 class AlarmsDaoErrorHandler @Inject constructor() {
 
     fun handle(throwable: Throwable): AppError {
-        return AppError.UNKNOWN_ERROR
+        return AppError.INTERNAL_ERROR
     }
 }

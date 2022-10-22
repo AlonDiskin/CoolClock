@@ -37,7 +37,7 @@ class SetAlarmActivationUseCaseTest {
 
         every { alarm.nextAlarm() } returns next
         every { alarmsRepo.get(any()) } returns Single.just(AppResult.Success(alarm))
-        every { alarmsScheduler.schedule(any()) } returns Single.just(AppResult.Success(Unit))
+        every { alarmsScheduler.schedule(any()) } returns Single.just(AppResult.Success(next))
         every { alarmsRepo.setActive(any(),any()) } returns Single.just(AppResult.Success(Unit))
 
         // When

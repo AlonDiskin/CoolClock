@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/cityClocksFragment"
         android:name="com.diskin.alon.coolclock.worldclocks.presentation.controller.CityClocksFragment"
-        android:label=""
+        android:label="World Clock"
         tools:layout="@layout/fragment_city_clocks">
 
         <deepLink app:uri="@string/uri_world_clocks" />

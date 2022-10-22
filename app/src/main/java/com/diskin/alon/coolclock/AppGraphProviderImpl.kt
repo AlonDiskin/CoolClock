@@ -16,4 +16,8 @@ class AppGraphProviderImpl @Inject constructor() : AppGraphProvider {
     override fun getTimerDest(): Int {
         return com.diskin.alon.coolclock.timer.presentation.R.id.timerFragment
     }
+
+    override fun getAlarmsDest(): Int {
+        return com.diskin.alon.coolclock.alarms.presentation.R.id.alarmsFragment
+    }
 }

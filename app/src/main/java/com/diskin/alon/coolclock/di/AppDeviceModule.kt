@@ -1,8 +1,10 @@
-package com.diskin.alon.coolclock
+package com.diskin.alon.coolclock.di
 
 import android.app.AlarmManager
 import android.app.Application
 import android.content.Context
+import android.media.AudioManager
+import android.media.RingtoneManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,5 +19,17 @@ object AppDeviceModule {
     @Provides
     fun provideAlarmManager(app: Application): AlarmManager {
         return app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    }
+
+    @Singleton
+    @Provides
+    fun provideAudioManager(app: Application): AudioManager {
+        return app.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    }
+
+    @Singleton
+    @Provides
+    fun provideRingtoneManagerManager(app: Application): RingtoneManager {
+        return RingtoneManager(app)
     }
 }

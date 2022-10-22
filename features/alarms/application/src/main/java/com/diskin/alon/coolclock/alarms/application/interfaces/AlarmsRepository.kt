@@ -15,4 +15,6 @@ interface AlarmsRepository {
     fun setActive(id: Int,isActive: Boolean): Single<AppResult<Unit>>
 
     fun delete(id: Int): Single<AppResult<Unit>>
+
+    fun add(alarm: Alarm): Single<AppResult<Int>>
 }
