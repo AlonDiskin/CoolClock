@@ -204,7 +204,7 @@ class AlarmsSchedulerImplTest(
         }
         val scheduledAlarm = ShadowAlarmManager.ScheduledAlarm(
             AlarmManager.RTC_WAKEUP,
-            unrepeatedAlarm.nextAlarm(),
+            unrepeatedAlarm.nextAlarm,
             alarmPendingIntent,
             null
         )

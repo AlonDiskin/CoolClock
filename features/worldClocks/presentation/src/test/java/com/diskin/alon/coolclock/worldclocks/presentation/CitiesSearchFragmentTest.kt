@@ -106,6 +106,7 @@ class CitiesSearchFragmentTest {
 
         // When
         pressBack()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then
         assertThat(navController.currentDestination?.id).isEqualTo(R.id.cityClocksFragment)
@@ -122,6 +123,7 @@ class CitiesSearchFragmentTest {
         onView(withHint(R.string.search_hint))
             .perform(typeText(query))
             .perform(pressImeActionButton())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then
         verify { viewModel.search(query) }

@@ -31,7 +31,7 @@ class AlarmsMapper @Inject constructor() {
                     }
                 }.toSet(),
                 it.isScheduled,
-                if (it.isScheduled) NextAlarm.Next(it.nextAlarm()) else NextAlarm.None
+                if (it.isScheduled) NextAlarm.Next(it.nextAlarm) else NextAlarm.None
             )
         }
     }

@@ -24,7 +24,7 @@ class SetAlarmActivationUseCase @Inject constructor(
     private fun scheduleAlarmAndUpdateRepo(id: Int): Single<AppResult<NextAlarm>> {
         val res: Observable<AppResult<NextAlarm>> = combineLatestAppResults(
             alarmsRepo.get(id).flatMapSingleAppResult { alarm ->
-                alarmsScheduler.schedule(alarm).mapAppResult { alarm.nextAlarm() } }.toObservable(),
+                alarmsScheduler.schedule(alarm).mapAppResult { alarm.nextAlarm } }.toObservable(),
             alarmsRepo.setActive(id,true).toObservable()
         ) { r1, _ -> NextAlarm.Next(r1) }
 

@@ -24,7 +24,9 @@ data class Alarm(val id: Int,
         require(volume > 0)
     }
 
-    fun nextAlarm(): Long {
+    val nextAlarm: Long get() { return nextAlarm() }
+
+    private fun nextAlarm(): Long {
         val currentDateTime = DateTime().withSecondOfMinute(0).withMillisOfSecond(0)
         val alarmDate = DateTime()
             .withHourOfDay(hour)

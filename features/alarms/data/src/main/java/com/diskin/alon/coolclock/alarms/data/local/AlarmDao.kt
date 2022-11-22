@@ -9,7 +9,7 @@ import io.reactivex.Single
 interface AlarmDao {
 
     @Query("SELECT * FROM user_alarms ORDER BY id DESC")
-    fun getAll(): PagingSource<Int, AlarmEntity>
+    fun getAllPaging(): PagingSource<Int, AlarmEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(alarm: AlarmEntity): Single<Long>
@@ -22,4 +22,7 @@ interface AlarmDao {
 
     @Query("DELETE FROM user_alarms WHERE id = :id")
     fun delete(id: Int): Completable
+
+    @Query("SELECT * FROM user_alarms")
+    fun getAll(): Single<List<AlarmEntity>>
 }

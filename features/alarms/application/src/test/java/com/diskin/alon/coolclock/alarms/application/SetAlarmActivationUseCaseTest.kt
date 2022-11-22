@@ -35,7 +35,7 @@ class SetAlarmActivationUseCaseTest {
         val alarm = mockk<Alarm>()
         val next = 12345L
 
-        every { alarm.nextAlarm() } returns next
+        every { alarm.nextAlarm } returns next
         every { alarmsRepo.get(any()) } returns Single.just(AppResult.Success(alarm))
         every { alarmsScheduler.schedule(any()) } returns Single.just(AppResult.Success(next))
         every { alarmsRepo.setActive(any(),any()) } returns Single.just(AppResult.Success(Unit))

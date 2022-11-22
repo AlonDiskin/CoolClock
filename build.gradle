@@ -74,3 +74,33 @@ task featureTests {
         }
     }
 }
+
+task testAppFeature {
+    doLast {
+        subprojects.forEach {
+            if (it.parent.name == featureName) {
+                def path = it.path
+
+                println "Running test suite for ${featureName}:${it.name}"
+
+                // Run unit test for a java library/kotlin module
+                if (it.plugins.findPlugin('java-library') != null) {
+                    println "Running local java library test suite for ${featureName}:${it.name}"
+                    exec {
+                        executable './gradlew'
+                        args "${path}:test"
+                    }
+                }
+
+                // Run unit test for android library module
+                if (it.plugins.findPlugin('com.android.library') != null) {
+                    println "Running local android library test suite for ${featureName}:${it.name}"
+                    exec {
+                        executable './gradlew'
+                        args "${path}:testDebugUnitTest"
+                    }
+                }
+            }
+        }
+    }
+}

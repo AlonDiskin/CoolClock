@@ -18,7 +18,7 @@ class AlarmTest {
         DateTimeUtils.setCurrentMillisFixed(current.millis)
 
         // When
-        val actual = alarm.nextAlarm()
+        val actual = alarm.nextAlarm
 
         println(actual)
         // Then
@@ -32,7 +32,7 @@ class AlarmTest {
         DateTimeUtils.setCurrentMillisFixed(current.millis)
 
         // When
-        val actual = alarm.nextAlarm()
+        val actual = alarm.nextAlarm
 
         // Then
         assertThat(actual).isEqualTo(next)

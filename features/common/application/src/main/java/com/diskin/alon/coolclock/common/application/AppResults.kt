@@ -1,5 +1,6 @@
 package com.diskin.alon.coolclock.common.application
 
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.Function
@@ -68,6 +69,20 @@ fun <T : Any, R : Any> Observable<AppResult<T>>.flatMapAppResult(mapper: (T) -> 
 
 fun <T : Any, R : Any> Single<AppResult<T>>.flatMapSingleAppResult(mapper: (T) -> (Single<AppResult<R>>)): Single<AppResult<R>> {
     return this.flatMap {
+        when(it) {
+            is AppResult.Success -> mapper.invoke(it.data)
+            is AppResult.Error -> Single.just(
+                AppResult.Error(
+                    it.error
+                )
+            )
+            is AppResult.Loading -> Single.just(AppResult.Loading())
+        }
+    }
+}
+
+fun <T : Any, R : Any> Maybe<AppResult<T>>.flatMapSingleElementAppResult(mapper: (T) -> (Single<AppResult<R>>)): Maybe<AppResult<R>> {
+    return this.flatMapSingleElement {
         when(it) {
             is AppResult.Success -> mapper.invoke(it.data)
             is AppResult.Error -> Single.just(
@@ -162,6 +177,12 @@ private fun <T : Any> toAppResultError(throwable: Throwable, errorHandler: ((Thr
 fun <T : Any> Single<T>.toSingleAppResult(errorHandler: ((Throwable) -> (AppError))? = null): Single<AppResult<T>> {
     return this.map { toSuccessAppResult(it) }
         .onErrorReturn { toAppResultError(it,errorHandler) }
+}
+
+fun <T : Any> Maybe<T>.toMaybeAppResult(errorHandler: ((Throwable) -> (AppError))? = null): Maybe<AppResult<T>> {
+    return this.toSingle()
+        .toSingleAppResult()
+        .toMaybe()
 }
 
 fun <T : Any,R : Any> AppResult<T>.mapAppResultToSingle(mapping: (T) -> (Single<AppResult<R>>)): Single<AppResult<R>> {

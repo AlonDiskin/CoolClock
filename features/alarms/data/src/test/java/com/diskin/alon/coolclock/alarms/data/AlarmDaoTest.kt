@@ -7,9 +7,13 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.diskin.alon.coolclock.alarms.data.local.AlarmDao
 import com.diskin.alon.coolclock.alarms.data.local.AlarmEntity
+import com.diskin.alon.coolclock.alarms.data.local.AlarmMapper
+import com.diskin.alon.coolclock.alarms.domain.Alarm
 import com.diskin.alon.coolclock.alarms.domain.Sound
 import com.diskin.alon.coolclock.alarms.domain.WeekDay
+import com.diskin.alon.coolclock.common.application.toMaybeAppResult
 import com.google.common.truth.Truth.assertThat
+import io.reactivex.Maybe
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -38,7 +42,7 @@ class AlarmDaoTest {
     }
 
     @Test
-    fun insertAndQueryAll() = runBlocking {
+    fun insertAndQueryPaging() = runBlocking {
         // Given
         val entities = listOf(
             AlarmEntity(
@@ -103,7 +107,7 @@ class AlarmDaoTest {
         entities.forEach { dao.insert(it).blockingGet() }
 
         // Then
-        val actual = dao.getAll().load(
+        val actual = dao.getAllPaging().load(
             PagingSource.LoadParams.Refresh(null,20,false)
         ) as PagingSource.LoadResult.Page<Int, AlarmEntity>
 
@@ -117,7 +121,7 @@ class AlarmDaoTest {
             "name_1",
             12,
             10,
-            setOf(WeekDay.SUN,WeekDay.MON),
+            setOf(WeekDay.SUN, WeekDay.MON),
             true,
             Sound.AlarmSound("sound_1"),
             false,
@@ -144,7 +148,7 @@ class AlarmDaoTest {
             "name_1",
             12,
             10,
-            setOf(WeekDay.SUN,WeekDay.MON),
+            setOf(WeekDay.SUN, WeekDay.MON),
             true,
             Sound.AlarmSound("sound_1"),
             false,
@@ -155,18 +159,18 @@ class AlarmDaoTest {
             1
         )
         val expected = AlarmEntity(
-            "name_1",
-            12,
-            10,
-            setOf(WeekDay.SUN,WeekDay.MON),
+            entity.name,
+            entity.hour,
+            entity.minute,
+            entity.repeatDays,
             false,
-            Sound.AlarmSound("sound_1"),
+            entity.sound,
+            entity.isVibrate,
+            entity.duration,
+            entity.volume,
+            entity.snooze,
             false,
-            5,
-            1,
-            5,
-            false,
-            1
+            entity.id
         )
 
         dao.insert(entity).blockingGet()
@@ -217,11 +221,137 @@ class AlarmDaoTest {
         dao.delete(1).blockingAwait()
 
         // Then
-        val actual = dao.getAll().load(
+        val actual = dao.getAllPaging().load(
             PagingSource.LoadParams.Refresh(null,20,false)
         ) as PagingSource.LoadResult.Page<Int, AlarmEntity>
 
         assertThat(actual.data.size).isEqualTo(1)
         assertThat(actual.data.first().id).isEqualTo(2)
+    }
+
+    @Test
+    fun insertAndReadAll() {
+        // Given
+        val entities = listOf(
+            AlarmEntity(
+                "name_1",
+                12,
+                10,
+                setOf(WeekDay.SUN,WeekDay.MON),
+                true,
+                Sound.AlarmSound("sound_1"),
+                false,
+                5,
+                1,
+                5,
+                false
+            ),
+            AlarmEntity(
+                "name_2",
+                11,
+                15,
+                emptySet(),
+                false,
+                Sound.AlarmSound("sound_2"),
+                true,
+                4,
+                2,
+                10,
+                true
+            )
+        )
+        val expected = listOf(
+            AlarmEntity(
+                "name_1",
+                12,
+                10,
+                setOf(WeekDay.SUN,WeekDay.MON),
+                true,
+                Sound.AlarmSound("sound_1"),
+                false,
+                5,
+                1,
+                5,
+                false,
+                1
+            ),
+            AlarmEntity(
+                "name_2",
+                11,
+                15,
+                emptySet(),
+                false,
+                Sound.AlarmSound("sound_2"),
+                true,
+                4,
+                2,
+                10,
+                true,
+                2
+            )
+        )
+
+        // When
+        entities.forEach { dao.insert(it).blockingGet() }
+
+        // And
+        val observer = dao.getAll().test()
+
+        // Then
+        observer.assertValue(expected)
+    }
+
+    @Test
+    fun name() {
+        val entities = listOf(
+            AlarmEntity(
+                "name_1",
+                12,
+                10,
+                setOf(WeekDay.SUN,WeekDay.MON),
+                true,
+                Sound.AlarmSound("sound_1"),
+                false,
+                5,
+                1,
+                5,
+                false
+            ),
+            AlarmEntity(
+                "name_2",
+                11,
+                15,
+                emptySet(),
+                false,
+                Sound.AlarmSound("sound_2"),
+                true,
+                4,
+                2,
+                10,
+                true
+            )
+        )
+
+        entities.forEach { dao.insert(it).blockingGet() }
+
+        val mapper = AlarmMapper()
+        val observer = dao.getAll()
+            .map { it.map(mapper::map) }
+            .flatMapMaybe { alarms ->
+                Maybe.create<Alarm> { emitter ->
+
+                    alarms.find { it.id == 12 }?.let {
+                        emitter.onSuccess(it)
+                    }
+                }
+            }
+            .toMaybeAppResult()
+            .subscribe({
+                println("RES:$it")
+            },{
+                println("ERROR:$it")
+            },{
+                println("COMPLETE")
+            })
     }
 }

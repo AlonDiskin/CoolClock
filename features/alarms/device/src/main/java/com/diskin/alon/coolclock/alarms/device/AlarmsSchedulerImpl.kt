@@ -46,7 +46,7 @@ class AlarmsSchedulerImpl @Inject constructor(
 
     private fun scheduleUnrepeatedAlarm(alarm: Alarm): Single<AppResult<Long>> {
         return Single.create<Long> {
-            val alarmTime = alarm.nextAlarm()
+            val alarmTime = alarm.nextAlarm
 
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
@@ -72,7 +72,7 @@ class AlarmsSchedulerImpl @Inject constructor(
                 )
             }
 
-            it.onSuccess(alarm.nextAlarm())
+            it.onSuccess(alarm.nextAlarm)
         }
             .subscribeOn(Schedulers.computation())
             .toSingleAppResult()

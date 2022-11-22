@@ -13,7 +13,7 @@ import com.diskin.alon.coolclock.alarms.domain.WeekDay
 import com.diskin.alon.coolclock.common.application.AppResult
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import io.reactivex.Maybe
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
@@ -33,7 +33,7 @@ class ScheduleAlarmUseCaseTest {
     }
 
     @Test
-    fun scheduleNewAlarm_WhenExecuted() {
+    fun scheduleNewAlarm_WhenExecutedAndScheduledAlarmForSameTimeNotExist() {
         // Given
         val request = ScheduleAlarmRequest.NewAlarm(
             12,
@@ -97,15 +97,97 @@ class ScheduleAlarmUseCaseTest {
             request.volume,
             request.snooze,false)
 
-        every { scheduler.schedule(any()) } returns Single.just(AppResult.Success(next))
-        every { repo.add(any()) } returns Single.just(AppResult.Success(id))
+        every { repo.getWithNextAlarm(any()) } returns Maybe.empty()
+        every { scheduler.schedule(expectedScheduledAlarm) } returns Single.just(AppResult.Success(next))
+        every { repo.add(expectedAddedAlarm) } returns Single.just(AppResult.Success(id))
 
         // When
         val observer = useCase.execute(request).test()
 
         // Then
-        verify(exactly = 1) { repo.add(expectedAddedAlarm) }
-        verify(exactly = 1) { scheduler.schedule(expectedScheduledAlarm) }
+        observer.assertValue(AppResult.Success(next))
+    }
+
+    @Test
+    fun scheduleNewAlarmAndReplaceExisting_WhenExecutedAndScheduledAlarmForSameTimeExist() {
+        // Given
+        val request = ScheduleAlarmRequest.NewAlarm(
+            12,
+            15,
+            emptySet(),
+            "name",
+            AlarmSound.Silent,
+            true,
+            5,
+            5,
+            10)
+        val next = 12345L
+        val id = 1
+        val existingAlarm = mockk<Alarm>()
+        val existingAlarmId = 10
+        val expectedAddedAlarm = Alarm(
+            EMPTY_ID,
+            request.name,
+            request.hour,
+            request.minute,
+            request.repeatDays.map {
+                when(it) {
+                    RepeatDay.SUN -> WeekDay.SUN
+                    RepeatDay.MON -> WeekDay.MON
+                    RepeatDay.TUE -> WeekDay.TUE
+                    RepeatDay.WED -> WeekDay.WED
+                    RepeatDay.THU -> WeekDay.THU
+                    RepeatDay.FRI -> WeekDay.FRI
+                    RepeatDay.SAT -> WeekDay.SAT
+                }
+            }.toSet(),
+            true,request.vibration,
+            when(val ringtone = request.ringtone) {
+                is AlarmSound.Ringtone -> Sound.AlarmSound(ringtone.path)
+                else -> Sound.Silent
+            },
+            request.duration,
+            request.volume,
+            request.snooze,
+            false)
+        val expectedScheduledAlarm = Alarm(
+            id,
+            request.name,
+            request.hour,
+            request.minute,
+            request.repeatDays.map {
+                when(it) {
+                    RepeatDay.SUN -> WeekDay.SUN
+                    RepeatDay.MON -> WeekDay.MON
+                    RepeatDay.TUE -> WeekDay.TUE
+                    RepeatDay.WED -> WeekDay.WED
+                    RepeatDay.THU -> WeekDay.THU
+                    RepeatDay.FRI -> WeekDay.FRI
+                    RepeatDay.SAT -> WeekDay.SAT
+                }
+            }.toSet(),
+            true,request.vibration,
+            when(val ringtone = request.ringtone) {
+                is AlarmSound.Ringtone -> Sound.AlarmSound(ringtone.path)
+                else -> Sound.Silent
+            },
+            request.duration,
+            request.volume,
+            request.snooze,false)
+
+        every { repo.getWithNextAlarm(any()) } returns Maybe.just(AppResult.Success(existingAlarm))
+        every { existingAlarm.isScheduled } returns true
+        every { existingAlarm.nextAlarm } returns expectedScheduledAlarm.nextAlarm
+        every { existingAlarm.id } returns existingAlarmId
+        every { scheduler.cancel(existingAlarm) } returns Single.just(AppResult.Success(Unit))
+        every { repo.delete(existingAlarmId) } returns Single.just(AppResult.Success(Unit))
+        every { scheduler.schedule(expectedScheduledAlarm) } returns Single.just(AppResult.Success(next))
+        every { repo.add(expectedAddedAlarm) } returns Single.just(AppResult.Success(id))
+
+        // When
+        val observer = useCase.execute(request).test()
+
+        // Then
         observer.assertValue(AppResult.Success(next))
     }
 }

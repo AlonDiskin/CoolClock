@@ -23,3 +23,13 @@ Feature: Alarms editor feature rules
     When he leave editor without confirming edit selection
     Then app should not schedule selected edited alarm
 
+  #Rule: Replace existing alarm,with newly created one,if alarm time is tha same
+
+  @alarm-replaced
+  Scenario: Existing alarm replaced
+    Given app has existing scheduled alarm
+    When user schedule new alarm with trigger time equal to existing one
+    Then app should remove existing alarm,and add new one
+
+
+
