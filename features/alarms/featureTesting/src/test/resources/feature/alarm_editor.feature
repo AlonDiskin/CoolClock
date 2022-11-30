@@ -31,5 +31,14 @@ Feature: Alarms editor feature rules
     When user schedule new alarm with trigger time equal to existing one
     Then app should remove existing alarm,and add new one
 
+  #Rule: Scheduling alarms notifies user
+
+  @user-notified
+  Scenario: User notified of alarm trigger time
+    Given user edit new alarm
+    When he confirm alarm schedule
+    Then app should notify user about time left to alarm trigger
+
+
 
 

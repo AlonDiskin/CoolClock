@@ -30,8 +30,10 @@ class AlarmsSchedulerImpl @Inject constructor(
     override fun cancel(alarm: Alarm): Single<AppResult<Unit>> {
         return Single.create<Unit> {
             when(alarm.repeatDays.isEmpty()) {
-                true -> createUnrepeatedAlarmCancelingPendingIntent(alarm)
-                    ?.let(alarmManager::cancel)
+                true -> createUnrepeatedAlarmCancelingPendingIntent(alarm)?.let{ pi ->
+                    alarmManager.cancel(pi)
+                    pi.cancel()
+                }
 
                 false -> alarm.repeatDays.forEach { day ->
                     createRepeatedAlarmCancelPendingIntent(alarm,day.name)

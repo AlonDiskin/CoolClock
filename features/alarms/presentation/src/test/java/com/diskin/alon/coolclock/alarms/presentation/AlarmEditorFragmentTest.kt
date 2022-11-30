@@ -38,6 +38,7 @@ import org.junit.runner.RunWith
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadows.ShadowToast
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -466,5 +467,31 @@ class AlarmEditorFragmentTest {
         onView(withId(R.id.fab))
             .check(matches(isNotEnabled()))
         verify { viewModel.schedule() }
+    }
+
+    @Test
+    fun showTimeLeftToAlarm_WhenAlarmScheduled() {
+        // Given
+        val timeToAlarm = "time_left"
+
+        // When
+        scheduleAlarmDate.value = timeToAlarm
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(timeToAlarm)
+    }
+
+    @Test
+    fun navigateBackToAlarmsBrowser_WhenAlarmScheduled() {
+        // Given
+        val timeToAlarm = "time_left"
+
+        // When
+        scheduleAlarmDate.value = timeToAlarm
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        assertThat(navController.currentDestination!!.id).isEqualTo(R.id.alarmsFragment)
     }
 }

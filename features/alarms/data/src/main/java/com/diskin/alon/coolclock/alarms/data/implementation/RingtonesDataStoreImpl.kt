@@ -20,15 +20,22 @@ class RingtonesDataStoreImpl @Inject constructor(
 
     override fun getDefault(): Single<AppResult<AlarmSound.Ringtone>> {
         return Single.create<AlarmSound.Ringtone> {
-            val defaultRingtoneUri = RingtoneManager.getActualDefaultRingtoneUri(
+            var defaultRingtoneUri = RingtoneManager.getActualDefaultRingtoneUri(
                 context,
                 RingtoneManager.TYPE_ALARM
             )
             val defaultRingtone = RingtoneManager.getRingtone(context, defaultRingtoneUri)
+
+            if (defaultRingtoneUri.toString().contains("?")) {
+                val uri = defaultRingtoneUri.toString().split("?")
+                defaultRingtoneUri = Uri.parse(uri[0])
+            }
+
             val resRingtone = AlarmSound.Ringtone(
                 defaultRingtoneUri.toString(),
                 defaultRingtone.getTitle(context)
             )
+
             it.onSuccess(resRingtone)
         }
             .subscribeOn(Schedulers.io())

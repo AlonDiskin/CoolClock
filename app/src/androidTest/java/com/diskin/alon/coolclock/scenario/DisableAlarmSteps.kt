@@ -25,9 +25,9 @@ class DisableAlarmSteps(
 
     init {
         // Pre populate test db with active alarm
-        val insertAlarm = "INSERT INTO alarms (name,hour,minute,repeatDays,isActive,ringtone" +
-                ",isVibrate,isSound,duration,volume,isSnooze,snoozeRepeat,snoozeInterval)" +
-                "VALUES ('name_1',15,10,'empty',0,'ringtone_1',0,1,5,5,0,0,0)"
+        val insertAlarm = "INSERT INTO user_alarms (name,hour,minute,repeatDays,isScheduled,sound" +
+                ",isVibrate,duration,volume,snooze,isSnoozed)" +
+                "VALUES ('name_1',15,10,'empty',0,'ringtone_1',0,5,5,0,0)"
 
         db.compileStatement(insertAlarm).executeInsert()
     }
@@ -96,7 +96,7 @@ class DisableAlarmSteps(
 
     @And("^delete it from user alarms data$")
     fun delete_it_from_user_alarms_data() {
-        val actualSize = db.compileStatement("SELECT COUNT(*) FROM alarms").simpleQueryForLong()
+        val actualSize = db.compileStatement("SELECT COUNT(*) FROM user_alarms").simpleQueryForLong()
 
         assertThat(actualSize).isEqualTo(0)
     }
