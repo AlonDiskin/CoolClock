@@ -5,4 +5,9 @@
         <item name="android:textSize">13sp</item>
         <item name="android:textAppearance">?attr/textAppearanceCaption</item>
     </style>
+
+    <style name="EditRepeatDay" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:fontFamily">@font/ubuntu_medium</item>
+        <item name="android:textAppearance">?attr/textAppearanceHeadline6</item>
+    </style>
 </resources>

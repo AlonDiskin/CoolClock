@@ -1,7 +1,9 @@
 package com.diskin.alon.coolclock.alarms.di
 
 import com.diskin.alon.coolclock.alarms.application.interfaces.AlarmsRepository
+import com.diskin.alon.coolclock.alarms.application.interfaces.RingtonesDataStore
 import com.diskin.alon.coolclock.alarms.data.implementation.AlarmsRepositoryImpl
+import com.diskin.alon.coolclock.alarms.data.implementation.RingtonesDataStoreImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,4 +17,8 @@ abstract class DataModule {
     @ActivityRetainedScoped
     @Binds
     abstract fun bindAlarmRepository(repositoryImpl: AlarmsRepositoryImpl): AlarmsRepository
+
+    @ActivityRetainedScoped
+    @Binds
+    abstract fun bindDeviceRingtonesDataStore(store: RingtonesDataStoreImpl): RingtonesDataStore
 }

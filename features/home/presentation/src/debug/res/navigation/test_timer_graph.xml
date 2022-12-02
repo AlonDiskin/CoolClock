@@ -8,5 +8,6 @@
     <fragment
         android:id="@+id/timerDest"
         tools:layout="@layout/fragment_blank"
+        android:label="@string/title_timer_dest"
         android:name="com.diskin.alon.coolclock.home.presentation.BlankFragment"/>
 </navigation>

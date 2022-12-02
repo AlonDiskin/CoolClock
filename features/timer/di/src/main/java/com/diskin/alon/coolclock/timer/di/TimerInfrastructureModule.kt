@@ -15,12 +15,6 @@ object TimerInfrastructureModule {
 
     @Singleton
     @Provides
-    fun provideEventBus(): EventBus {
-        return EventBus.getDefault()
-    }
-
-    @Singleton
-    @Provides
     fun provideNotificationManagerCompat(app: Application): NotificationManagerCompat {
         return NotificationManagerCompat.from(app)
     }

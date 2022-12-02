@@ -2,6 +2,7 @@ package com.diskin.alon.coolclock.alarms.application.usecase
 
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.diskin.alon.coolclock.alarms.application.model.AlarmEdit
 import com.diskin.alon.coolclock.alarms.application.model.BrowserAlarm
 import com.diskin.alon.coolclock.alarms.application.model.NextAlarm
 import com.diskin.alon.coolclock.alarms.application.model.RepeatDay
@@ -16,8 +17,8 @@ class AlarmsMapper @Inject constructor() {
             BrowserAlarm(
                 it.id,
                 it.name,
-                it.time.hour,
-                it.time.minute,
+                it.hour,
+                it.minute,
                 it.repeatDays.map { day ->
                     when (day) {
                         WeekDay.SUN -> RepeatDay.SUN
@@ -26,11 +27,11 @@ class AlarmsMapper @Inject constructor() {
                         WeekDay.WED -> RepeatDay.WED
                         WeekDay.THU -> RepeatDay.THU
                         WeekDay.FRI -> RepeatDay.FRI
-                        WeekDay.SUT -> RepeatDay.SAT
+                        WeekDay.SAT -> RepeatDay.SAT
                     }
                 }.toSet(),
-                it.isActive,
-                if (it.isActive) NextAlarm.Next(it.nextAlarm()) else NextAlarm.None
+                it.isScheduled,
+                if (it.isScheduled) NextAlarm.Next(it.nextAlarm) else NextAlarm.None
             )
         }
     }

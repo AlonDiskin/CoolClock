@@ -8,6 +8,7 @@
     <fragment
         android:id="@+id/alarmsDest"
         tools:layout="@layout/fragment_blank"
+        android:label="@string/title_alarms_dest"
         android:name="com.diskin.alon.coolclock.home.presentation.BlankFragment"/>
 
 </navigation>

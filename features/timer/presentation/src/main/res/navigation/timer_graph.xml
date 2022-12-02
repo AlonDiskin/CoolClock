@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/timerFragment"
         android:name="com.diskin.alon.coolclock.timer.presentation.controller.TimerFragment"
-        android:label=""
+        android:label="Timer"
         tools:layout="@layout/fragment_timer">
 
         <deepLink app:uri="@string/uri_timer" />

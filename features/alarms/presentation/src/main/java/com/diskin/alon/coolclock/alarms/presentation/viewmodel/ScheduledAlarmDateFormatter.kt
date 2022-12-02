@@ -7,8 +7,8 @@ import javax.inject.Inject
 class ScheduledAlarmDateFormatter @Inject constructor() {
 
     fun format(date: Long): String {
-        val current = DateTime()
-        val scheduled = DateTime(date)
+        val current = DateTime().withSecondOfMinute(0).withMillisOfSecond(0)
+        val scheduled = DateTime(date).withSecondOfMinute(0).withMillisOfSecond(0)
         val period = Period(current,scheduled)
         val years = when(val i = period.years) {
             0 -> ""
@@ -40,6 +40,7 @@ class ScheduledAlarmDateFormatter @Inject constructor() {
             1 -> "1 minute"
             else -> i.toString().plus(" minutes")
         }
+
         val diff = "$years$months$weeks$days$hours$minutes"
         val res = if (diff.last() == ',') diff.dropLast(1) else diff
 

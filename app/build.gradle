@@ -6,12 +6,12 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk sdkVersion
 
     defaultConfig {
         applicationId "com.diskin.alon.coolclock"
         minSdk 21
-        targetSdk 31
+        targetSdk sdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -67,7 +67,7 @@ dependencies {
     implementation project(':features:alarms:di')
 
     // Android core
-    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation "androidx.core:core-ktx:$androidCore"
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.preference:preference-ktx:1.2.0'

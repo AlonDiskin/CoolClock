@@ -1,6 +1,7 @@
 package com.diskin.alon.coolclock.home.presentation
 
 import android.os.Looper
+import android.view.KeyEvent
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.findNavController
 import androidx.test.core.app.ActivityScenario
@@ -13,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.diskin.alon.coolclock.common.presentation.VolumeButtonPressEvent
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
@@ -21,6 +23,8 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
+import org.greenrobot.eventbus.EventBus
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -47,12 +51,17 @@ class MainActivityTest {
     @JvmField
     val graphProvider: AppGraphProvider = mockk()
 
+    @BindValue
+    @JvmField
+    val eventBus: EventBus = mockk()
+
     @Before
     fun setUp() {
         // Stub collaborators
         every { graphProvider.getAppGraph() } returns R.navigation.test_app_graph
         every { graphProvider.getTimerDest() } returns R.id.timerDest
         every { graphProvider.getClocksDest() } returns R.id.clocksDest
+        every { graphProvider.getAlarmsDest() } returns R.id.alarmsDest
 
         // Launch activity under test
         scenario = ActivityScenario.launch(MainActivity::class.java)
@@ -60,15 +69,57 @@ class MainActivityTest {
     }
 
     @Test
-    fun showAppNameInAppBar_WhenResumed() {
+    fun showAlarmsNavDestTitleInAppBar_WhenResumed() {
         // Given
 
         // Then
         scenario.onActivity {
             val toolbar = it.findViewById<Toolbar>(R.id.toolbar)
-            val  appName = it.getString(R.string.app_name)
+            val controller = it.findNavController(R.id.nav_host_container)
+            val expectedTitle = it.getString(R.string.title_alarms_dest)
 
-            assertThat(toolbar.title).isEqualTo(appName)
+            assertThat(controller.currentDestination!!.id).isEqualTo(R.id.alarmsDest)
+            assertThat(toolbar.title.toString()).isEqualTo(expectedTitle)
+        }
+    }
+
+    @Test
+    fun showClocksDestTitleInAppBar_WhenUserNavigateToIt() {
+        // Given
+
+        // When
+        onView(withId(R.id.world_clocks))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        scenario.onActivity {
+            val toolbar = it.findViewById<Toolbar>(R.id.toolbar)
+            val controller = it.findNavController(R.id.nav_host_container)
+            val expectedTitle = it.getString(R.string.title_world_clocks_dest)
+
+            assertThat(controller.currentDestination!!.id).isEqualTo(R.id.clocksDest)
+            assertThat(toolbar.title.toString()).isEqualTo(expectedTitle)
+        }
+    }
+
+    @Test
+    fun showTimerDestTitleInAppBar_WhenUserNavigateToIt() {
+        // Given
+
+        // When
+        onView(withId(R.id.timer))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        scenario.onActivity {
+            val toolbar = it.findViewById<Toolbar>(R.id.toolbar)
+            val controller = it.findNavController(R.id.nav_host_container)
+            val expectedTitle = it.getString(R.string.title_timer_dest)
+
+            assertThat(controller.currentDestination!!.id).isEqualTo(R.id.timerDest)
+            assertThat(toolbar.title.toString()).isEqualTo(expectedTitle)
         }
     }
 
@@ -191,5 +242,20 @@ class MainActivityTest {
         scenario.onActivity {
             assertThat(it.isFinishing).isTrue()
         }
+    }
+
+    @Test
+    fun sendVolumeButtonPressedEvent_WhenDeviceVolumeButtonsPressed() {
+        // Given
+
+        every { eventBus.post(any()) } returns Unit
+
+        // When
+        scenario.onActivity {
+            it.onKeyDown(KeyEvent.KEYCODE_VOLUME_UP, mockk())
+        }
+
+        // Then
+        verify(exactly = 1) { eventBus.post(VolumeButtonPressEvent.VOLUME_UP) }
     }
 }

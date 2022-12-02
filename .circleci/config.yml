@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  unit_tests:
+  home_feature_tests:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-30
@@ -18,14 +18,14 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-          name: Run unit tests
-          command: ./gradlew unitTests --no-daemon --max-workers=2 --stacktrace
+          name: Run all local tests tests
+          command: ./gradlew testAppFeature -PfeatureName=home --no-daemon --max-workers=2
       - store_artifacts:
           path: app/build/reports
           destination: reports
       - store_test_results:
           path: features/home/presentation/build/test-results
-  feature_tests:
+  alarms_feature_tests:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-30
@@ -43,11 +43,83 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-          name: Run integration tests
-          command: ./gradlew featureTests --no-daemon --max-workers=2
+          name: Run all local tests tests
+          command: ./gradlew testAppFeature -PfeatureName=alarms --no-daemon --max-workers=2
       - store_artifacts:
           path: app/build/reports
           destination: reports
+      - store_test_results:
+          path: features/alarms/presentation/build/test-results
+      - store_test_results:
+          path: features/alarms/application/build/test-results
+      - store_test_results:
+          path: features/alarms/domain/build/test-results
+      - store_test_results:
+          path: features/alarms/data/build/test-results
+      - store_test_results:
+          path: features/alarms/device/build/test-results
+      - store_test_results:
+          path: features/alarms/featureTesting/build/test-results
+  world_clocks_feature_tests:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-30
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Run all local tests tests
+          command: ./gradlew testAppFeature -PfeatureName=worldClocks --no-daemon --max-workers=2
+      - store_artifacts:
+          path: app/build/reports
+          destination: reports
+      - store_test_results:
+          path: features/worldClocks/presentation/build/test-results
+      - store_test_results:
+          path: features/worldClocks/application/build/test-results
+      - store_test_results:
+          path: features/worldClocks/domain/build/test-results
+      - store_test_results:
+          path: features/worldClocks/data/build/test-results
+      - store_test_results:
+          path: features/worldClocks/featureTesting/build/test-results
+  timer_feature_tests:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-30
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Run all local tests tests
+          command: ./gradlew testAppFeature -PfeatureName=timer --no-daemon --max-workers=2
+      - store_artifacts:
+          path: app/build/reports
+          destination: reports
+      - store_test_results:
+          path: features/timer/presentation/build/test-results
+      - store_test_results:
+          path: features/timer/data/build/test-results
       - store_test_results:
           path: features/timer/featureTesting/build/test-results
   e2e_tests:
@@ -91,8 +163,10 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - unit_tests
-      - feature_tests
+      - home_feature_tests
+      - alarms_feature_tests
+      - world_clocks_feature_tests
+      - timer_feature_tests
       - e2e_tests:
           filters:
             branches:

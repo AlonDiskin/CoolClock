@@ -2,4 +2,7 @@
     <string name="app_name">CoolClock</string>
     <string name="title_action_settings">Settings</string>
     <string name="title_action_scores">Scores</string>
+    <string name="title_alarms_dest">AlarmsDestTitle</string>
+    <string name="title_world_clocks_dest">WorldClocksDestTitle</string>
+    <string name="title_timer_dest">TimerDestTitle</string>
 </resources>

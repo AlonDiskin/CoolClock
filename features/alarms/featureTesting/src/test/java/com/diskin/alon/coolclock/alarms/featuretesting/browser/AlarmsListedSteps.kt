@@ -7,6 +7,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.coolclock.alarms.data.local.AlarmEntity
+import com.diskin.alon.coolclock.alarms.domain.Sound
 import com.diskin.alon.coolclock.alarms.domain.WeekDay
 import com.diskin.alon.coolclock.alarms.featuretesting.util.TestDatabase
 import com.diskin.alon.coolclock.alarms.presentation.R
@@ -16,7 +17,6 @@ import com.diskin.alon.coolclock.common.uitesting.HiltTestActivity
 import com.diskin.alon.coolclock.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.coolclock.common.uitesting.isRecyclerViewItemsCount
 import com.diskin.alon.coolclock.common.uitesting.launchFragmentInHiltContainer
-import com.diskin.alon.coolclock.common.uitesting.withSwitchText
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given
 import com.mauriciotogneri.greencoffee.annotations.Then
@@ -77,14 +77,12 @@ class AlarmsListedSteps(
                 15,
                 emptySet(),
                 true,
-                "sound_1",
+                Sound.AlarmSound("sound_1"),
                 false,
-                true,
+                5,
                 1,
                 5,
-                false,
-                5,
-                1
+                false
             ),
             AlarmEntity(
                 "alarm_2",
@@ -92,14 +90,12 @@ class AlarmsListedSteps(
                 15,
                 emptySet(),
                 true,
-                "sound_1",
+                Sound.AlarmSound("sound_2"),
                 false,
-                true,
+                5,
                 1,
                 5,
-                false,
-                5,
-                1
+                false
             ),
             AlarmEntity(
                 "alarm_3",
@@ -107,33 +103,29 @@ class AlarmsListedSteps(
                 30,
                 emptySet(),
                 false,
-                "sound_1",
+                Sound.AlarmSound("sound_1"),
                 false,
-                true,
+                5,
                 1,
                 5,
-                false,
-                5,
-                1
-            ),
+                false
+            ), // setOf(WeekDay.SUN,WeekDay.MON)
             AlarmEntity(
                 "alarm_4",
                 15,
                 35,
                 setOf(WeekDay.SUN,WeekDay.MON),
                 true,
-                "sound_1",
+                Sound.AlarmSound("sound_1"),
                 false,
-                true,
+                5,
                 1,
                 5,
-                false,
-                5,
-                1
+                false
             )
         )
 
-        alarms.forEach { db.alarmDao().insert(it).blockingAwait() }
+        alarms.forEach { db.alarmDao().insert(it).blockingGet() }
     }
 
     @Given("^user opened alarms screen$")
@@ -159,8 +151,8 @@ class AlarmsListedSteps(
             onView(withRecyclerView(R.id.alarms).atPositionOnView(index, R.id.next_alarm))
                 .check(matches(withText(testUiAlarm.nextAlarm)))
 
-            onView(withRecyclerView(R.id.alarms).atPositionOnView(index, R.id.active_switcher))
-                .check(matches(withSwitchText(testUiAlarm.time)))
+            onView(withRecyclerView(R.id.alarms).atPositionOnView(index, R.id.alarmTime))
+                .check(matches(withText(testUiAlarm.time)))
 
             val switchStateMatcher = when(testUiAlarm.isActive) {
                 true -> isChecked()

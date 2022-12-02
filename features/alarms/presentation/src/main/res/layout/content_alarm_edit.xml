@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="alarmEdit"
+            type="com.diskin.alon.coolclock.alarms.presentation.model.UiAlarmEdit" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroup"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                >
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipSun"
+                    android:textAppearance="@style/EditRepeatDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@={alarmEdit.sunRepeatDay}"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:text="@string/title_repeat_day_sun"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipMon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/EditRepeatDay"
+                    android:checked="@={alarmEdit.monRepeatDay}"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:text="@string/title_repeat_day_mon"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipTue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/EditRepeatDay"
+                    android:checked="@={alarmEdit.tueRepeatDay}"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:text="@string/title_repeat_day_tue"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipWed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/EditRepeatDay"
+                    android:checked="@={alarmEdit.wedRepeatDay}"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:text="@string/title_repeat_day_wed"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipThu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/EditRepeatDay"
+                    android:checked="@={alarmEdit.thuRepeatDay}"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:text="@string/title_repeat_day_thu"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFri"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/EditRepeatDay"
+                    android:checked="@={alarmEdit.friRepeatDay}"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:text="@string/title_repeat_day_fri"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipSat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/EditRepeatDay"
+                    android:checked="@={alarmEdit.satRepeatDay}"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:text="@string/title_repeat_day_sat"/>
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <ImageView
+                android:id="@+id/titleIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/editTextAlarmName"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/editTextAlarmName"
+                app:srcCompat="@drawable/ic_baseline_title_48" />
+
+            <EditText
+                android:id="@+id/editTextAlarmName"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:ems="10"
+                android:hint="Alarm name"
+                android:layout_marginStart="10dp"
+                android:inputType="textPersonName"
+                android:text="@={alarmEdit.name}"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                app:layout_constraintEnd_toEndOf="@+id/chipGroup"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/titleIcon"
+                app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutSound"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextAlarmName">
+
+                <TextView
+                    android:id="@+id/labelSound"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_label_ringtone"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:layout_marginStart="10dp"
+                    app:layout_constraintBottom_toTopOf="@+id/ringtone"
+                    app:layout_constraintStart_toEndOf="@+id/iconSound"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+
+                <TextView
+                    android:id="@+id/ringtone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{alarmEdit.ringtoneName}"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/labelSound"
+                    app:layout_constraintTop_toBottomOf="@+id/labelSound"
+                    tools:text="Sunrise" />
+
+                <ImageView
+                    android:id="@+id/iconSound"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_music_note_48" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutVibration"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layoutSound">
+
+                <TextView
+                    android:id="@+id/labelVibration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/title_label_vibration"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/iconVibration"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchVibration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:checked="@={alarmEdit.vibration}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:enabled="true" />
+
+                <ImageView
+                    android:id="@+id/iconVibration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_vibration_48" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/snooze"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layoutVibration">
+
+                <TextView
+                    android:id="@+id/labelSnooze"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Snooze"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:layout_marginStart="10dp"
+                    app:layout_constraintBottom_toTopOf="@+id/stateSnooze"
+                    app:layout_constraintStart_toEndOf="@+id/iconSnooze"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <TextView
+                    android:id="@+id/stateSnooze"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{alarmEdit.snooze}"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/labelSnooze"
+                    app:layout_constraintTop_toBottomOf="@+id/labelSnooze"
+                    tools:text="10 minutes" />
+
+                <ImageView
+                    android:id="@+id/iconSnooze"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_snooze_48" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/volume"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/snooze">
+
+                <TextView
+                    android:id="@+id/labelVolume"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Volume"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:layout_marginStart="10dp"
+                    app:layout_constraintBottom_toTopOf="@+id/volumeSeekBar"
+                    app:layout_constraintStart_toEndOf="@+id/iconVolume"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <SeekBar
+                    android:id="@+id/volumeSeekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:max="@{alarmEdit.maxVolume}"
+                    android:progress="@{alarmEdit.volume}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/iconVolume"
+                    app:layout_constraintTop_toBottomOf="@+id/labelVolume"
+                    tools:progress="5" />
+
+                <ImageView
+                    android:id="@+id/iconVolume"
+                    android:layout_marginStart="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_volume_up_48" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/duration"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/volume">
+
+                <TextView
+                    android:id="@+id/labelDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Duration"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:layout_marginStart="10dp"
+                    app:layout_constraintBottom_toTopOf="@+id/durationValue"
+                    app:layout_constraintStart_toEndOf="@+id/iconDuration"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <TextView
+                    android:id="@+id/durationValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{alarmEdit.duration}"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/labelDuration"
+                    app:layout_constraintTop_toBottomOf="@+id/labelDuration"
+                    tools:text="5 minutes" />
+
+                <ImageView
+                    android:id="@+id/iconDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_hourglass_bottom_32" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</layout>

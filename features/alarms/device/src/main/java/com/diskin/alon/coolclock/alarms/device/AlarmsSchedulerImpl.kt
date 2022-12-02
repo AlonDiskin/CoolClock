@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import com.diskin.alon.coolclock.alarms.application.interfaces.AlarmsScheduler
 import com.diskin.alon.coolclock.alarms.domain.Alarm
-import com.diskin.alon.coolclock.alarms.domain.Time
 import com.diskin.alon.coolclock.alarms.domain.WeekDay
 import com.diskin.alon.coolclock.common.application.AppResult
 import com.diskin.alon.coolclock.common.application.toSingleAppResult
@@ -21,25 +20,67 @@ class AlarmsSchedulerImpl @Inject constructor(
     private val alarmManager: AlarmManager
 ) : AlarmsScheduler {
 
-    override fun cancel(alarm: Alarm): Single<AppResult<Unit>> {
-        return Single.create<Unit> {
-            val alarmIntent = createAlarmPendingIntent(alarm)
-            alarmManager.cancel(alarmIntent)
-            alarmIntent.cancel()
-            it.onSuccess(Unit)
-        }
-            .subscribeOn(Schedulers.computation())
-            .toSingleAppResult()
-    }
-
-    override fun schedule(alarm: Alarm): Single<AppResult<Unit>> {
+    override fun schedule(alarm: Alarm): Single<AppResult<Long>> {
         return when(alarm.repeatDays.isEmpty()) {
             true -> scheduleUnrepeatedAlarm(alarm)
             false -> scheduleRepeatedAlarm(alarm)
         }
     }
 
-    private fun createAlarmPendingIntent(alarm: Alarm): PendingIntent {
+    override fun cancel(alarm: Alarm): Single<AppResult<Unit>> {
+        return Single.create<Unit> {
+            when(alarm.repeatDays.isEmpty()) {
+                true -> createUnrepeatedAlarmCancelingPendingIntent(alarm)?.let{ pi ->
+                    alarmManager.cancel(pi)
+                    pi.cancel()
+                }
+
+                false -> alarm.repeatDays.forEach { day ->
+                    createRepeatedAlarmCancelPendingIntent(alarm,day.name)
+                        ?.let(alarmManager::cancel)
+                }
+            }
+            it.onSuccess(Unit)
+        }
+            .subscribeOn(Schedulers.computation())
+            .toSingleAppResult()
+    }
+
+    private fun scheduleUnrepeatedAlarm(alarm: Alarm): Single<AppResult<Long>> {
+        return Single.create<Long> {
+            val alarmTime = alarm.nextAlarm
+
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                alarmTime,
+                createUnrepeatedAlarmPendingIntent(alarm)
+            )
+
+            it.onSuccess(alarmTime)
+        }
+            .subscribeOn(Schedulers.computation())
+            .toSingleAppResult()
+    }
+
+    private fun scheduleRepeatedAlarm(alarm: Alarm): Single<AppResult<Long>> {
+        return Single.create<Long> {
+            val weekMillisInterval = 1000L * 60 * 60 * 24 * 7
+            alarm.repeatDays.forEach { day ->
+                alarmManager.setRepeating(
+                    AlarmManager.RTC_WAKEUP,
+                    getNextRepeatedAlarm(day,alarm.hour,alarm.minute),
+                    weekMillisInterval,
+                    createRepeatedAlarmPendingIntent(alarm,day.name)
+                )
+            }
+
+            it.onSuccess(alarm.nextAlarm)
+        }
+            .subscribeOn(Schedulers.computation())
+            .toSingleAppResult()
+    }
+
+    private fun createUnrepeatedAlarmPendingIntent(alarm: Alarm): PendingIntent {
         return Intent(context, AlarmReceiver::class.java).let { intent ->
             intent.action = ACTION_ALARM
 
@@ -48,39 +89,36 @@ class AlarmsSchedulerImpl @Inject constructor(
         }
     }
 
-    private fun scheduleUnrepeatedAlarm(alarm: Alarm): Single<AppResult<Unit>> {
-        return Single.create<Unit> {
-            alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP,
-                alarm.nextAlarm(),
-                createAlarmPendingIntent(alarm)
-            )
+    private fun createUnrepeatedAlarmCancelingPendingIntent(alarm: Alarm): PendingIntent? {
+        return Intent(context, AlarmReceiver::class.java).let { intent ->
+            intent.action = ACTION_ALARM
 
-            it.onSuccess(Unit)
+            intent.putExtra(ALARM_ID,alarm.id)
+            PendingIntent.getBroadcast(context, alarm.id, intent, PendingIntent.FLAG_NO_CREATE)
         }
-            .subscribeOn(Schedulers.computation())
-            .toSingleAppResult()
     }
 
-    private fun scheduleRepeatedAlarm(alarm: Alarm): Single<AppResult<Unit>> {
-        return Single.create<Unit> {
-            val weekMillisInterval = 1000L * 60 * 60 * 24 * 7
-            alarm.repeatDays.forEach { day ->
-                alarmManager.setRepeating(
-                    AlarmManager.RTC_WAKEUP,
-                    getNextRepeatedAlarm(day,alarm.time),
-                    weekMillisInterval,
-                    createAlarmPendingIntent(alarm)
-                )
-            }
+    private fun createRepeatedAlarmCancelPendingIntent(alarm: Alarm,day: String): PendingIntent? {
+        return Intent(context, AlarmReceiver::class.java).let { intent ->
+            intent.action = ACTION_ALARM
+            intent.addCategory(day)
 
-            it.onSuccess(Unit)
+            intent.putExtra(ALARM_ID,alarm.id)
+            PendingIntent.getBroadcast(context, alarm.id, intent, PendingIntent.FLAG_NO_CREATE)
         }
-            .subscribeOn(Schedulers.computation())
-            .toSingleAppResult()
     }
 
-    private fun getNextRepeatedAlarm(day: WeekDay, time: Time): Long {
+    private fun createRepeatedAlarmPendingIntent(alarm: Alarm,day: String): PendingIntent {
+        return Intent(context, AlarmReceiver::class.java).let { intent ->
+            intent.action = ACTION_ALARM
+            intent.addCategory(day)
+
+            intent.putExtra(ALARM_ID,alarm.id)
+            PendingIntent.getBroadcast(context, alarm.id, intent, 0)
+        }
+    }
+
+    private fun getNextRepeatedAlarm(day: WeekDay, hour: Int,minute: Int): Long {
         val current = DateTime()
         val repeatDay = when(day) {
             WeekDay.MON -> 1
@@ -88,12 +126,12 @@ class AlarmsSchedulerImpl @Inject constructor(
             WeekDay.WED -> 3
             WeekDay.THU -> 4
             WeekDay.FRI -> 5
-            WeekDay.SUT -> 6
+            WeekDay.SAT -> 6
             WeekDay.SUN -> 7
         }
         val tempAlarmDate = current.withDayOfWeek(repeatDay)
-            .withHourOfDay(time.hour)
-            .withMinuteOfHour(time.minute)
+            .withHourOfDay(hour)
+            .withMinuteOfHour(minute)
 
         return if (tempAlarmDate.millis > current.millis) {
             tempAlarmDate.millis

@@ -4,8 +4,11 @@ import android.os.Looper
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelLazy
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
 import androidx.paging.PagingData
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -46,6 +49,7 @@ class AlarmsFragmentTest {
 
     // Collaborators
     private val viewModel: AlarmsViewModel = mockk()
+    private val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
 
     // Stub data
     private val alarms = MutableLiveData<PagingData<UiAlarm>>()
@@ -61,8 +65,19 @@ class AlarmsFragmentTest {
         every { viewModel.alarms } returns alarms
         every { viewModel.latestScheduledAlarm } returns latestScheduledAlarm
 
+        // Setup test nav controller
+        navController.setGraph(R.navigation.alarms_graph)
+        navController.setCurrentDestination(R.id.alarmsFragment)
+
         // Launch fragment under test
         scenario = launchFragmentInHiltContainer<AlarmsFragment>()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Set the NavController property on the fragment with test controller
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments[0]
+            Navigation.setViewNavController(fragment.requireView(), navController)
+        }
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
@@ -157,8 +172,8 @@ class AlarmsFragmentTest {
             onView(withRecyclerView(R.id.alarms).atPositionOnView(index, R.id.saturday_label))
                 .check(matches(withTextViewTextColor(expectedSaturdayLabelTextColorId)))
 
-            onView(withRecyclerView(R.id.alarms).atPositionOnView(index, R.id.active_switcher))
-                .check(matches(withSwitchText(uiAlarm.time)))
+            onView(withRecyclerView(R.id.alarms).atPositionOnView(index, R.id.alarmTime))
+                .check(matches(withText(uiAlarm.time)))
 
             onView(withRecyclerView(R.id.alarms).atPositionOnView(index, R.id.active_switcher))
                 .check(matches(withSwitchChecked(uiAlarm.isActive)))
@@ -237,5 +252,18 @@ class AlarmsFragmentTest {
 
         // Then
         verify(exactly = 1) { viewModel.deleteAlarm(alarmsData.first().id) }
+    }
+
+    @Test
+    fun openAlarmEditor_WhenAddNewAlarmClicked() {
+        // Given
+
+        // When
+        onView(withId(R.id.action_add_alarm))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.alarmEditorFragment)
     }
 }

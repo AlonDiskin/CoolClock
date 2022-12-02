@@ -84,7 +84,7 @@ class AlarmsViewModel @Inject constructor(
             },{
                 println("ALARM DELETE ERROR:${it.message}")
                 it.printStackTrace()
-                alarmDeletionError.value = AppError.UNKNOWN_ERROR
+                alarmDeletionError.value = AppError.INTERNAL_ERROR
             })
     }
 
@@ -99,7 +99,7 @@ class AlarmsViewModel @Inject constructor(
     }
 
     private fun handleAlarmActivationSubscriptionError(error: Throwable) {
-        alarmActivationError.value = AppError.UNKNOWN_ERROR
+        alarmActivationError.value = AppError.INTERNAL_ERROR
         println("ALARM ACTIVATION ERROR:${error.message}")
         error.printStackTrace()
     }

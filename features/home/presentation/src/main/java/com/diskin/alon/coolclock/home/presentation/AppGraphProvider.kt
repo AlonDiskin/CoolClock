@@ -13,4 +13,7 @@ interface AppGraphProvider {
 
     @IdRes
     fun getTimerDest(): Int
+
+    @IdRes
+    fun getAlarmsDest(): Int
 }

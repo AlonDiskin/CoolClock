@@ -1,6 +1,7 @@
 package com.diskin.alon.coolclock.home.presentation
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -9,9 +10,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.diskin.alon.coolclock.common.presentation.VolumeButtonPressEvent
 import com.diskin.alon.coolclock.home.presentation.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -19,6 +23,8 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var graphProvider: AppGraphProvider
+    @Inject
+    lateinit var eventBus: EventBus
     private lateinit var layout: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +51,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         layout.bottomNav.setupWithNavController(navController)
+
+        // Set up navigation
+        val appBarConfiguration = AppBarConfiguration(
+            topLevelDestinationIds = setOf(
+                graphProvider.getAlarmsDest(),
+                graphProvider.getClocksDest(),
+                graphProvider.getTimerDest()
+            ),
+            fallbackOnNavigateUpListener = ::onSupportNavigateUp
+        )
+        layout.toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -78,5 +95,15 @@ class MainActivity : AppCompatActivity() {
             return
         }
         super.onBackPressed()
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            when(keyCode) {
+                KeyEvent.KEYCODE_VOLUME_DOWN -> eventBus.post(VolumeButtonPressEvent.VOLUME_DOWN)
+                KeyEvent.KEYCODE_VOLUME_UP -> eventBus.post(VolumeButtonPressEvent.VOLUME_UP)
+            }
+        }
+        return super.onKeyDown(keyCode, event)
     }
 }

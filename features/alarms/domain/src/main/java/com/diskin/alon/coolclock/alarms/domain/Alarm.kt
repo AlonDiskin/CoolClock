@@ -1,87 +1,92 @@
 package com.diskin.alon.coolclock.alarms.domain
 
 import org.joda.time.DateTime
+import org.joda.time.DateTimeConstants
 
 data class Alarm(val id: Int,
                  var name: String,
-                 var time: Time,
+                 var hour: Int,
+                 var minute: Int,
                  var repeatDays: Set<WeekDay>,
-                 var isActive: Boolean,
+                 var isScheduled: Boolean,
                  var isVibrate: Boolean,
                  var sound: Sound,
-                 var duration: Duration,
-                 var volume: Volume,
-                 var snooze: Snooze
-) {
+                 var duration: Int,
+                 var volume: Int,
+                 var snooze: Int,
+                 var isSnoozed: Boolean) {
 
-    fun nextAlarm(): Long {
-        return when(isActive) {
+    init {
+        require(hour in 0..23)
+        require(minute in 0..59)
+        require(duration > 0)
+        require(snooze >= 0)
+        require(volume > 0)
+    }
+
+    val nextAlarm: Long get() { return nextAlarm() }
+
+    private fun nextAlarm(): Long {
+        val currentDateTime = DateTime().withSecondOfMinute(0).withMillisOfSecond(0)
+        val alarmDate = DateTime()
+            .withHourOfDay(hour)
+            .withMinuteOfHour(minute)
+            .withSecondOfMinute(0)
+            .withMillisOfSecond(0)
+
+        return when(repeatDays.isEmpty()) {
             true -> {
-                if (repeatDays.isEmpty()) {
-                    calcUnrepeatedNextAlarm()
-                }  else {
-                    calcRepeatedNextAlarm()
+                if (alarmDate.millis > currentDateTime.millis) {
+                    // Today
+                    alarmDate.millis
+                } else {
+                    // Tomorrow
+                    alarmDate.plusDays(1).millis
                 }
             }
 
-            false -> 0
-        }
-    }
+            false -> {
+                val repeatWeekDays = repeatDays.map {
+                    when(it) {
+                        WeekDay.SUN ->  DateTimeConstants.SUNDAY
+                        WeekDay.MON ->  DateTimeConstants.MONDAY
+                        WeekDay.TUE ->  DateTimeConstants.TUESDAY
+                        WeekDay.WED ->  DateTimeConstants.WEDNESDAY
+                        WeekDay.THU ->  DateTimeConstants.THURSDAY
+                        WeekDay.FRI ->  DateTimeConstants.FRIDAY
+                        WeekDay.SAT ->  DateTimeConstants.SATURDAY
+                    }
+                }
+                val nextAlarms = mutableListOf<Long>()
 
-    private fun calcUnrepeatedNextAlarm(): Long {
-        val currentDateTime = DateTime()
+                for (day: Int in repeatWeekDays) {
+                    when {
+                        day == currentDateTime.dayOfWeek -> {
+                            if (alarmDate.millis > currentDateTime.millis) {
+                                // Today
+                                nextAlarms.add(alarmDate.millis)
+                            } else {
+                                // Next week
+                                nextAlarms.add(alarmDate.plusDays(7).millis)
+                            }
+                        }
 
-        return if ( time.hour >= currentDateTime.hourOfDay &&
-             time.minute > currentDateTime.minuteOfHour) {
-            // Today
-            currentDateTime.plusHours(time.hour - currentDateTime.hourOfDay)
-                .plusMinutes(time.minute - currentDateTime.minuteOfHour).millis
-        } else {
-            // Tomorrow
-            currentDateTime.plusDays(1)
-                .withTime(time.hour,time.minute,0,0).millis
-        }
-    }
+                        day > currentDateTime.dayOfWeek -> {
+                            nextAlarms.add(
+                                alarmDate.plusDays(day - currentDateTime.dayOfWeek).millis
+                            )
+                        }
 
-    private fun calcRepeatedNextAlarm(): Long {
-        val currentDateTime = DateTime()
-        val currentWeekDay = when(currentDateTime.dayOfWeek) {
-            1 -> WeekDay.MON
-            2 -> WeekDay.TUE
-            3 -> WeekDay.WED
-            4 -> WeekDay.THU
-            5 -> WeekDay.FRI
-            6 -> WeekDay.SUT
-            7 -> WeekDay.SUN
-            else -> throw IllegalArgumentException("Wrong week day value was read from joda!")
-        }.ordinal
-        val sortedRepeatDays = repeatDays.sortedBy { it.ordinal }.map { it.ordinal }
-        var minDest = 7
+                        day < currentDateTime.dayOfWeek -> {
+                            nextAlarms.add(
+                                alarmDate.plusDays(7 - (currentDateTime.dayOfWeek - day)).millis
+                            )
+                        }
+                    }
+                }
 
-        for (day: Int in sortedRepeatDays) {
-            var dest = day - currentWeekDay
-
-            if (dest < 0) {
-               dest = 7 - (dest*(-1))
+                nextAlarms.minOf { it }
             }
-
-            if (dest < minDest) minDest = dest
-        }
-
-        return if (minDest == 0) {
-            if ( time.hour >= currentDateTime.hourOfDay &&
-                time.minute > currentDateTime.minuteOfHour) {
-                // Today
-                currentDateTime.plusHours(time.hour - currentDateTime.hourOfDay)
-                    .plusMinutes(time.minute - currentDateTime.minuteOfHour).millis
-            } else {
-                // Next week today
-                currentDateTime.plusDays(7)
-                    .withTime(time.hour,time.minute,0,0).millis
-            }
-        } else {
-            currentDateTime.plusDays(minDest)
-                .withTime(time.hour,time.minute,0,0).millis
         }
     }
 }
