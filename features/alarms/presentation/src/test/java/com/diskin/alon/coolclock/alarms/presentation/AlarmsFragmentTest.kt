@@ -21,6 +21,7 @@ import com.diskin.alon.coolclock.alarms.presentation.controller.AlarmsAdapter.Al
 import com.diskin.alon.coolclock.alarms.presentation.controller.AlarmsFragment
 import com.diskin.alon.coolclock.alarms.presentation.model.UiAlarm
 import com.diskin.alon.coolclock.alarms.presentation.viewmodel.AlarmsViewModel
+import com.diskin.alon.coolclock.alarms.presentation.viewmodel.KEY_ALARM_ID_ARG
 import com.diskin.alon.coolclock.common.presentation.SingleLiveEvent
 import com.diskin.alon.coolclock.common.uitesting.*
 import com.diskin.alon.coolclock.common.uitesting.RecyclerViewMatcher.withRecyclerView
@@ -265,5 +266,24 @@ class AlarmsFragmentTest {
 
         // Then
         assertThat(navController.currentDestination?.id).isEqualTo(R.id.alarmEditorFragment)
+    }
+
+    @Test
+    fun openAlarmEditor_WhenListedAlarmClicked() {
+        // Given
+        val alarmsData = createUiAlarms()
+
+        alarms.value = PagingData.from(alarmsData)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When
+        onView(withRecyclerView(R.id.alarms).atPosition(0))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.alarmEditorFragment)
+        assertThat(navController.currentBackStackEntry?.arguments?.getInt(KEY_ALARM_ID_ARG))
+            .isEqualTo(alarmsData[0].id)
     }
 }

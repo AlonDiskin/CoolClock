@@ -7,13 +7,10 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.diskin.alon.coolclock.alarms.data.local.AlarmDao
 import com.diskin.alon.coolclock.alarms.data.local.AlarmEntity
-import com.diskin.alon.coolclock.alarms.data.local.AlarmMapper
-import com.diskin.alon.coolclock.alarms.domain.Alarm
+import com.diskin.alon.coolclock.alarms.data.local.AlarmEntityConverters
 import com.diskin.alon.coolclock.alarms.domain.Sound
 import com.diskin.alon.coolclock.alarms.domain.WeekDay
-import com.diskin.alon.coolclock.common.application.toMaybeAppResult
 import com.google.common.truth.Truth.assertThat
-import io.reactivex.Maybe
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -302,56 +299,68 @@ class AlarmDaoTest {
     }
 
     @Test
-    fun name() {
-        val entities = listOf(
-            AlarmEntity(
-                "name_1",
-                12,
-                10,
-                setOf(WeekDay.SUN,WeekDay.MON),
-                true,
-                Sound.AlarmSound("sound_1"),
-                false,
-                5,
-                1,
-                5,
-                false
-            ),
-            AlarmEntity(
-                "name_2",
-                11,
-                15,
-                emptySet(),
-                false,
-                Sound.AlarmSound("sound_2"),
-                true,
-                4,
-                2,
-                10,
-                true
-            )
+    fun updateAlarm() {
+        // Given
+        val dbConverters = AlarmEntityConverters()
+        val existingAlarm = "INSERT INTO user_alarms (name,hour,minute,repeatDays,isScheduled,sound" +
+                ",isVibrate,duration,volume,snooze,isSnoozed,id)" +
+                "VALUES ('name_1',15,10,'empty',0,'ringtone_1',0,5,5,0,0,1)"
+        val updatedAlarm = AlarmEntity(
+            "name_2",
+            14,
+            30,
+            emptySet(),
+            true,
+            Sound.AlarmSound("sound_5"),
+            true,
+            10,
+            5,
+            10,
+            true,
+            1
         )
 
-        entities.forEach { dao.insert(it).blockingGet() }
+        db.compileStatement(existingAlarm).executeInsert()
 
-        val mapper = AlarmMapper()
-        val observer = dao.getAll()
-            .map { it.map(mapper::map) }
-            .flatMapMaybe { alarms ->
-                Maybe.create<Alarm> { emitter ->
+        // When
+        dao.update(updatedAlarm).blockingAwait()
 
-                    alarms.find { it.id == 12 }?.let {
-                        emitter.onSuccess(it)
-                    }
-                }
-            }
-            .toMaybeAppResult()
-            .subscribe({
-                println("RES:$it")
-            },{
-                println("ERROR:$it")
-            },{
-                println("COMPLETE")
-            })
+        // Then
+        val actualName = db.compileStatement("SELECT name FROM user_alarms WHERE id = 1").simpleQueryForString()
+        val actualHour = db.compileStatement("SELECT hour FROM user_alarms WHERE id = 1").simpleQueryForString().toInt()
+        val actualMinute = db.compileStatement("SELECT minute FROM user_alarms WHERE id = 1").simpleQueryForString().toInt()
+        val actualRepeat = dbConverters.stringToWeekDays(db.compileStatement("SELECT repeatDays FROM user_alarms WHERE id = 1").simpleQueryForString())
+        val actualScheduled = when(db.compileStatement("SELECT isScheduled FROM user_alarms WHERE id = 1").simpleQueryForString()) {
+            "1" -> true
+            else -> false
+        }
+        val actualSound = dbConverters.stringToSound(db.compileStatement("SELECT sound FROM user_alarms WHERE id = 1").simpleQueryForString())
+        val actualVibration = when(db.compileStatement("SELECT isVibrate FROM user_alarms WHERE id = 1").simpleQueryForString()) {
+            "1" -> true
+            else -> false
+        }
+        val actualDuration = db.compileStatement("SELECT duration FROM user_alarms WHERE id = 1").simpleQueryForString().toInt()
+        val actualVolume = db.compileStatement("SELECT volume FROM user_alarms WHERE id = 1").simpleQueryForString().toInt()
+        val actualSnooze = db.compileStatement("SELECT snooze FROM user_alarms WHERE id = 1").simpleQueryForString().toInt()
+        val actualIsSnoozed = when(db.compileStatement("SELECT isSnoozed FROM user_alarms WHERE id = 1").simpleQueryForString()) {
+            "1" -> true
+            else -> false
+        }
+        val actualUpdated = AlarmEntity(
+            actualName,
+            actualHour,
+            actualMinute,
+            actualRepeat,
+            actualScheduled,
+            actualSound,
+            actualVibration,
+            actualDuration,
+            actualVolume,
+            actualSnooze,
+            actualIsSnoozed,
+            1
+        )
+
+        assertThat(actualUpdated).isEqualTo(updatedAlarm)
     }
 }

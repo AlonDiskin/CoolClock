@@ -5,6 +5,7 @@ import android.view.*
 import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,6 +16,7 @@ import com.diskin.alon.coolclock.alarms.presentation.R
 import com.diskin.alon.coolclock.alarms.presentation.databinding.FragmentAlarmsBinding
 import com.diskin.alon.coolclock.alarms.presentation.model.UiAlarm
 import com.diskin.alon.coolclock.alarms.presentation.viewmodel.AlarmsViewModel
+import com.diskin.alon.coolclock.alarms.presentation.viewmodel.KEY_ALARM_ID_ARG
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.migration.OptionalInject
 
@@ -43,7 +45,11 @@ class AlarmsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Set alarms paging adapter
-        val adapter = AlarmsAdapter(::handleAlarmActivationSwitch,::handleAlarmMenuClick)
+        val adapter = AlarmsAdapter(
+            ::handleAlarmActivationSwitch,
+            ::handleAlarmMenuClick,
+            ::handleAlarmClick
+        )
         layout.alarms.adapter = adapter
 
         adapter.addLoadStateListener(::handleLoadStateUpdate)
@@ -118,5 +124,10 @@ class AlarmsFragment : Fragment() {
             inflate(R.menu.menu_alarm)
             show()
         }
+    }
+
+    private fun handleAlarmClick(alarm: UiAlarm) {
+        val bundle = bundleOf(KEY_ALARM_ID_ARG to alarm.id)
+        findNavController().navigate(R.id.action_alarmsFragment_to_alarmEditorFragment, bundle)
     }
 }

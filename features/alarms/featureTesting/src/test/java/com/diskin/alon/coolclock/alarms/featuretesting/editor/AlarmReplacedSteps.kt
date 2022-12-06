@@ -78,7 +78,7 @@ class AlarmReplacedSteps(
         )
 
         Shadow.extract<CustomShadowRingtoneManager>(ringtoneManager)
-            .setCursor(ringtoneValues)
+            .setCursorValues(ringtoneValues)
     }
 
     @Given("^app has existing scheduled alarm$")

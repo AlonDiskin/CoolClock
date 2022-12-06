@@ -26,4 +26,25 @@ class ScheduleAlarmRequestMapper @Inject constructor() {
             edit.volume
         )
     }
+
+    fun mapUpdate(edit: UiAlarmEdit,id: Int): ScheduleAlarmRequest {
+        return ScheduleAlarmRequest.UpdateAlarm(
+            id,
+            edit.hour,
+            edit.minute,
+            edit.repeatDays,
+            edit.getName(),
+            when {
+                edit.ringtone.isNotEmpty() -> AlarmSound.Ringtone(
+                    edit.ringtone,
+                    edit.getRingtoneName()
+                )
+                else -> AlarmSound.Silent
+            },
+            edit.getVibration(),
+            edit.snoozeValue,
+            edit.durationValue,
+            edit.volume
+        )
+    }
 }

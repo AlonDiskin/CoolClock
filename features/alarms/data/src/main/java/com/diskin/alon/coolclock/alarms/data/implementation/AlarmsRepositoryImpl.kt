@@ -35,35 +35,34 @@ class AlarmsRepositoryImpl @Inject constructor(
 
     override fun get(id: Int): Single<AppResult<Alarm>> {
         return dao.get(id)
-            .subscribeOn(Schedulers.io())
             .map(alarmMapper::map)
+            .subscribeOn(Schedulers.io())
             .toSingleAppResult(errorHandler::handle)
     }
 
     override fun setActive(id: Int, isActive: Boolean): Single<AppResult<Unit>> {
         return dao.updateScheduled(id, isActive)
-            .subscribeOn(Schedulers.io())
             .toSingleDefault(Unit)
+            .subscribeOn(Schedulers.io())
             .toSingleAppResult(errorHandler::handle)
     }
 
     override fun delete(id: Int): Single<AppResult<Unit>> {
         return dao.delete(id)
-            .subscribeOn(Schedulers.io())
             .toSingleDefault(Unit)
+            .subscribeOn(Schedulers.io())
             .toSingleAppResult(errorHandler::handle)
     }
 
     override fun add(alarm: Alarm): Single<AppResult<Int>> {
         return dao.insert(entityMapper.mapNew(alarm))
-            .subscribeOn(Schedulers.io())
             .map { it.toInt() }
+            .subscribeOn(Schedulers.io())
             .toSingleAppResult(errorHandler::handle)
     }
 
     override fun getWithNextAlarm(next: Long): Maybe<AppResult<Alarm>> {
         return dao.getAll()
-            .subscribeOn(Schedulers.io())
             .map {
                 it.map(alarmMapper::map)
             }
@@ -76,6 +75,29 @@ class AlarmsRepositoryImpl @Inject constructor(
                     }
                 }
             }
+            .subscribeOn(Schedulers.io())
             .toMaybeAppResult()
+    }
+
+    override fun update(alarm: Alarm): Single<AppResult<Unit>> {
+        return dao.update(
+            AlarmEntity(
+                alarm.name,
+                alarm.hour,
+                alarm.minute,
+                alarm.repeatDays,
+                true,
+                alarm.sound,
+                alarm.isVibrate,
+                alarm.duration,
+                alarm.volume,
+                alarm.snooze,
+                alarm.isSnoozed,
+                alarm.id
+            )
+        )
+            .toSingleDefault(Unit)
+            .subscribeOn(Schedulers.io())
+            .toSingleAppResult(errorHandler::handle)
     }
 }

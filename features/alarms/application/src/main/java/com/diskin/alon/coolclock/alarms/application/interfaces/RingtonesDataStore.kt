@@ -9,4 +9,6 @@ interface RingtonesDataStore {
     fun getDefault(): Single<AppResult<AlarmSound.Ringtone>>
 
     fun getAll(): Single<AppResult<List<AlarmSound.Ringtone>>>
+
+    fun getByPath(path: String): Single<AppResult<AlarmSound.Ringtone>>
 }

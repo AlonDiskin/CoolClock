@@ -1,6 +1,7 @@
 package com.diskin.alon.coolclock.alarms.application
 
 import com.diskin.alon.coolclock.alarms.application.interfaces.AlarmVolumeRangeProvider
+import com.diskin.alon.coolclock.alarms.application.interfaces.AlarmsRepository
 import com.diskin.alon.coolclock.alarms.application.interfaces.RingtonesDataStore
 import com.diskin.alon.coolclock.alarms.application.model.AlarmEdit
 import com.diskin.alon.coolclock.alarms.application.model.AlarmSound
@@ -22,10 +23,11 @@ class GetAlarmEditUseCaseTest {
     // Collaborators
     private val ringtonesDataStore: RingtonesDataStore = mockk()
     private val alarmVolumeProvider: AlarmVolumeRangeProvider = mockk()
+    private val alarmsRepository: AlarmsRepository = mockk()
 
     @Before
     fun setUp() {
-        useCase = GetAlarmEditUseCase(ringtonesDataStore,alarmVolumeProvider)
+        useCase = GetAlarmEditUseCase(ringtonesDataStore,alarmVolumeProvider,alarmsRepository)
     }
 
     @Test

@@ -9,9 +9,14 @@ import org.robolectric.annotation.Implements
 @Implements(RingtoneManager::class)
 class CustomShadowRingtoneManager {
 
-    private var cursor: Cursor? = null
+    private lateinit var cursorValues: List<Array<String>>
 
-    fun setCursor(values: List<Array<String>>) {
+    fun setCursorValues(values: List<Array<String>>) {
+        cursorValues = values
+    }
+
+    @Implementation
+    fun getCursor(): Cursor? {
         val ringtonesCursor = MatrixCursor(
             arrayOf(
                 "ID_COLUMN",
@@ -21,12 +26,7 @@ class CustomShadowRingtoneManager {
             3
         )
 
-        values.forEach { ringtonesCursor.addRow(it) }
-        cursor = ringtonesCursor
-    }
-
-    @Implementation
-    fun getCursor(): Cursor? {
-        return cursor
+        cursorValues.forEach { ringtonesCursor.addRow(it) }
+        return ringtonesCursor
     }
 }

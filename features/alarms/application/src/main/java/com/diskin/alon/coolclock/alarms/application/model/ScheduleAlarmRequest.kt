@@ -17,8 +17,9 @@ sealed class ScheduleAlarmRequest(val hour: Int,
                    ringtone: AlarmSound,
                    vibration: Boolean,
                    snooze: Int,
-                   duration: Int, volume: Int)
-    : ScheduleAlarmRequest(hour,
+                   duration: Int,
+                   volume: Int)
+        : ScheduleAlarmRequest(hour,
         minute,
         repeatDays,
         name,
@@ -36,6 +37,40 @@ sealed class ScheduleAlarmRequest(val hour: Int,
 
         override fun hashCode(): Int {
             return javaClass.hashCode()
+        }
+    }
+
+    class UpdateAlarm(val id: Int,
+                           hour: Int,
+                           minute: Int,
+                           repeatDays: Set<RepeatDay>,
+                           name: String,
+                           ringtone: AlarmSound,
+                           vibration: Boolean,
+                           snooze: Int,
+                           duration: Int,
+                           volume: Int)
+        : ScheduleAlarmRequest(hour,
+        minute,
+        repeatDays,
+        name,
+        ringtone,
+        vibration,
+        snooze,
+        duration,
+        volume) {
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is UpdateAlarm) return false
+
+            if (id != other.id) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return id
         }
     }
 }

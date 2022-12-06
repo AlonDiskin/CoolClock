@@ -11,7 +11,8 @@ import com.diskin.alon.coolclock.alarms.presentation.databinding.AlarmBinding
 
 class AlarmsAdapter(
     private val activationSwitchListener: (Int,Boolean) -> (Unit),
-    private val menuClickListener: (UiAlarm, View) -> (Unit)
+    private val menuClickListener: (UiAlarm, View) -> (Unit),
+    private val alarmClickListener: (UiAlarm) -> (Unit)
 ) : PagingDataAdapter<UiAlarm, AlarmsAdapter.AlarmViewHolder>(
     DIFF_CALLBACK
 ){
@@ -36,7 +37,7 @@ class AlarmsAdapter(
             false
         )
 
-        return AlarmViewHolder(binding,activationSwitchListener,menuClickListener)
+        return AlarmViewHolder(binding,activationSwitchListener,menuClickListener,alarmClickListener)
     }
 
     override fun onBindViewHolder(holder: AlarmViewHolder, position: Int) {
@@ -46,11 +47,13 @@ class AlarmsAdapter(
     class AlarmViewHolder(
         private val binding: AlarmBinding,
         private val activationSwitchListener: (Int,Boolean) -> (Unit),
-        private val menuClickListener: (UiAlarm,View) -> (Unit)
+        menuClickListener: (UiAlarm,View) -> (Unit),
+        alarmClickListener: (UiAlarm) -> (Unit)
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
             binding.menuClickListener = menuClickListener
+            binding.alarmClickListener = alarmClickListener
         }
 
         fun bind(alarm: UiAlarm) {

@@ -20,6 +20,7 @@ class ScheduleAlarmUseCase @Inject constructor(
     override fun execute(param: ScheduleAlarmRequest): Single<AppResult<Long>> {
         return when(param) {
             is ScheduleAlarmRequest.NewAlarm -> scheduleNewAlarm(param)
+            is ScheduleAlarmRequest.UpdateAlarm -> updateExistingAlarm(param)
         }
     }
 
@@ -45,6 +46,24 @@ class ScheduleAlarmUseCase @Inject constructor(
         return repo.add(createNewAlarm(request))
             .flatMapSingleAppResult {
                 scheduler.schedule(createAlarm(request,it))
+            }
+    }
+
+    private fun updateExistingAlarm(request: ScheduleAlarmRequest.UpdateAlarm): Single<AppResult<Long>> {
+        val updatedAlarm = createAlarm(request,request.id)
+
+        return repo.getWithNextAlarm(updatedAlarm.nextAlarm)
+            .flatMapSingleElementAppResult { existingAlarm ->
+                deleteAlarmAndCancelScheduled(existingAlarm)
+            }
+            .toSingle(AppResult.Success(Unit))
+            .flatMap { updateAlarmInRepoAndSchedule(updatedAlarm) }
+    }
+
+    private fun updateAlarmInRepoAndSchedule(alarm: Alarm): Single<AppResult<Long>> {
+        return repo.update(alarm)
+            .flatMapSingleAppResult {
+                scheduler.schedule(alarm)
             }
     }
 
@@ -77,7 +96,7 @@ class ScheduleAlarmUseCase @Inject constructor(
         )
     }
 
-    private fun createAlarm(request: ScheduleAlarmRequest.NewAlarm,id: Int): Alarm {
+    private fun createAlarm(request: ScheduleAlarmRequest,id: Int): Alarm {
         return Alarm(
             id,
             request.name, request.hour,

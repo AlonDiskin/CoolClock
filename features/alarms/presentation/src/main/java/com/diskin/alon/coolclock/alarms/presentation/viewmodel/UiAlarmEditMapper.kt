@@ -8,31 +8,30 @@ import javax.inject.Inject
 class UiAlarmEditMapper @Inject constructor() {
 
     fun map(edit: AlarmEdit): UiAlarmEdit {
-        return when(edit) {
-            is AlarmEdit.DefaultEdit -> {
-                UiAlarmEdit(
-                    edit.hour,
-                    edit.minute,
-                    edit.name,
-                    edit.repeatDays.toMutableSet(),
-                    edit.vibration,
-                    edit.volume,
-                    edit.minVolume,
-                    edit.maxVolume,
-                    edit.ringtone.path,
-                    createDeviceRingtonesValues(edit.deviceRingtones),
-                    createDeviceRingtonesEntries(edit.deviceRingtones),
-                    edit.duration,
-                    edit.durationValues.toTypedArray(),
-                    edit.durationValues.map { duration -> "$duration minutes" }.toTypedArray(),
-                    edit.snooze,
-                    edit.snoozeValues.toTypedArray(),
-                    edit.snoozeValues.map { duration ->
-                        if (duration == 0) "None" else "$duration minutes"
-                    }.toTypedArray(),
-                )
-            }
-        }
+        return UiAlarmEdit(
+            edit.hour,
+            edit.minute,
+            edit.name,
+            edit.repeatDays.toMutableSet(),
+            edit.vibration,
+            edit.volume,
+            edit.minVolume,
+            edit.maxVolume,
+            when(val sound = edit.sound) {
+                is AlarmSound.Ringtone -> sound.path
+                is AlarmSound.Silent -> ""
+            },
+            createDeviceRingtonesValues(edit.deviceRingtones),
+            createDeviceRingtonesEntries(edit.deviceRingtones),
+            edit.duration,
+            edit.durationValues.toTypedArray(),
+            edit.durationValues.map { duration -> "$duration minutes" }.toTypedArray(),
+            edit.snooze,
+            edit.snoozeValues.toTypedArray(),
+            edit.snoozeValues.map { duration ->
+                if (duration == 0) "None" else "$duration minutes"
+            }.toTypedArray(),
+        )
     }
 
     private fun createDeviceRingtonesValues(ringtones: List<AlarmSound.Ringtone>): Array<String> {

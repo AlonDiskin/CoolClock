@@ -25,4 +25,7 @@ interface AlarmDao {
 
     @Query("SELECT * FROM user_alarms")
     fun getAll(): Single<List<AlarmEntity>>
+
+    @Update
+    fun update(alarm: AlarmEntity): Completable
 }

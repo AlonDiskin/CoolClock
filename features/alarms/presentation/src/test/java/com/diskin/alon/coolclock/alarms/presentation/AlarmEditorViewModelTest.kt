@@ -56,14 +56,14 @@ class AlarmEditorViewModelTest {
     private val eventBus: EventBus = mockk()
 
     // Stub data
-    private val defaultModelEdit = mockk<AlarmEdit>()
-    private val defaultUiEdit = createAlarmEdit()
+    private val alarmEdit = mockk<AlarmEdit>()
+    private val alarmUiEdit = createAlarmEdit()
 
     @Before
     fun setUp() {
         // Stub collaborators for default instantiation
-        every { getAlarmEdit.execute(any()) } returns Single.just(AppResult.Success(defaultModelEdit))
-        every { alarmEditMapper.map(any()) } returns defaultUiEdit
+        every { getAlarmEdit.execute(any()) } returns Single.just(AppResult.Success(alarmEdit))
+        every { alarmEditMapper.map(any()) } returns alarmUiEdit
         every { eventBus.register(any()) } returns Unit
         every { eventBus.unregister(any()) } returns Unit
 
@@ -87,8 +87,32 @@ class AlarmEditorViewModelTest {
 
         // Then
         verify(exactly = 1) { getAlarmEdit.execute(expectedRequest) }
-        verify(exactly = 1) { alarmEditMapper.map(defaultModelEdit) }
-        assertThat(viewModel.alarmEdit.value).isEqualTo(defaultUiEdit)
+        assertThat(viewModel.alarmEdit.value).isEqualTo(alarmUiEdit)
+    }
+
+    @Test
+    fun getExistingAlarmEditFromModel_WhenCreatedWithAlarmId() {
+        // Given
+        val id = 1
+        val expectedRequest = GetEditRequest.Existing(id)
+        savedState[KEY_ALARM_ID_ARG] = id
+        savedState[KEY_ALARM_EDIT_ARG] = null
+
+        // When
+        viewModel = AlarmEditorViewModel(
+            getAlarmEdit,
+            playRingtone,
+            scheduleAlarm,
+            alarmEditMapper,
+            scheduleRequestMapper,
+            dateFormatter,
+            savedState,
+            eventBus
+        )
+
+        // Then
+        verify(exactly = 1) { getAlarmEdit.execute(expectedRequest) }
+        assertThat(viewModel.alarmEdit.value).isEqualTo(alarmUiEdit)
     }
 
     @Test
@@ -117,7 +141,7 @@ class AlarmEditorViewModelTest {
     fun playRingtoneSample() {
         // Given
         val ringtonePath = "path"
-        val expectedRequest = PlayRingtoneSampleRequest.Ringtone(ringtonePath,defaultUiEdit.volume)
+        val expectedRequest = PlayRingtoneSampleRequest.Ringtone(ringtonePath,alarmUiEdit.volume)
 
         every { playRingtone.execute(any()) } returns Single.just(AppResult.Success(Unit))
 
@@ -143,7 +167,7 @@ class AlarmEditorViewModelTest {
     }
 
     @Test
-    fun scheduleNewAlarm_WhenNewAlarmEditScheduled() {
+    fun addNewAlarm_WhenNewAlarmEditScheduled() {
         // Given
         val nextAlarmDate = 12345L
         val nextAlarmDateFormat = "next alarm format"
@@ -158,6 +182,29 @@ class AlarmEditorViewModelTest {
 
         // Then
         verify(exactly = 1) { scheduleRequestMapper.mapNew(viewModel.alarmEdit.value!!) }
+        verify(exactly = 1) { scheduleAlarm.execute(mappedRequest) }
+        verify(exactly = 1) { dateFormatter.format(nextAlarmDate) }
+        assertThat(viewModel.scheduledAlarmDate.value).isEqualTo(nextAlarmDateFormat)
+    }
+
+    @Test
+    fun updateExistingAlarm_WhenExistingAlarmEditScheduled() {
+        // Given
+        val id = 1
+        val nextAlarmDate = 12345L
+        val nextAlarmDateFormat = "next alarm format"
+        val mappedRequest = mockk<ScheduleAlarmRequest.UpdateAlarm>()
+        savedState[KEY_ALARM_ID_ARG] = id
+
+        every { scheduleRequestMapper.mapUpdate(any(),any()) } returns mappedRequest
+        every { scheduleAlarm.execute(any()) } returns Single.just(AppResult.Success(nextAlarmDate))
+        every { dateFormatter.format(nextAlarmDate) } returns nextAlarmDateFormat
+
+        // When
+        viewModel.schedule()
+
+        // Then
+        verify(exactly = 1) { scheduleRequestMapper.mapUpdate(viewModel.alarmEdit.value!!,id) }
         verify(exactly = 1) { scheduleAlarm.execute(mappedRequest) }
         verify(exactly = 1) { dateFormatter.format(nextAlarmDate) }
         assertThat(viewModel.scheduledAlarmDate.value).isEqualTo(nextAlarmDateFormat)
