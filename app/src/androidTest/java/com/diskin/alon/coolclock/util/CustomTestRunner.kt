@@ -2,8 +2,6 @@ package com.diskin.alon.coolclock.util
 
 import android.app.Application
 import android.content.Context
-import androidx.databinding.ViewDataBinding
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.runner.AndroidJUnitRunner
 import com.squareup.rx2.idler.Rx2Idler
 import dagger.hilt.android.testing.HiltTestApplication
@@ -20,5 +18,6 @@ class CustomTestRunner : AndroidJUnitRunner() {
 
         // Init RxIdler
         RxJavaPlugins.setInitIoSchedulerHandler(Rx2Idler.create("RxJava 2.x IO Scheduler"))
+        RxJavaPlugins.setInitComputationSchedulerHandler(Rx2Idler.create("RxJava 2.x Computation Scheduler"))
     }
 }

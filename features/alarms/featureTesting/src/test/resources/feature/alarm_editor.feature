@@ -33,11 +33,16 @@ Feature: Alarms editor feature rules
 
   #Rule: Scheduling alarms notifies user
 
-  @user-notified
-  Scenario: User notified of alarm trigger time
-    Given user edit new alarm
-    When he confirm alarm schedule
-    Then app should notify user about time left to alarm trigger
+  @trigger-time-shown
+  Scenario Outline:
+    Given use "<has_alarm>" scheduled alarm
+    When user "<edit_action>" an alarm
+    Then app should display to user the time left to alarm trigger
+    And redirect user to alarms browser
+    Examples:
+      | has_alarm | edit_action |
+      | yes       | update      |
+      | no        | create      |
 
   #Rule: Confirming update edits,reschedule existing alarm
 
@@ -51,11 +56,11 @@ Feature: Alarms editor feature rules
       | scheduled       |
       | not scheduled   |
 
-   @alarm-removed
-   Scenario: Update remove existing alarm
-     Given app has 2 existing scheduled alarms
-     When user updates one of them to have trigger time same as other
-     Then app should remove other alarm
+  @alarm-removed
+  Scenario: Update remove existing alarm
+    Given app has 2 existing scheduled alarms
+    When user updates one of them to have trigger time same as other
+    Then app should remove other alarm
 
 
 

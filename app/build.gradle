@@ -76,6 +76,7 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
+
     // Room
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
@@ -90,4 +91,5 @@ dependencies {
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
     androidTestImplementation "joda-time:joda-time:2.10.4"
     androidTestImplementation 'com.squareup.rx.idler:rx2-idler:0.11.0'
+    androidTestImplementation "io.reactivex.rxjava2:rxandroid:$rx_android_version"
 }
