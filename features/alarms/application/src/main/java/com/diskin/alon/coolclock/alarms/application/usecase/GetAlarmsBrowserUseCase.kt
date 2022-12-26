@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class GetAlarmsBrowserUseCase @Inject constructor(
     private val alarmsRepo: AlarmsRepository,
-    private val alarmsMapper: AlarmsMapper
+    private val alarmsMapper: BrowserAlarmsMapper
 ) : UseCase<Unit, Observable<PagingData<BrowserAlarm>>> {
 
     override fun execute(param: Unit): Observable<PagingData<BrowserAlarm>> {

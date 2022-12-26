@@ -35,11 +35,11 @@ class AlarmEditorViewModel @Inject constructor(
     private val alarmEditMapper: UiAlarmEditMapper,
     private val scheduleRequestMapper: ScheduleAlarmRequestMapper,
     private val dateFormatter: ScheduledAlarmDateFormatter,
-    private val savedStateHandle: SavedStateHandle,
+    private val savedState: SavedStateHandle,
     private val eventBus: EventBus
 ) : RxViewModel() {
 
-    val alarmEdit: LiveData<UiAlarmEdit> = savedStateHandle.getLiveData(KEY_ALARM_EDIT_ARG)
+    val alarmEdit: LiveData<UiAlarmEdit> = savedState.getLiveData(KEY_ALARM_EDIT_ARG)
     private val playRingtoneSubject = BehaviorSubject.create<PlayRingtoneSampleRequest>()
     val playRingtoneError = SingleLiveEvent<AppError>()
     val alarmEditError = SingleLiveEvent<AppError>()
@@ -57,8 +57,8 @@ class AlarmEditorViewModel @Inject constructor(
 
         // Load new/existing edit if there is no existing edit value
         if (alarmEdit.value == null) {
-            val editRequest = when(savedStateHandle.contains(KEY_ALARM_ID_ARG)) {
-                true -> TODO()
+            val editRequest = when(savedState.contains(KEY_ALARM_ID_ARG)) {
+                true -> GetEditRequest.Existing(savedState[KEY_ALARM_ID_ARG]!!)
                 false -> GetEditRequest.New
             }
 
@@ -87,9 +87,9 @@ class AlarmEditorViewModel @Inject constructor(
     fun schedule() {
         alarmEdit.value?.let {
             scheduleRequestSubject.onNext(
-                when(savedStateHandle.contains(KEY_ALARM_ID_ARG)) {
+                when(savedState.contains(KEY_ALARM_ID_ARG)) {
                     false -> scheduleRequestMapper.mapNew(it)
-                    else -> TODO()
+                    else -> scheduleRequestMapper.mapUpdate(it,savedState[KEY_ALARM_ID_ARG]!!)
                 }
             )
         }
@@ -113,7 +113,7 @@ class AlarmEditorViewModel @Inject constructor(
             .mapAppResult(alarmEditMapper::map)
             .subscribe({
                 when(it) {
-                    is AppResult.Success -> savedStateHandle[KEY_ALARM_EDIT_ARG] = it.data
+                    is AppResult.Success -> savedState[KEY_ALARM_EDIT_ARG] = it.data
                     is AppResult.Error -> {
                         alarmEditError.value = it.error
                         println("GET ALARM EDIT RESULT ERROR!")

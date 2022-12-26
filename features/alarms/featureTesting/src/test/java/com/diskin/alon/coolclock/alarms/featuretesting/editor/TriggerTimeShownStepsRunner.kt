@@ -4,6 +4,7 @@ import android.media.RingtoneManager
 import androidx.databinding.ViewDataBinding
 import androidx.test.filters.MediumTest
 import com.diskin.alon.coolclock.alarms.featuretesting.util.CustomShadowRingtoneManager
+import com.diskin.alon.coolclock.alarms.featuretesting.util.TestDatabase
 import com.diskin.alon.coolclock.alarms.featuretesting.util.setFinalStatic
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
@@ -32,7 +33,7 @@ import javax.inject.Inject
     shadows = [CustomShadowRingtoneManager::class]
 )
 @MediumTest
-class UserNotifiedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
+class TriggerTimeShownStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
 
     companion object {
         @JvmStatic
@@ -41,7 +42,7 @@ class UserNotifiedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenar
             val res = ArrayList<Array<Any>>()
             val scenarioConfigs = GreenCoffeeConfig()
                 .withFeatureFromAssets("feature/alarm_editor.feature")
-                .withTags("@user-notified")
+                .withTags("@trigger-time-shown")
                 .scenarios()
 
             for (scenarioConfig in scenarioConfigs) {
@@ -67,6 +68,8 @@ class UserNotifiedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenar
 //    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Inject
+    lateinit var db: TestDatabase
+    @Inject
     lateinit var ringtoneManager: RingtoneManager
 
     @Test
@@ -78,6 +81,6 @@ class UserNotifiedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenar
         hiltRule.inject()
 
         // Start test
-        start(UserNotifiedSteps(ringtoneManager))
+        start(TriggerTimeShownSteps(db,ringtoneManager))
     }
 }

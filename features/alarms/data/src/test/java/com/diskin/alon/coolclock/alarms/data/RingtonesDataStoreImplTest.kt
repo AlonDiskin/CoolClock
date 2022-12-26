@@ -13,7 +13,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.verify
-import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.schedulers.Schedulers
 import org.junit.Before
 import org.junit.BeforeClass
@@ -30,7 +30,7 @@ class RingtonesDataStoreImplTest {
         @JvmStatic
         @BeforeClass
         fun setupClass() {
-            RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
+            RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
         }
     }
 
@@ -95,5 +95,26 @@ class RingtonesDataStoreImplTest {
 
         // Then
         observer.assertValue(AppResult.Success(expectedRingtones))
+    }
+
+    @Test
+    fun getDeviceRingtone_WhenQueriedByPath() {
+        // Given
+        val ringtoneValues = listOf(
+            arrayOf("1","ringtone1_title","ringtone1_uri"),
+            arrayOf("2","ringtone2_title","ringtone2_uri"),
+            arrayOf("3","ringtone3_title","ringtone3_uri")
+        )
+        val expectedRingtone = AlarmSound.Ringtone("ringtone2_uri/2","ringtone2_title")
+        val query = "ringtone2_uri/2"
+
+        Shadow.extract<CustomShadowRingtoneManager>(ringtoneManager)
+            .setCursor(ringtoneValues)
+
+        // When
+        val observer = store.getByPath(query).test()
+
+        // Then
+        observer.assertValue(AppResult.Success(expectedRingtone))
     }
 }

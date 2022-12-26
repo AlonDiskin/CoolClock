@@ -10,7 +10,7 @@ import com.diskin.alon.coolclock.common.application.AppResult
 import com.diskin.alon.coolclock.common.application.toSingleAppResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class RingtonesDataStoreImpl @Inject constructor(
@@ -38,7 +38,7 @@ class RingtonesDataStoreImpl @Inject constructor(
 
             it.onSuccess(resRingtone)
         }
-            .subscribeOn(Schedulers.io())
+            .subscribeOn(AndroidSchedulers.mainThread())
             .toSingleAppResult{ AppError.INTERNAL_ERROR }
     }
 
@@ -59,7 +59,30 @@ class RingtonesDataStoreImpl @Inject constructor(
             }
 
             it.onSuccess(ringtones)
-        }.subscribeOn(Schedulers.io())
+        }.subscribeOn(AndroidSchedulers.mainThread())
+            .toSingleAppResult{ AppError.INTERNAL_ERROR }
+    }
+
+    override fun getByPath(path: String): Single<AppResult<AlarmSound.Ringtone>> {
+        return Single.create<AlarmSound.Ringtone> {
+            val cursor = ringtoneManager.cursor!!
+
+            while (cursor.moveToNext()) {
+                val title = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX)
+                val uri = Uri.parse(
+                    cursor.getString(RingtoneManager.URI_COLUMN_INDEX) + "/" + cursor.getString(
+                        RingtoneManager.ID_COLUMN_INDEX
+                    )
+                )
+
+                if (uri.toString() == path) {
+                    it.onSuccess(AlarmSound.Ringtone(uri.toString(),title))
+                    return@create
+                }
+            }
+
+            it.onError(IllegalArgumentException("No device ringtone was found for path:$path"))
+        }.subscribeOn(AndroidSchedulers.mainThread())
             .toSingleAppResult{ AppError.INTERNAL_ERROR }
     }
 }

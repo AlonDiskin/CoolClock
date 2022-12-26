@@ -3,7 +3,7 @@ package com.diskin.alon.coolclock.alarms.application
 import androidx.paging.PagingData
 import com.diskin.alon.coolclock.alarms.application.interfaces.AlarmsRepository
 import com.diskin.alon.coolclock.alarms.application.model.BrowserAlarm
-import com.diskin.alon.coolclock.alarms.application.usecase.AlarmsMapper
+import com.diskin.alon.coolclock.alarms.application.usecase.BrowserAlarmsMapper
 import com.diskin.alon.coolclock.alarms.application.usecase.GetAlarmsBrowserUseCase
 import com.diskin.alon.coolclock.alarms.domain.Alarm
 import io.mockk.every
@@ -20,7 +20,7 @@ class GetAlarmsBrowserUseCaseTest {
 
     // Collaborators
     private val alarmsRepo: AlarmsRepository = mockk()
-    private val alarmsMapper: AlarmsMapper = mockk()
+    private val alarmsMapper: BrowserAlarmsMapper = mockk()
 
     @Before
     fun setUp() {

@@ -60,7 +60,7 @@ class AlarmUnconfirmedSteps(
         )
 
         Shadow.extract<CustomShadowRingtoneManager>(ringtoneManager)
-            .setCursor(ringtoneValues)
+            .setCursorValues(ringtoneValues)
 
         // Setup test nav controller
         navController.setGraph(R.navigation.alarms_graph)

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="kotlin.jvm.functions.Function1"/>
         <import type="kotlin.jvm.functions.Function2"/>
         <import type="kotlin.Unit"/>
         <import type="android.view.View"/>
@@ -15,11 +16,16 @@
         <variable
             name="menuClickListener"
             type="Function2&lt;UiAlarm,View,Unit>" />
+        <variable
+            name="alarmClickListener"
+            type="Function1&lt;UiAlarm,Unit>" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="94dp">
+        android:layout_height="94dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> alarmClickListener.invoke(alarm)}">
 
         <ImageButton
             android:id="@+id/options_button"

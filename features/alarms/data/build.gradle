@@ -65,6 +65,9 @@ dependencies {
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
     implementation "androidx.paging:paging-rxjava2-ktx:$paging_version"
 
+    // Rx
+    implementation "io.reactivex.rxjava2:rxandroid:$rx_android_version"
+
     // Local testing
     testImplementation project(':features:common:unitTesting')
     testImplementation project(':features:common:instrumentationTesting')

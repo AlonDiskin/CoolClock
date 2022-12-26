@@ -51,4 +51,39 @@ sealed class AlarmEdit(val name: String,
             return javaClass.hashCode()
         }
     }
+
+    class ExistingEdit(name: String,
+                       hour: Int,
+                       minute: Int,
+                       repeatDays: Set<RepeatDay>,
+                       ringtone: AlarmSound,
+                       duration: Int,
+                       volume: Int,
+                       snooze: Int,
+                       vibration: Boolean,
+                       deviceRingtones: List<AlarmSound.Ringtone>,
+                       volumeRange: AlarmVolumeRange)
+        : AlarmEdit(name = name,
+        hour = hour,
+        minute = minute,
+        repeatDays = repeatDays,
+        sound = ringtone,
+        duration = duration,
+        volume = volume,
+        snooze = snooze,
+        vibration = vibration,
+        deviceRingtones = deviceRingtones,
+        minVolume = volumeRange.min,
+        maxVolume = volumeRange.max) {
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is ExistingEdit) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return javaClass.hashCode()
+        }
+    }
 }
