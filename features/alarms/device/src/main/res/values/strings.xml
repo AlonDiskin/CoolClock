@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="format_alarm_titme">HH:mm</string>
+    <string name="button_notification_dismiss">dismiss</string>
+    <string name="button_notification_snooze">snooze</string>
+    <string name="title_activity_alarm">AlarmActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+</resources>

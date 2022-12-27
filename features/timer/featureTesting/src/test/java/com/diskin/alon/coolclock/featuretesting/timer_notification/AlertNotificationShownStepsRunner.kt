@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.databinding.ViewDataBinding
 import androidx.test.filters.MediumTest
 import com.diskin.alon.coolclock.featuretesting.setFinalStatic
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerAlarmManager
+import com.diskin.alon.coolclock.timer.presentation.device.TimerAlarmManager
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
 import com.mauriciotogneri.greencoffee.ScenarioConfig

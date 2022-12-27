@@ -24,7 +24,8 @@ data class Alarm(val id: Int,
         require(volume > 0)
     }
 
-    val nextAlarm: Long get() { return nextAlarm() }
+    val nextAlarm: Long get() = nextAlarm()
+    val isRepeated: Boolean get() = repeatDays.isNotEmpty()
 
     private fun nextAlarm(): Long {
         val currentDateTime = DateTime().withSecondOfMinute(0).withMillisOfSecond(0)

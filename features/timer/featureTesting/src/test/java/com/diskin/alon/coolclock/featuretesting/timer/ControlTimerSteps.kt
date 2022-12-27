@@ -9,8 +9,8 @@ import com.diskin.alon.coolclock.timer.presentation.R
 import com.diskin.alon.coolclock.timer.presentation.controller.TimerFragment
 import com.diskin.alon.coolclock.timer.presentation.model.UiTimer
 import com.diskin.alon.coolclock.timer.presentation.model.UiTimerState
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.KEY_TIMER_DURATION
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerService
+import com.diskin.alon.coolclock.timer.presentation.device.KEY_TIMER_DURATION
+import com.diskin.alon.coolclock.timer.presentation.device.TimerService
 import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given

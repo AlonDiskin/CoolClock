@@ -5,6 +5,8 @@ import android.app.Application
 import android.content.Context
 import android.media.AudioManager
 import android.media.RingtoneManager
+import android.os.Vibrator
+import androidx.core.app.NotificationManagerCompat
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,5 +33,17 @@ object AppDeviceModule {
     @Provides
     fun provideRingtoneManagerManager(app: Application): RingtoneManager {
         return RingtoneManager(app)
+    }
+
+    @Singleton
+    @Provides
+    fun provideVibrator(app: Application): Vibrator {
+        return app.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    }
+
+    @Singleton
+    @Provides
+    fun provideNotificationManagerCompat(app: Application): NotificationManagerCompat {
+        return NotificationManagerCompat.from(app)
     }
 }

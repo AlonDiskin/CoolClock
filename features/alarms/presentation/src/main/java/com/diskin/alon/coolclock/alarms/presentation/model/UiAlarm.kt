@@ -7,4 +7,5 @@ data class UiAlarm(val id: Int,
                    val name: String,
                    val isActive: Boolean,
                    val nextAlarm: String,
-                   val repeatDays: Set<RepeatDay>)
+                   val repeatDays: Set<RepeatDay>,
+                   val isSnoozed: Boolean)

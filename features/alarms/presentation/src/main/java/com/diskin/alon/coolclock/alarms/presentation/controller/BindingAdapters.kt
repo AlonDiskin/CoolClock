@@ -1,6 +1,7 @@
 package com.diskin.alon.coolclock.alarms.presentation.controller
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
@@ -94,6 +95,16 @@ fun setAlarmName(tv: TextView,alarm: UiAlarm?) {
                 tv.visibility = View.VISIBLE
                 tv.text = it.name
             }
+        }
+    }
+}
+
+@BindingAdapter("setSnoozedIcon")
+fun setSnoozedIcon(im: ImageView,alarm: UiAlarm?) {
+    alarm?.let {
+        when(it.isSnoozed) {
+            true -> im.visibility = View.VISIBLE
+            false -> im.visibility = View.GONE
         }
     }
 }

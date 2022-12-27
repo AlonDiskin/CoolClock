@@ -2,19 +2,33 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.diskin.alon.coolclock.alarms.device">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <application>
+        <activity
+            android:name=".AlarmActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:label="@string/title_activity_alarm"
+            android:theme="@style/Theme.CoolClock.Fullscreen" />
+
         <receiver
             android:name=".AlarmReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="ACTION_ALARM" />
-                <action android:name="ACTION_ALARM_CANCEL" />
+                <action android:name="ACTION_STOP_ALARM" />
+                <action android:name="ACTION_SNOOZE_ALARM" />
             </intent-filter>
         </receiver>
+
         <service
             android:name=".AlarmService"
             android:enabled="true"

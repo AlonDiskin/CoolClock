@@ -151,6 +151,10 @@ class AlarmsFragmentTest {
             } else {
                 unRepeatedDatColorId
             }
+            val expectedSnoozedIconVisibility = when(uiAlarm.isSnoozed) {
+                true -> Visibility.VISIBLE
+                false -> Visibility.GONE
+            }
 
             onView(withRecyclerView(R.id.alarms).atPositionOnView(index, R.id.sunday_label))
                 .check(matches(withTextViewTextColor(expectedSundayLabelTextColorId)))
@@ -178,6 +182,9 @@ class AlarmsFragmentTest {
 
             onView(withRecyclerView(R.id.alarms).atPositionOnView(index, R.id.active_switcher))
                 .check(matches(withSwitchChecked(uiAlarm.isActive)))
+
+            onView(withRecyclerView(R.id.alarms).atPositionOnView(index, R.id.snoozedIcon))
+                .check(matches(withEffectiveVisibility(expectedSnoozedIconVisibility)))
         }
     }
 

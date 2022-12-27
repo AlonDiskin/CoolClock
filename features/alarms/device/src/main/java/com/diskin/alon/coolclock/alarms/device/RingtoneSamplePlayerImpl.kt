@@ -26,7 +26,7 @@ class RingtoneSamplePlayerImpl @Inject constructor(
         ringtoneManager.setType(RingtoneManager.TYPE_ALARM)
     }
 
-    override fun play(path: String, volume: Int, duration: Long): Single<AppResult<Unit>> {
+    override fun playSample(path: String, volume: Int, duration: Long): Single<AppResult<Unit>> {
         return Single.create<Unit> {
             countDownTimer?.cancel()
             audioManager.setStreamVolume(AudioManager.STREAM_ALARM,volume,0)

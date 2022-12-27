@@ -1,11 +1,14 @@
 package com.diskin.alon.coolclock.alarms.data.local
 
+import androidx.annotation.VisibleForTesting
 import androidx.room.TypeConverter
 import com.diskin.alon.coolclock.alarms.domain.Sound
 import com.diskin.alon.coolclock.alarms.domain.WeekDay
 
-private const val NO_REPEAT_DAYS = "empty"
-private const val NO_SOUND = "none"
+@VisibleForTesting
+const val NO_REPEAT_DAYS = "empty"
+@VisibleForTesting
+const val NO_SOUND = "none"
 
 class AlarmEntityConverters {
 

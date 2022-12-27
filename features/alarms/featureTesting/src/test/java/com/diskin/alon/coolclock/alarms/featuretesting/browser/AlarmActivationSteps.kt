@@ -13,7 +13,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.diskin.alon.coolclock.alarms.data.local.AlarmEntity
 import com.diskin.alon.coolclock.alarms.device.ACTION_ALARM
-import com.diskin.alon.coolclock.alarms.device.ALARM_ID
+import com.diskin.alon.coolclock.alarms.device.KEY_ALARM_ID
 import com.diskin.alon.coolclock.alarms.device.AlarmReceiver
 import com.diskin.alon.coolclock.alarms.domain.Sound
 import com.diskin.alon.coolclock.alarms.domain.WeekDay
@@ -64,7 +64,7 @@ class AlarmActivationSteps(
                         intent.action = ACTION_ALARM
                         intent.addCategory(getWeekDayFromScheduledAlarm(dateTime).name)
 
-                        intent.putExtra(ALARM_ID,1)
+                        intent.putExtra(KEY_ALARM_ID,1)
                         PendingIntent.getBroadcast(context, 1, intent, 0)
                     }
                     val scheduledAlarm = ShadowAlarmManager.ScheduledAlarm(
@@ -164,7 +164,7 @@ class AlarmActivationSteps(
                     assertThat(alarmIntent.hasCategory(getWeekDayFromScheduledAlarm(nextAlarms[index])
                         .name)).isTrue()
 
-                    assertThat(alarmIntent.getIntExtra(ALARM_ID,-1)).isEqualTo(alarm.id)
+                    assertThat(alarmIntent.getIntExtra(KEY_ALARM_ID,-1)).isEqualTo(alarm.id)
                     assertThat(alarmIntent.component!!.className).isEqualTo(AlarmReceiver::class.java.name)
                 }
 

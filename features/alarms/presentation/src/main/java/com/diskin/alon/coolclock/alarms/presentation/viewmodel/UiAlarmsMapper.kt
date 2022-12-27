@@ -11,7 +11,7 @@ import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import javax.inject.Inject
 
-class AlarmsMapper @Inject constructor(
+class UiAlarmsMapper @Inject constructor(
     app: Application
 ) {
 
@@ -24,19 +24,21 @@ class AlarmsMapper @Inject constructor(
                 mapAlarmTime(it.hour,it.minute),
                 it.name,
                 it.isActive,
-                mapNextAlarm(it.nextAlarm),
-                it.repeatDays
+                mapNextAlarm(it),
+                it.repeatDays,
+                it.isSnoozed
             )
         }
     }
 
-    private fun mapNextAlarm(nextAlarm: NextAlarm): String {
+    private fun mapNextAlarm(alarm: BrowserAlarm): String {
         return when {
-            nextAlarm is NextAlarm.None -> res.getString(R.string.label_alarm_not_active)
-            isAlarmToday((nextAlarm as NextAlarm.Next).millis) -> res.getString(R.string.label_alarm_today)
-            isAlarmTomorrow(nextAlarm.millis) -> res.getString(R.string.label_alarm_tomorrow)
+            alarm.isSnoozed -> "Snoozed"
+            alarm.nextAlarm is NextAlarm.None -> res.getString(R.string.label_alarm_not_active)
+            isAlarmToday((alarm.nextAlarm as NextAlarm.Next).millis) -> res.getString(R.string.label_alarm_today)
+            isAlarmTomorrow((alarm.nextAlarm as NextAlarm.Next).millis) -> res.getString(R.string.label_alarm_tomorrow)
             else -> {
-                DateTime(nextAlarm.millis)
+                DateTime((alarm.nextAlarm as NextAlarm.Next).millis)
                     .toString(
                         DateTimeFormat.forPattern(res.getString(R.string.alarm_date_format))
                     )

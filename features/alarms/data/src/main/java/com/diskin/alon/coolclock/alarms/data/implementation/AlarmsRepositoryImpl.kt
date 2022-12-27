@@ -47,6 +47,13 @@ class AlarmsRepositoryImpl @Inject constructor(
             .toSingleAppResult(errorHandler::handle)
     }
 
+    override fun setSnoozed(id: Int, isActive: Boolean): Single<AppResult<Unit>> {
+        return dao.updateSnoozed(id, isActive)
+            .toSingleDefault(Unit)
+            .subscribeOn(Schedulers.io())
+            .toSingleAppResult(errorHandler::handle)
+    }
+
     override fun delete(id: Int): Single<AppResult<Unit>> {
         return dao.delete(id)
             .toSingleDefault(Unit)

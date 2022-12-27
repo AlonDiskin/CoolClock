@@ -20,6 +20,9 @@ interface AlarmDao {
     @Query("UPDATE user_alarms SET isScheduled = :scheduled WHERE id = :id")
     fun updateScheduled(id: Int,scheduled: Boolean): Completable
 
+    @Query("UPDATE user_alarms SET isSnoozed = :snoozed WHERE id = :id")
+    fun updateSnoozed(id: Int,snoozed: Boolean): Completable
+
     @Query("DELETE FROM user_alarms WHERE id = :id")
     fun delete(id: Int): Completable
 

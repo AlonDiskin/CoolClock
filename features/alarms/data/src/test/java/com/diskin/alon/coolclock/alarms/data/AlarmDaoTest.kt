@@ -363,4 +363,27 @@ class AlarmDaoTest {
 
         assertThat(actualUpdated).isEqualTo(updatedAlarm)
     }
+
+    @Test
+    fun updateSnoozedState() {
+        // Given
+        val id = 1
+        val existingAlarm = "INSERT INTO user_alarms (name,hour,minute,repeatDays,isScheduled,sound" +
+                ",isVibrate,duration,volume,snooze,isSnoozed,id)" +
+                "VALUES ('name_1',15,10,'empty',0,'ringtone_1',0,5,5,0,0,$id)"
+        val updatedSnoozedState = false
+
+        db.compileStatement(existingAlarm).executeInsert()
+
+        // When
+        dao.updateSnoozed(id,updatedSnoozedState).blockingAwait()
+
+        // Then
+        val actualIsSnoozed = when(db.compileStatement("SELECT isSnoozed FROM user_alarms WHERE id = $id").simpleQueryForString()) {
+            "1" -> true
+            else -> false
+        }
+
+        assertThat(actualIsSnoozed).isEqualTo(updatedSnoozedState)
+    }
 }

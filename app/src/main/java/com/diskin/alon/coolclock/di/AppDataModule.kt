@@ -1,6 +1,8 @@
 package com.diskin.alon.coolclock.di
 
 import android.app.Application
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.diskin.alon.coolclock.alarms.data.local.AlarmDao
 import com.diskin.alon.coolclock.db.*
@@ -35,5 +37,11 @@ object AppDataModule {
     @Provides
     fun provideAlarmsDao(database: AppDatabase): AlarmDao {
         return database.alarmDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideSharedPreferences(app: Application): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(app)
     }
 }

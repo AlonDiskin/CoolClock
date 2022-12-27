@@ -46,6 +46,25 @@ class AlarmsSchedulerImpl @Inject constructor(
             .toSingleAppResult()
     }
 
+    override fun scheduleSnooze(alarm: Alarm): Single<AppResult<Unit>> {
+        return Single.create<Unit> {
+            val snooze = when {
+                alarm.snooze != 0 -> alarm.snooze
+                else -> throw IllegalArgumentException("Must contain a snooze value!")
+            }
+
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                DateTime().millis + (snooze * 60000L),
+                createUnrepeatedAlarmPendingIntent(alarm)
+            )
+
+            it.onSuccess(Unit)
+        }
+            .subscribeOn(Schedulers.computation())
+            .toSingleAppResult()
+    }
+
     private fun scheduleUnrepeatedAlarm(alarm: Alarm): Single<AppResult<Long>> {
         return Single.create<Long> {
             val alarmTime = alarm.nextAlarm
@@ -84,7 +103,7 @@ class AlarmsSchedulerImpl @Inject constructor(
         return Intent(context, AlarmReceiver::class.java).let { intent ->
             intent.action = ACTION_ALARM
 
-            intent.putExtra(ALARM_ID,alarm.id)
+            intent.putExtra(KEY_ALARM_ID,alarm.id)
             PendingIntent.getBroadcast(context, alarm.id, intent, 0)
         }
     }
@@ -93,7 +112,7 @@ class AlarmsSchedulerImpl @Inject constructor(
         return Intent(context, AlarmReceiver::class.java).let { intent ->
             intent.action = ACTION_ALARM
 
-            intent.putExtra(ALARM_ID,alarm.id)
+            intent.putExtra(KEY_ALARM_ID,alarm.id)
             PendingIntent.getBroadcast(context, alarm.id, intent, PendingIntent.FLAG_NO_CREATE)
         }
     }
@@ -103,7 +122,7 @@ class AlarmsSchedulerImpl @Inject constructor(
             intent.action = ACTION_ALARM
             intent.addCategory(day)
 
-            intent.putExtra(ALARM_ID,alarm.id)
+            intent.putExtra(KEY_ALARM_ID,alarm.id)
             PendingIntent.getBroadcast(context, alarm.id, intent, PendingIntent.FLAG_NO_CREATE)
         }
     }
@@ -113,7 +132,7 @@ class AlarmsSchedulerImpl @Inject constructor(
             intent.action = ACTION_ALARM
             intent.addCategory(day)
 
-            intent.putExtra(ALARM_ID,alarm.id)
+            intent.putExtra(KEY_ALARM_ID,alarm.id)
             PendingIntent.getBroadcast(context, alarm.id, intent, 0)
         }
     }

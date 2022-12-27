@@ -6,4 +6,5 @@ data class BrowserAlarm(val id: Int,
                         val minute: Int,
                         val repeatDays: Set<RepeatDay>,
                         val isActive: Boolean,
-                        val nextAlarm: NextAlarm)
+                        val nextAlarm: NextAlarm,
+                        val isSnoozed: Boolean)

@@ -2,7 +2,7 @@ package com.diskin.alon.coolclock.scenario
 
 import androidx.test.filters.LargeTest
 import com.diskin.alon.coolclock.di.AppDataModule
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerAlarmManager
+import com.diskin.alon.coolclock.timer.presentation.device.TimerAlarmManager
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
 import com.mauriciotogneri.greencoffee.ScenarioConfig

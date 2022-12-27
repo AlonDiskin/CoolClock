@@ -16,7 +16,7 @@ class PlayRingtoneSampleUseCase @Inject constructor(
     override fun execute(param: PlayRingtoneSampleRequest): Single<AppResult<Unit>> {
         return when(param) {
             is PlayRingtoneSampleRequest.Ringtone ->
-                ringtonePlayer.play(param.path, param.volume, SAMPLE_DURATION)
+                ringtonePlayer.playSample(param.path, param.volume, SAMPLE_DURATION)
             is PlayRingtoneSampleRequest.Stop -> ringtonePlayer.stop()
         }
     }

@@ -9,7 +9,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.*
+import com.diskin.alon.coolclock.timer.presentation.device.*
 import com.diskin.alon.coolclock.timer.presentation.model.TimerControl
 import com.diskin.alon.coolclock.timer.presentation.model.UiTimer
 import com.diskin.alon.coolclock.timer.presentation.model.UiTimerState

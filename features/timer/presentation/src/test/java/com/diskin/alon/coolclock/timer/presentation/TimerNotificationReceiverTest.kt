@@ -6,10 +6,10 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.NOTIFICATION_ID_TIMER_ALERT
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerAlarmManager
+import com.diskin.alon.coolclock.timer.presentation.device.NOTIFICATION_ID_TIMER_ALERT
+import com.diskin.alon.coolclock.timer.presentation.device.TimerAlarmManager
 import com.diskin.alon.coolclock.timer.presentation.model.TimerControl
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerNotificationReceiver
+import com.diskin.alon.coolclock.timer.presentation.device.TimerNotificationReceiver
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

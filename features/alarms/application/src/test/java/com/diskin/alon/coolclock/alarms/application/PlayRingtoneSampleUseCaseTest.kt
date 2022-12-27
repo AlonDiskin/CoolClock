@@ -45,13 +45,13 @@ class PlayRingtoneSampleUseCaseTest {
         val request = PlayRingtoneSampleRequest.Ringtone("path",5)
         val result = AppResult.Success(Unit)
 
-        every { ringtonePlayer.play(any(),any(),any()) } returns Single.just(AppResult.Success(Unit))
+        every { ringtonePlayer.playSample(any(),any(),any()) } returns Single.just(AppResult.Success(Unit))
 
         // When
         val observer = useCase.execute(request).test()
 
         // Then
-        verify(exactly = 1) { ringtonePlayer.play(request.path, request.volume, SAMPLE_DURATION) }
+        verify(exactly = 1) { ringtonePlayer.playSample(request.path, request.volume, SAMPLE_DURATION) }
         observer.assertValue(result)
     }
 }

@@ -12,7 +12,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.diskin.alon.coolclock.alarms.data.local.AlarmEntity
 import com.diskin.alon.coolclock.alarms.device.ACTION_ALARM
-import com.diskin.alon.coolclock.alarms.device.ALARM_ID
+import com.diskin.alon.coolclock.alarms.device.KEY_ALARM_ID
 import com.diskin.alon.coolclock.alarms.device.AlarmReceiver
 import com.diskin.alon.coolclock.alarms.domain.Sound
 import com.diskin.alon.coolclock.alarms.featuretesting.util.TestDatabase
@@ -53,7 +53,7 @@ class AlarmDeletedSteps(
         val alarmPendingIntent = Intent(context, AlarmReceiver::class.java).let { intent ->
             intent.action = ACTION_ALARM
 
-            intent.putExtra(ALARM_ID,1)
+            intent.putExtra(KEY_ALARM_ID,1)
             PendingIntent.getBroadcast(context, 1, intent, 0)
         }
         val scheduledAlarm = ShadowAlarmManager.ScheduledAlarm(

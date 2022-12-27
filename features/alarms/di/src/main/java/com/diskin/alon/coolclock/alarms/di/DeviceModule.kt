@@ -1,8 +1,10 @@
 package com.diskin.alon.coolclock.alarms.di
 
+import com.diskin.alon.coolclock.alarms.application.interfaces.AlarmExecutor
 import com.diskin.alon.coolclock.alarms.application.interfaces.AlarmVolumeRangeProvider
 import com.diskin.alon.coolclock.alarms.application.interfaces.AlarmsScheduler
 import com.diskin.alon.coolclock.alarms.application.interfaces.RingtoneSamplePlayer
+import com.diskin.alon.coolclock.alarms.device.AlarmExecutorImpl
 import com.diskin.alon.coolclock.alarms.device.AlarmVolumeRangeProviderImpl
 import com.diskin.alon.coolclock.alarms.device.AlarmsSchedulerImpl
 import com.diskin.alon.coolclock.alarms.device.RingtoneSamplePlayerImpl
@@ -27,4 +29,8 @@ abstract class DeviceModule {
     @Singleton
     @Binds
     abstract fun bindAlarmVolumeRangeProvider(provider: AlarmVolumeRangeProviderImpl): AlarmVolumeRangeProvider
+
+    @Singleton
+    @Binds
+    abstract fun bindAlarmExecutor(executor: AlarmExecutorImpl): AlarmExecutor
 }

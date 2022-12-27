@@ -1,4 +1,4 @@
-package com.diskin.alon.coolclock.timer.presentation.infrastructure
+package com.diskin.alon.coolclock.timer.presentation.device
 
 import android.content.BroadcastReceiver
 import android.content.Context

@@ -10,7 +10,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.RootMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.coolclock.alarms.device.ACTION_ALARM
-import com.diskin.alon.coolclock.alarms.device.ALARM_ID
+import com.diskin.alon.coolclock.alarms.device.KEY_ALARM_ID
 import com.diskin.alon.coolclock.alarms.device.AlarmReceiver
 import com.diskin.alon.coolclock.alarms.presentation.R
 import com.diskin.alon.coolclock.common.uitesting.RecyclerViewMatcher.*
@@ -82,7 +82,7 @@ class UpdateAlarmSteps(
         val alarmIntent = Intent(context, AlarmReceiver::class.java).let { intent ->
             intent.action = ACTION_ALARM
 
-            intent.putExtra(ALARM_ID,1)
+            intent.putExtra(KEY_ALARM_ID,1)
             PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_NO_CREATE)
         }
 

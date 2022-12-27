@@ -26,7 +26,7 @@ class AlarmsViewModel @Inject constructor(
     private val getAlarms: GetAlarmsBrowserUseCase,
     private val setAlarmActivation: SetAlarmActivationUseCase,
     private val deleteAlarm: DeleteAlarmUseCase,
-    private val alarmsMapper: AlarmsMapper,
+    private val alarmsMapper: UiAlarmsMapper,
     private val dateFormatter: ScheduledAlarmDateFormatter
 ) : RxViewModel() {
 

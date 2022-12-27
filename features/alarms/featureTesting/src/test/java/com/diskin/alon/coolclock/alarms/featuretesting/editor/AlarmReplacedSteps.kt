@@ -18,7 +18,7 @@ import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.coolclock.alarms.data.local.AlarmEntity
 import com.diskin.alon.coolclock.alarms.device.ACTION_ALARM
-import com.diskin.alon.coolclock.alarms.device.ALARM_ID
+import com.diskin.alon.coolclock.alarms.device.KEY_ALARM_ID
 import com.diskin.alon.coolclock.alarms.device.AlarmReceiver
 import com.diskin.alon.coolclock.alarms.domain.Sound
 import com.diskin.alon.coolclock.alarms.featuretesting.util.CustomShadowRingtoneManager
@@ -105,7 +105,7 @@ class AlarmReplacedSteps(
         val alarmPendingIntent = Intent(context, AlarmReceiver::class.java).let { intent ->
             intent.action = ACTION_ALARM
 
-            intent.putExtra(ALARM_ID,1)
+            intent.putExtra(KEY_ALARM_ID,1)
             PendingIntent.getBroadcast(context, 1, intent, 0)
         }
         val scheduledAlarm = ShadowAlarmManager.ScheduledAlarm(
@@ -175,7 +175,7 @@ class AlarmReplacedSteps(
         val scheduledAlarm = shadowAlarmManager.nextScheduledAlarm
 
         assertThat(Shadows.shadowOf(scheduledAlarm.operation)
-            .savedIntent.getIntExtra(ALARM_ID,-1)).isEqualTo(expectedScheduledAlarmId)
+            .savedIntent.getIntExtra(KEY_ALARM_ID,-1)).isEqualTo(expectedScheduledAlarmId)
         assertThat(scheduledAlarm.triggerAtTime).isEqualTo(expectedScheduledAlarmTriggerTime)
     }
 }

@@ -14,7 +14,7 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.matcher.RootMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.coolclock.alarms.device.ACTION_ALARM
-import com.diskin.alon.coolclock.alarms.device.ALARM_ID
+import com.diskin.alon.coolclock.alarms.device.KEY_ALARM_ID
 import com.diskin.alon.coolclock.alarms.device.AlarmReceiver
 import com.diskin.alon.coolclock.alarms.featuretesting.util.CustomShadowRingtoneManager
 import com.diskin.alon.coolclock.alarms.featuretesting.util.TestDatabase
@@ -83,13 +83,13 @@ class AlarmRemovedSteps(
         val firstAlarmPendingIntent = Intent(context, AlarmReceiver::class.java).let { intent ->
             intent.action = ACTION_ALARM
 
-            intent.putExtra(ALARM_ID,1)
+            intent.putExtra(KEY_ALARM_ID,1)
             PendingIntent.getBroadcast(context, 1, intent, 0)
         }
         val secondAlarmPendingIntent = Intent(context, AlarmReceiver::class.java).let { intent ->
             intent.action = ACTION_ALARM
 
-            intent.putExtra(ALARM_ID,2)
+            intent.putExtra(KEY_ALARM_ID,2)
             PendingIntent.getBroadcast(context, 2, intent, 0)
         }
         val scheduledFirstAlarm = ShadowAlarmManager.ScheduledAlarm(

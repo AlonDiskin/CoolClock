@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="kotlin.jvm.functions.Function1"/>
+        <import type="kotlin.jvm.functions.Function2"/>
+        <import type="kotlin.Unit"/>
+        <import type="android.view.View"/>
+        <import type="com.diskin.alon.coolclock.alarms.presentation.model.UiAlarm"/>
+
+        <variable
+            name="alarm"
+            type="UiAlarm" />
+        <variable
+            name="menuClickListener"
+            type="Function2&lt;UiAlarm,View,Unit>" />
+        <variable
+            name="alarmClickListener"
+            type="Function1&lt;UiAlarm,Unit>" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="94dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> alarmClickListener.invoke(alarm)}">
+
+        <ImageButton
+            android:id="@+id/options_button"
+            style="@style/Widget.AppCompat.ActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:onClick="@{(v) -> menuClickListener.invoke(alarm,v)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_more_vert_24" />
+
+        <TextView
+            android:id="@+id/next_alarm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="@{alarm.nextAlarm}"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            app:layout_constraintBottom_toTopOf="@+id/alarm_name"
+            app:layout_constraintEnd_toStartOf="@+id/snoozedIcon"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@id/options_button"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Today" />
+
+        <TextView
+            android:id="@+id/alarm_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            app:setAlarmName="@{alarm}"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintEnd_toEndOf="@+id/next_alarm"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/next_alarm"
+            app:layout_constraintTop_toBottomOf="@+id/next_alarm"
+            tools:text="Send email to employees" />
+
+        <TextView
+            android:id="@+id/sunday_label"
+            style="@style/AlarmWeekday"
+            setRepeatDayLabel="@{alarm}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/day_label_sun"
+            app:layout_constraintEnd_toStartOf="@+id/monday_label"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="@+id/alarmTime"
+            app:layout_constraintTop_toBottomOf="@+id/active_switcher"
+            tools:textColor="@color/design_default_color_primary" />
+
+        <TextView
+            android:id="@+id/monday_label"
+            style="@style/AlarmWeekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/day_label_mon"
+            setRepeatDayLabel="@{alarm}"
+            app:layout_constraintBottom_toBottomOf="@+id/sunday_label"
+            app:layout_constraintEnd_toStartOf="@+id/tuesday_label"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/sunday_label"
+            app:layout_constraintTop_toTopOf="@+id/sunday_label"
+            tools:textColor="@color/material_on_background_disabled" />
+
+        <TextView
+            android:id="@+id/tuesday_label"
+            style="@style/AlarmWeekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/day_label_tue"
+            setRepeatDayLabel="@{alarm}"
+            app:layout_constraintBottom_toBottomOf="@+id/monday_label"
+            app:layout_constraintEnd_toStartOf="@+id/wednesday_label"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/monday_label"
+            app:layout_constraintTop_toTopOf="@+id/monday_label"
+            tools:textColor="@color/design_default_color_primary" />
+
+        <TextView
+            android:id="@+id/wednesday_label"
+            style="@style/AlarmWeekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/day_label_wed"
+            setRepeatDayLabel="@{alarm}"
+            app:layout_constraintBottom_toBottomOf="@+id/tuesday_label"
+            app:layout_constraintEnd_toStartOf="@+id/thursday_label"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tuesday_label"
+            app:layout_constraintTop_toTopOf="@+id/tuesday_label"
+            tools:textColor="@color/design_default_color_primary" />
+
+        <TextView
+            android:id="@+id/thursday_label"
+            style="@style/AlarmWeekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/day_label_thu"
+            setRepeatDayLabel="@{alarm}"
+            app:layout_constraintBottom_toBottomOf="@+id/wednesday_label"
+            app:layout_constraintEnd_toStartOf="@+id/friday_label"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/wednesday_label"
+            app:layout_constraintTop_toTopOf="@+id/wednesday_label"
+            tools:textColor="@color/material_on_background_disabled" />
+
+        <TextView
+            android:id="@+id/friday_label"
+            style="@style/AlarmWeekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/day_label_fri"
+            setRepeatDayLabel="@{alarm}"
+            app:layout_constraintBottom_toBottomOf="@+id/thursday_label"
+            app:layout_constraintEnd_toStartOf="@+id/saturday_label"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/thursday_label"
+            app:layout_constraintTop_toTopOf="@+id/thursday_label"
+            tools:textColor="@color/design_default_color_primary" />
+
+        <TextView
+            android:id="@+id/saturday_label"
+            style="@style/AlarmWeekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16sp"
+            android:text="@string/day_label_sat"
+            setRepeatDayLabel="@{alarm}"
+            app:layout_constraintBottom_toBottomOf="@+id/friday_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/friday_label"
+            app:layout_constraintTop_toTopOf="@+id/friday_label"
+            tools:textColor="@color/material_on_background_disabled" />
+
+        <TextView
+            android:id="@+id/alarmTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{alarm.time}"
+            android:textAppearance="?attr/textAppearanceHeadline5"
+            android:textSize="28sp"
+            app:layout_constraintEnd_toStartOf="@+id/active_switcher"
+            app:layout_constraintTop_toTopOf="@+id/options_button"
+            tools:text="12:03" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/active_switcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:checked="@{alarm.active}"
+            app:layout_constraintBottom_toBottomOf="@+id/alarmTime"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/alarmTime"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:checked="true" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="0dp"
+            android:layout_height="1.5dp"
+            android:layout_marginHorizontal="16dp"
+            android:background="#12000000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/snoozedIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@+id/alarmTime"
+            app:layout_constraintTop_toTopOf="@+id/alarmTime"
+            app:srcCompat="@drawable/ic_baseline_snooze_48" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

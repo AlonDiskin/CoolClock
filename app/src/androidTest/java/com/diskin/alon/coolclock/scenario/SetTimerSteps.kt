@@ -3,7 +3,6 @@ package com.diskin.alon.coolclock.scenario
 import android.app.NotificationManager
 import android.content.Context
 import android.media.Ringtone
-import android.media.RingtoneManager
 import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.NotificationManagerCompat
@@ -16,8 +15,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiSelector
 import com.diskin.alon.coolclock.common.uitesting.isWithProgress
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.CHANNEL_ID_TIMER_ALERT
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerAlarmManager
+import com.diskin.alon.coolclock.timer.presentation.device.CHANNEL_ID_TIMER_ALERT
+import com.diskin.alon.coolclock.timer.presentation.device.TimerAlarmManager
 import com.diskin.alon.coolclock.util.DeviceUtil
 import com.diskin.alon.coolclock.util.WhiteBox
 import com.google.common.truth.Truth.assertThat

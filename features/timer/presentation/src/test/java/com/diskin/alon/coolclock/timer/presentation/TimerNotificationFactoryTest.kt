@@ -7,9 +7,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.CHANNEL_ID_TIMER
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.CHANNEL_ID_TIMER_ALERT
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerNotificationFactory
+import com.diskin.alon.coolclock.timer.presentation.device.CHANNEL_ID_TIMER
+import com.diskin.alon.coolclock.timer.presentation.device.CHANNEL_ID_TIMER_ALERT
+import com.diskin.alon.coolclock.timer.presentation.device.TimerNotificationFactory
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test

@@ -12,7 +12,8 @@ fun createUiAlarms(): List<UiAlarm> {
             "name_1",
             false,
             "Today",
-            setOf(RepeatDay.SAT)
+            setOf(RepeatDay.SAT),
+            false
         ),
         UiAlarm(
             2,
@@ -20,7 +21,8 @@ fun createUiAlarms(): List<UiAlarm> {
             "name_2",
             true,
             "Tomorrow",
-            emptySet()
+            emptySet(),
+            true
         ),
         UiAlarm(
             3,
@@ -28,7 +30,8 @@ fun createUiAlarms(): List<UiAlarm> {
             "name_3",
             true,
             "Tue,Jul 23",
-            setOf(RepeatDay.SUN,RepeatDay.WED)
+            setOf(RepeatDay.SUN,RepeatDay.WED),
+            false
         )
     )
 }
@@ -39,7 +42,8 @@ fun createUnActiveAlarm() = UiAlarm(
     "name_3",
     false,
     "Tue,Jul 23",
-    setOf(RepeatDay.SUN,RepeatDay.WED)
+    setOf(RepeatDay.SUN,RepeatDay.WED),
+    false
 )
 
 fun createActiveAlarm() = UiAlarm(
@@ -48,7 +52,8 @@ fun createActiveAlarm() = UiAlarm(
     "name_3",
     true,
     "Tue,Jul 23",
-    setOf(RepeatDay.SUN,RepeatDay.WED)
+    setOf(RepeatDay.SUN,RepeatDay.WED),
+    false
 )
 
 fun createAlarmEdit() = UiAlarmEdit(

@@ -1,6 +1,8 @@
 package com.diskin.alon.coolclock.alarms.featuretesting.di
 
 import android.app.Application
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import androidx.room.Room
 import com.diskin.alon.coolclock.alarms.data.local.AlarmDao
 import com.diskin.alon.coolclock.alarms.featuretesting.util.TestDatabase
@@ -26,5 +28,11 @@ object TestAppDataModule {
     @Provides
     fun provideAlarmDao(database: TestDatabase): AlarmDao {
         return database.alarmDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideSharedPreferences(app: Application): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(app)
     }
 }

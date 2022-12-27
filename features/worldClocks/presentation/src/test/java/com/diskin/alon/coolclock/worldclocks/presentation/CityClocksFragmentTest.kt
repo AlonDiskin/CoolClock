@@ -51,7 +51,7 @@ import java.util.*
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @SmallTest
-@Config(instrumentedPackages = ["androidx.loader.content"])
+@Config(instrumentedPackages = ["androidx.loader.content"],qualifiers = "w411dp-h891dp")
 class CityClocksFragmentTest {
 
     // Test subject

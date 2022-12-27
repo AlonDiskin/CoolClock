@@ -4,7 +4,7 @@ import android.app.Application
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.net.Uri
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerAlarmManager
+import com.diskin.alon.coolclock.timer.presentation.device.TimerAlarmManager
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic

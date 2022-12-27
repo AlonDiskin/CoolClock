@@ -9,4 +9,6 @@ interface AlarmsScheduler {
     fun schedule(alarm: Alarm): Single<AppResult<Long>>
 
     fun cancel(alarm: Alarm): Single<AppResult<Unit>>
+
+    fun scheduleSnooze(alarm: Alarm): Single<AppResult<Unit>>
 }

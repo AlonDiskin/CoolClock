@@ -8,12 +8,12 @@
 
     <application>
         <service
-            android:name=".infrastructure.TimerService"
+            android:name=".device.TimerService"
             android:enabled="true"
             android:exported="false" />
 
         <receiver
-            android:name=".infrastructure.TimerNotificationReceiver"
+            android:name=".device.TimerNotificationReceiver"
             android:enabled="true"
             android:exported="true">
 

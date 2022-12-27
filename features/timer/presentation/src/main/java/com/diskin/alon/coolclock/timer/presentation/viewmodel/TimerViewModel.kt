@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import com.diskin.alon.coolclock.common.presentation.RxViewModel
 import com.diskin.alon.coolclock.timer.data.TimerDuration
 import com.diskin.alon.coolclock.timer.data.TimerDurationStore
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.KEY_TIMER_DURATION
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerService
+import com.diskin.alon.coolclock.timer.presentation.device.KEY_TIMER_DURATION
+import com.diskin.alon.coolclock.timer.presentation.device.TimerService
 import com.diskin.alon.coolclock.timer.presentation.model.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers

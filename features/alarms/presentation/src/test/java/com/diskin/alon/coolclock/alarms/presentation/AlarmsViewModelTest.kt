@@ -9,7 +9,7 @@ import com.diskin.alon.coolclock.alarms.application.model.NextAlarm
 import com.diskin.alon.coolclock.alarms.application.usecase.DeleteAlarmUseCase
 import com.diskin.alon.coolclock.alarms.application.usecase.GetAlarmsBrowserUseCase
 import com.diskin.alon.coolclock.alarms.application.usecase.SetAlarmActivationUseCase
-import com.diskin.alon.coolclock.alarms.presentation.viewmodel.AlarmsMapper
+import com.diskin.alon.coolclock.alarms.presentation.viewmodel.UiAlarmsMapper
 import com.diskin.alon.coolclock.alarms.presentation.viewmodel.AlarmsViewModel
 import com.diskin.alon.coolclock.alarms.presentation.viewmodel.ScheduledAlarmDateFormatter
 import com.diskin.alon.coolclock.common.application.AppError
@@ -36,7 +36,7 @@ class AlarmsViewModelTest {
 
     // Collaborators
     private val getAlarms: GetAlarmsBrowserUseCase = mockk()
-    private val alarmsMapper: AlarmsMapper = mockk()
+    private val alarmsMapper: UiAlarmsMapper = mockk()
     private val setAlarmActivation: SetAlarmActivationUseCase = mockk()
     private val dateFormatter: ScheduledAlarmDateFormatter = mockk()
     private val deleteAlarm: DeleteAlarmUseCase = mockk()

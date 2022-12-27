@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
 import com.diskin.alon.coolclock.alarms.domain.*
+import com.diskin.alon.coolclock.common.application.AppError
 import com.diskin.alon.coolclock.common.application.AppResult
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
@@ -28,7 +29,9 @@ class AlarmsSchedulerImplTest(
     private val unrepeatedAlarm: Alarm,
     private val expectedUnrepeatedAlarmDate: DateTime,
     private val repeatedAlarm: Alarm,
-    private val expectedRepeatedAlarmDates: List<DateTime>
+    private val expectedRepeatedAlarmDates: List<DateTime>,
+    private val snoozedAlarm: Alarm,
+    private val expectedSnoozedTrigger: Long
 ) {
 
     companion object {
@@ -49,7 +52,7 @@ class AlarmsSchedulerImplTest(
                     Sound.AlarmSound("sound_1"),
                     1,
                     5,
-                    0,
+                    5,
                     false
                 ),
                 DateTime(2022,8,24,16,40),
@@ -71,7 +74,22 @@ class AlarmsSchedulerImplTest(
                     DateTime(2022,8,26,16,45),
                     DateTime(2022,8,28,16,45),
                     DateTime(2022,8,30,16,45)
-                )
+                ),
+                Alarm(
+                    1,
+                    "alarm_1",
+                    16,
+                    40,
+                    setOf(WeekDay.TUE,WeekDay.SAT),
+                    true,
+                    true,
+                    Sound.AlarmSound("sound_1"),
+                    1,
+                    5,
+                    1,
+                    false
+                ),
+                DateTime(2022,8,23,16,45).millis + (1 * 60000L)
             ),
             arrayOf(
                 DateTime(2022,8,23,16,45),
@@ -107,7 +125,22 @@ class AlarmsSchedulerImplTest(
                 listOf(
                     DateTime(2022,8,25,16,46),
                     DateTime(2022,8,29,16,46)
-                )
+                ),
+                Alarm(
+                    1,
+                    "alarm_1",
+                    16,
+                    40,
+                    emptySet(),
+                    true,
+                    true,
+                    Sound.AlarmSound("sound_1"),
+                    1,
+                    5,
+                    5,
+                    false
+                ),
+                DateTime(2022,8,23,16,45).millis + (5 * 60000L)
             ),
             arrayOf(
                 DateTime(2022,8,23,16,45),
@@ -142,7 +175,22 @@ class AlarmsSchedulerImplTest(
                 ),
                 listOf(
                     DateTime(2022,8,23,16,46)
-                )
+                ),
+                Alarm(
+                    1,
+                    "alarm_1",
+                    16,
+                    40,
+                    setOf(WeekDay.TUE,WeekDay.SAT),
+                    true,
+                    true,
+                    Sound.AlarmSound("sound_1"),
+                    1,
+                    5,
+                    10,
+                    false
+                ),
+                DateTime(2022,8,23,16,45).millis + (10 * 60000L)
             )
         )
 
@@ -188,7 +236,7 @@ class AlarmsSchedulerImplTest(
         observer.assertValue(AppResult.Success(expectedUnrepeatedAlarmDate.millis))
         assertThat(alarmPendingIntent.isBroadcast).isTrue()
         assertThat(alarmIntent.action).isEqualTo(ACTION_ALARM)
-        assertThat(alarmIntent.getIntExtra(ALARM_ID,-1)).isEqualTo(unrepeatedAlarm.id)
+        assertThat(alarmIntent.getIntExtra(KEY_ALARM_ID,-1)).isEqualTo(unrepeatedAlarm.id)
         assertThat(alarmIntent.component!!.className).isEqualTo(AlarmReceiver::class.java.name)
     }
 
@@ -199,7 +247,7 @@ class AlarmsSchedulerImplTest(
         val alarmPendingIntent = Intent(appContext, AlarmReceiver::class.java).let { intent ->
             intent.action = ACTION_ALARM
 
-            intent.putExtra(ALARM_ID,unrepeatedAlarm.id)
+            intent.putExtra(KEY_ALARM_ID,unrepeatedAlarm.id)
             PendingIntent.getBroadcast(appContext, unrepeatedAlarm.id, intent, 0)
         }
         val scheduledAlarm = ShadowAlarmManager.ScheduledAlarm(
@@ -242,7 +290,7 @@ class AlarmsSchedulerImplTest(
             assertThat(alarmIntent.hasCategory(getWeekDayFromScheduledAlarm(expectedRepeatedAlarmDates[index])
                 .name)).isTrue()
 
-            assertThat(alarmIntent.getIntExtra(ALARM_ID,-1)).isEqualTo(repeatedAlarm.id)
+            assertThat(alarmIntent.getIntExtra(KEY_ALARM_ID,-1)).isEqualTo(repeatedAlarm.id)
             assertThat(alarmIntent.component!!.className).isEqualTo(AlarmReceiver::class.java.name)
 
         }
@@ -261,7 +309,7 @@ class AlarmsSchedulerImplTest(
                 intent.action = ACTION_ALARM
                 intent.addCategory(getWeekDayFromScheduledAlarm(dateTime).name)
 
-                intent.putExtra(ALARM_ID,repeatedAlarm.id)
+                intent.putExtra(KEY_ALARM_ID,repeatedAlarm.id)
                 PendingIntent.getBroadcast(appContext, repeatedAlarm.id, intent, 0)
             }
             val scheduledAlarm = ShadowAlarmManager.ScheduledAlarm(
@@ -281,6 +329,47 @@ class AlarmsSchedulerImplTest(
         // Then
         assertThat(shadowAlarmManager.scheduledAlarms.size).isEqualTo(0)
         observer.assertValue(AppResult.Success(Unit))
+    }
+
+    @Test
+    fun scheduleSnoozedAlarm() {
+        // Given
+        val shadowAlarmManager = Shadows.shadowOf(alarmManager)
+
+        // When
+        val observer = scheduler.scheduleSnooze(snoozedAlarm).test()
+
+        // Then
+        assertThat(shadowAlarmManager.scheduledAlarms.size).isEqualTo(1)
+        assertThat(shadowAlarmManager.nextScheduledAlarm.triggerAtTime).isEqualTo(expectedSnoozedTrigger)
+        observer.assertValue(AppResult.Success(Unit))
+    }
+
+    @Test
+    fun returnError_WhenSchedulingSnoozedAlarmWithNoSnoozeValue() {
+        // Given
+        val shadowAlarmManager = Shadows.shadowOf(alarmManager)
+        val alarm = Alarm(
+            1,
+            "alarm_1",
+            16,
+            40,
+            emptySet(),
+            true,
+            true,
+            Sound.AlarmSound("sound_1"),
+            1,
+            5,
+            0,
+            false
+        )
+
+        // When
+        val observer = scheduler.scheduleSnooze(alarm).test()
+
+        // Then
+        assertThat(shadowAlarmManager.scheduledAlarms.size).isEqualTo(0)
+        observer.assertValue(AppResult.Error(AppError.INTERNAL_ERROR))
     }
 
     private fun getWeekDayFromScheduledAlarm(date: DateTime): WeekDay {

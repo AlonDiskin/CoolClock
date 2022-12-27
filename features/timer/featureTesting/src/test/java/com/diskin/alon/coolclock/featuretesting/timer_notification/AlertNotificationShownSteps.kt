@@ -5,14 +5,12 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
-import android.widget.Button
-import android.widget.NumberPicker
 import androidx.core.app.NotificationManagerCompat
 import androidx.test.core.app.ApplicationProvider
 import com.diskin.alon.coolclock.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.coolclock.timer.presentation.R
 import com.diskin.alon.coolclock.timer.presentation.controller.TimerFragment
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.*
+import com.diskin.alon.coolclock.timer.presentation.device.*
 import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given

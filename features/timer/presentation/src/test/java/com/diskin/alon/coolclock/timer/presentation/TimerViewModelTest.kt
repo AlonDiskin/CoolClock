@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.diskin.alon.coolclock.timer.data.TimerDuration
 import com.diskin.alon.coolclock.timer.data.TimerDurationStore
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.KEY_TIMER_DURATION
-import com.diskin.alon.coolclock.timer.presentation.infrastructure.TimerService
+import com.diskin.alon.coolclock.timer.presentation.device.KEY_TIMER_DURATION
+import com.diskin.alon.coolclock.timer.presentation.device.TimerService
 import com.diskin.alon.coolclock.timer.presentation.model.*
 import com.diskin.alon.coolclock.timer.presentation.viewmodel.TimerViewModel
 import com.google.common.truth.Truth.assertThat

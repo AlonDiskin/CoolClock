@@ -59,7 +59,7 @@ class RingtoneSamplePlayerImplTest {
 
 
         // When
-        val observer = player.play(path, volume, duration).test()
+        val observer = player.playSample(path, volume, duration).test()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then
