@@ -1,14 +1,15 @@
-package com.diskin.alon.coolclock.alarms.presentation.controller
+package com.diskin.alon.coolclock.alarms.presentation.ui
 
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.diskin.alon.coolclock.alarms.application.model.RepeatDay
 import com.diskin.alon.coolclock.alarms.presentation.R
 import com.diskin.alon.coolclock.alarms.presentation.model.UiAlarm
+import com.diskin.alon.coolclock.alarms.presentation.model.UiFullScreenAlarm
+import id.ss564.lib.slidingbutton.SlidingButton
 
 @BindingAdapter("setRepeatDayLabel")
 fun setRepeatDayLabel(tv: TextView,alarm: UiAlarm?) {
@@ -105,6 +106,16 @@ fun setSnoozedIcon(im: ImageView,alarm: UiAlarm?) {
         when(it.isSnoozed) {
             true -> im.visibility = View.VISIBLE
             false -> im.visibility = View.GONE
+        }
+    }
+}
+
+@BindingAdapter("setSnoozeButtonVisibility")
+fun setSnoozeButtonVisibility(button: SlidingButton,alarm: UiFullScreenAlarm?) {
+    alarm?.let {
+        when(it.snoozedEnabled) {
+            true -> button.visibility = View.VISIBLE
+            false -> button.visibility = View.INVISIBLE
         }
     }
 }

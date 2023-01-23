@@ -11,6 +11,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Singleton
 
 @Module
@@ -45,5 +46,11 @@ object AppDeviceModule {
     @Provides
     fun provideNotificationManagerCompat(app: Application): NotificationManagerCompat {
         return NotificationManagerCompat.from(app)
+    }
+
+    @Singleton
+    @Provides
+    fun provideEventBus(): EventBus {
+        return EventBus.getDefault()
     }
 }

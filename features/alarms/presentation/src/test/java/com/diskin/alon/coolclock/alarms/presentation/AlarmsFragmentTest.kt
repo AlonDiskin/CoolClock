@@ -17,8 +17,8 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.diskin.alon.coolclock.alarms.application.model.RepeatDay
-import com.diskin.alon.coolclock.alarms.presentation.controller.AlarmsAdapter.AlarmViewHolder
-import com.diskin.alon.coolclock.alarms.presentation.controller.AlarmsFragment
+import com.diskin.alon.coolclock.alarms.presentation.ui.AlarmsAdapter.AlarmViewHolder
+import com.diskin.alon.coolclock.alarms.presentation.ui.AlarmsFragment
 import com.diskin.alon.coolclock.alarms.presentation.model.UiAlarm
 import com.diskin.alon.coolclock.alarms.presentation.viewmodel.AlarmsViewModel
 import com.diskin.alon.coolclock.alarms.presentation.viewmodel.KEY_ALARM_ID_ARG

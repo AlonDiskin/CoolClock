@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.FullScreenAlarmActivity">
+
+    <data>
+        <variable
+            name="alarm"
+            type="com.diskin.alon.coolclock.alarms.presentation.model.UiFullScreenAlarm" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/design_default_color_primary">
+
+        <TextView
+            android:id="@+id/alarmName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu_regular"
+            android:text="@{alarm.name}"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.25"
+            tools:text="Bank meeting!" />
+
+        <TextView
+            android:id="@+id/alarmTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12sp"
+            android:fontFamily="@font/ubuntu_medium"
+            android:text="@{alarm.time}"
+            android:textColor="@color/white"
+            android:textSize="68sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/alarmName"
+            tools:text="18:45" />
+
+        <id.ss564.lib.slidingbutton.SlidingButton
+            android:id="@+id/buttonSnooze"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="48dp"
+            app:setSnoozeButtonVisibility="@{alarm}"
+            android:background="@color/sliding_button_background"
+            app:layout_constraintBottom_toTopOf="@+id/buttonDismiss"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/alarmTime"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:sliding_button_background="@color/white"
+            app:sliding_text_fontFamily="@font/ubuntu_light"
+            app:sliding_button_icon="@drawable/ic_baseline_snooze_48"
+            app:sliding_button_icon_tint="@color/sliding_button_background"
+            app:sliding_corner_radius="6dp"
+            app:sliding_text="Snooze"
+            app:sliding_text_color="@color/white" />
+
+        <id.ss564.lib.slidingbutton.SlidingButton
+            android:id="@+id/buttonDismiss"
+            android:focusable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="48dp"
+            android:background="@color/sliding_button_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonSnooze"
+            app:sliding_text_fontFamily="@font/ubuntu_light"
+            app:sliding_button_background="@color/white"
+            app:sliding_button_icon="@drawable/ic_sharp_alarm_off_24"
+            app:sliding_button_icon_tint="@color/sliding_button_background"
+            app:sliding_corner_radius="6dp"
+            app:sliding_text="Dismisse"
+            app:sliding_text_color="@color/white" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -11,8 +11,8 @@ import com.diskin.alon.coolclock.alarms.domain.Sound
 import com.diskin.alon.coolclock.alarms.domain.WeekDay
 import com.diskin.alon.coolclock.alarms.featuretesting.util.TestDatabase
 import com.diskin.alon.coolclock.alarms.presentation.R
-import com.diskin.alon.coolclock.alarms.presentation.controller.AlarmsAdapter.AlarmViewHolder
-import com.diskin.alon.coolclock.alarms.presentation.controller.AlarmsFragment
+import com.diskin.alon.coolclock.alarms.presentation.ui.AlarmsAdapter.AlarmViewHolder
+import com.diskin.alon.coolclock.alarms.presentation.ui.AlarmsFragment
 import com.diskin.alon.coolclock.common.uitesting.HiltTestActivity
 import com.diskin.alon.coolclock.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.coolclock.common.uitesting.isRecyclerViewItemsCount

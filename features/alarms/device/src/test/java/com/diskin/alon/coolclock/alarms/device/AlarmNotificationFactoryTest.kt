@@ -6,17 +6,17 @@ import android.content.Context
 import androidx.core.app.NotificationManagerCompat
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.diskin.alon.coolclock.alarms.presentation.model.UiFullScreenAlarm
+import com.diskin.alon.coolclock.alarms.presentation.viewmodel.KEY_ALARM_DATA
 import com.google.common.truth.Truth.*
-import dagger.hilt.android.testing.HiltTestApplication
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.annotation.Config
-import org.robolectric.annotation.LooperMode
+import org.robolectric.Shadows
+import java.text.SimpleDateFormat
+import java.util.*
 
 @RunWith(AndroidJUnit4::class)
-@LooperMode(LooperMode.Mode.PAUSED)
-@Config(instrumentedPackages = ["androidx.loader.content"],application = HiltTestApplication::class)
 class AlarmNotificationFactoryTest {
 
     // Test subject
@@ -44,6 +44,13 @@ class AlarmNotificationFactoryTest {
             true,
             "alarm_name"
         )
+        val currentTimeFormat = SimpleDateFormat(appContext.getString(R.string.format_alarm_titme))
+        val expectedFullScreenAlarm = UiFullScreenAlarm(
+            alarm.id,
+            alarm.name,
+            currentTimeFormat.format(Calendar.getInstance().time),
+            alarm.isSnooze
+        )
 
         // When
         val actualNotification = factory.createAlarmNotification(alarm)
@@ -55,5 +62,8 @@ class AlarmNotificationFactoryTest {
         assertThat(actualNotification.extras.getString("android.text")).isEqualTo(alarm.name)
         assertThat(actualNotification.category).isEqualTo(Notification.CATEGORY_ALARM)
         assertThat(actualNotification.channelId).isEqualTo(CHANNEL_ALARM_ID)
+        assertThat(Shadows.shadowOf(actualNotification.fullScreenIntent)
+            .savedIntent.getSerializableExtra(KEY_ALARM_DATA,UiFullScreenAlarm::class.java))
+            .isEqualTo(expectedFullScreenAlarm)
     }
 }

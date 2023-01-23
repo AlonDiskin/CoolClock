@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AlarmWeekday" parent="Widget.AppCompat.TextView" >
+
+    <style name="AlarmWeekday" parent="Widget.AppCompat.TextView">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">13sp</item>
         <item name="android:textAppearance">?attr/textAppearanceCaption</item>
@@ -10,4 +11,16 @@
         <item name="android:fontFamily">@font/ubuntu_medium</item>
         <item name="android:textAppearance">?attr/textAppearanceHeadline6</item>
     </style>
+
+    <style name="ThemeOverlay.CoolClock.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
+        <item name="fullscreenTextColor">@color/light_blue_A200</item>
+    </style>
+
+    <style name="Theme.CoolClock.Fullscreen" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+
 </resources>

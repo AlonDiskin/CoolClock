@@ -13,6 +13,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.mockk.mockk
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Singleton
 
 @Module
@@ -49,5 +50,11 @@ object TestAppDeviceModule {
     @Provides
     fun provideVibrator(app: Application): Vibrator {
         return app.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    }
+
+    @Singleton
+    @Provides
+    fun provideEventBus(): EventBus {
+        return EventBus.getDefault()
     }
 }

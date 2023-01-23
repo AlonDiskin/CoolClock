@@ -9,6 +9,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.diskin.alon.coolclock.alarms.application.interfaces.NO_CURRENT_ALARM
 import com.diskin.alon.coolclock.alarms.domain.Alarm
 import com.diskin.alon.coolclock.alarms.domain.Sound
+import com.diskin.alon.coolclock.alarms.presentation.model.AlarmStoppedEvent
 import com.diskin.alon.coolclock.common.application.AppResult
 import com.google.common.truth.Truth.*
 import dagger.hilt.android.testing.HiltTestApplication
@@ -18,6 +19,7 @@ import io.mockk.verify
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
+import org.greenrobot.eventbus.EventBus
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
@@ -46,10 +48,11 @@ class AlarmExecutorImplTest {
     // Collaborators
     private val appContext = ApplicationProvider.getApplicationContext<Context>()
     private val sharedPreferences: SharedPreferences = mockk()
+    private val eventBus: EventBus = mockk()
 
     @Before
     fun setUp() {
-        executor = AlarmExecutorImpl(appContext,sharedPreferences)
+        executor = AlarmExecutorImpl(appContext,sharedPreferences,eventBus)
     }
 
     @Test
@@ -109,6 +112,7 @@ class AlarmExecutorImplTest {
         every { sharedPreferences.edit() } returns editor
         every { editor.putInt(KEY_CURRENT_ALARM_ID, NO_CURRENT_ALARM) } returns editor
         every { editor.apply() } returns Unit
+        every { eventBus.post(any()) } returns Unit
 
         // When
         val observer = executor.stopAlarm().test()
@@ -119,6 +123,7 @@ class AlarmExecutorImplTest {
         assertThat(actualServiceIntent.component!!.className).isEqualTo(AlarmService::class.java.name)
         verify(exactly = 1) { editor.putInt(KEY_CURRENT_ALARM_ID, NO_CURRENT_ALARM) }
         verify(exactly = 1) { editor.apply() }
+        verify(exactly = 1) { eventBus.post(AlarmStoppedEvent) }
         observer.assertValue(AppResult.Success(Unit))
     }
 }

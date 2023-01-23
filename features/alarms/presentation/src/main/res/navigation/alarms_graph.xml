@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/alarmsFragment"
-        android:name="com.diskin.alon.coolclock.alarms.presentation.controller.AlarmsFragment"
+        android:name="com.diskin.alon.coolclock.alarms.presentation.ui.AlarmsFragment"
         android:label="@string/title_fragment_alarms"
         tools:layout="@layout/fragment_alarms">
 
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/alarmEditorFragment"
-        android:name="com.diskin.alon.coolclock.alarms.presentation.controller.AlarmEditorFragment"
+        android:name="com.diskin.alon.coolclock.alarms.presentation.ui.AlarmEditorFragment"
         android:label="@string/title_fragment_alarm_editor"
         tools:layout="@layout/fragment_alarm_editor" />
 </navigation>

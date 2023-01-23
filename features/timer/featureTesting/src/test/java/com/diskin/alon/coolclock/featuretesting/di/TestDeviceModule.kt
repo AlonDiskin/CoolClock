@@ -26,4 +26,10 @@ object TestDeviceModule {
     fun provideNotificationManagerCompat(app: Application): NotificationManagerCompat {
         return NotificationManagerCompat.from(app)
     }
+
+    @Singleton
+    @Provides
+    fun provideEventBus(): EventBus {
+        return EventBus.getDefault()
+    }
 }

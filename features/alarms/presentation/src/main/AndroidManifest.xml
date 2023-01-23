@@ -2,4 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.diskin.alon.coolclock.alarms.presentation">
 
+    <application>
+        <activity
+            android:name=".ui.FullScreenAlarmActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:label="@string/title_activity_alarm"
+            android:theme="@style/Theme.CoolClock.Fullscreen" />
+    </application>
+
 </manifest>

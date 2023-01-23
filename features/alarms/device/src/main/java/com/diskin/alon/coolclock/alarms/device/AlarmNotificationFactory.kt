@@ -9,11 +9,14 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.diskin.alon.coolclock.alarms.presentation.model.UiFullScreenAlarm
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.diskin.alon.coolclock.alarms.presentation.ui.FullScreenAlarmActivity
+import com.diskin.alon.coolclock.alarms.presentation.viewmodel.KEY_ALARM_DATA
 
 const val CHANNEL_ALARM_ID = "alarm notification channel id"
 const val CHANNEL_ALARM_NAME = "alarm notification channel name"
@@ -44,7 +47,13 @@ class AlarmNotificationFactory @Inject constructor(
                 PendingIntent.FLAG_UPDATE_CURRENT
             )
         }
-        val fullScreenIntent = Intent(appContext, AlarmActivity::class.java)
+        val fullScreenIntent = Intent(appContext, FullScreenAlarmActivity::class.java)
+            .also {
+                it.putExtra(
+                    KEY_ALARM_DATA,
+                    UiFullScreenAlarm(alarm.id,alarm.name,notificationTitle,alarm.isSnooze)
+                )
+            }
         val fullScreenPendingIntent = PendingIntent.getActivity(appContext, 0,
             fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 

@@ -49,6 +49,7 @@ dependencies {
     // Project modules
     implementation project(':features:alarms:application')
     implementation project(':features:alarms:domain')
+    implementation project(':features:alarms:presentation')
 
     // Android core
     implementation "androidx.core:core-ktx:$androidCore"

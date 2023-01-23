@@ -229,4 +229,9 @@ class AlarmEditorViewModelTest {
         // Then
         assertThat(viewModel.volumeButtonPress.value).isEqualTo(event)
     }
+
+    @Test
+    fun name() {
+
+    }
 }

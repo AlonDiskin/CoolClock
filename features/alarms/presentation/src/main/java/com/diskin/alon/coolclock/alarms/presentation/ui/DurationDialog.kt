@@ -1,4 +1,4 @@
-package com.diskin.alon.coolclock.alarms.presentation.controller
+package com.diskin.alon.coolclock.alarms.presentation.ui
 
 import android.app.Dialog
 import android.content.Context

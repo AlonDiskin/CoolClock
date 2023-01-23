@@ -9,12 +9,14 @@ import com.diskin.alon.coolclock.alarms.application.interfaces.AlarmExecutor
 import com.diskin.alon.coolclock.alarms.application.interfaces.NO_CURRENT_ALARM
 import com.diskin.alon.coolclock.alarms.domain.Alarm
 import com.diskin.alon.coolclock.alarms.domain.Sound
+import com.diskin.alon.coolclock.alarms.presentation.model.AlarmStoppedEvent
 import com.diskin.alon.coolclock.common.application.AppResult
 import com.diskin.alon.coolclock.common.application.toSingleAppResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 @VisibleForTesting
@@ -22,7 +24,8 @@ const val KEY_CURRENT_ALARM_ID = "alarm_id"
 
 class AlarmExecutorImpl @Inject constructor(
     @ApplicationContext private val appContext: Context,
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val eventBus: EventBus
 ) : AlarmExecutor {
 
     override fun startAlarm(alarm: Alarm): Single<AppResult<Unit>> {
@@ -70,6 +73,7 @@ class AlarmExecutorImpl @Inject constructor(
                     NO_CURRENT_ALARM
                 )
                 .apply()
+            eventBus.post(AlarmStoppedEvent)
             it.onSuccess(Unit)
         }
             .subscribeOn(AndroidSchedulers.mainThread())

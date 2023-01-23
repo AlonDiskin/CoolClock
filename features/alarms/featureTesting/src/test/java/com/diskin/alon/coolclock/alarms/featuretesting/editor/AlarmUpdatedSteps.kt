@@ -12,7 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.coolclock.alarms.featuretesting.util.CustomShadowRingtoneManager
 import com.diskin.alon.coolclock.alarms.featuretesting.util.TestDatabase
 import com.diskin.alon.coolclock.alarms.presentation.R
-import com.diskin.alon.coolclock.alarms.presentation.controller.AlarmEditorFragment
+import com.diskin.alon.coolclock.alarms.presentation.ui.AlarmEditorFragment
 import com.diskin.alon.coolclock.alarms.presentation.viewmodel.KEY_ALARM_ID_ARG
 import com.diskin.alon.coolclock.common.uitesting.HiltTestActivity
 import com.diskin.alon.coolclock.common.uitesting.launchFragmentInHiltContainer
